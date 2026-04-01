@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIA - Private Music Lesson | Jago Musik Tanpa Ribet</title>
+    <!-- Pake Tailwind CSS biar styling-nya sat-set wat-wet -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Konfigurasi dark mode biar Tailwind tau kita pake class
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'marquee': 'marquee 25s linear infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-image: url('bgbody.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            transition: background-color 0.3s, color 0.3s; 
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-100">
+
+    <!-- Header / Navbar: Biar navigasi nggak nyasar -->
+    <nav class="bg-[#B8860B] shadow-md sticky top-0 z-50 transition-colors">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3 group">
+                <img src="logojia.png" alt="Logo JIA" class="w-14 h-14 object-cover rounded-xl shadow-md border border-gray-100 dark:border-gray-700 transition-transform group-hover:scale-110">
+                <span class="text-3xl font-bold text-white tracking-tighter">JIA.</span>
+            </a>
+            <div class="hidden md:flex space-x-8 font-medium text-white">
+                <a href="#home" class="hover:opacity-70 transition">Home</a>
+                <a href="#instrumen" class="hover:opacity-70 transition">Instrumen</a>
+                <a href="#testimony" class="hover:opacity-70 transition">Testimoni</a>
+                <a href="#contact" class="hover:opacity-70 transition">Lokasi</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Tombol Ganti Tema (Dark/Light) -->
+                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:ring-2 ring-indigo-400 dark:ring-red-800 transition-all">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+                <button id="open-login" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-indigo-700 transition">
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Running Text: Biar ada rame-ramenya dikit -->
+    <div class="bg-indigo-600 text-white py-2 overflow-hidden whitespace-nowrap">
+        <div class="inline-block animate-marquee uppercase tracking-widest font-bold text-sm">
+            Pendaftaran Batch Baru Dibuka! 🔥 Diskon 20% Khusus Bulan Ini 🎸 Belajar Gitar, Drum, & Keyboard Bareng Pro 🎹 Join JIA Sekarang! 🥁&nbsp;
+        </div>
+        <div class="inline-block animate-marquee uppercase tracking-widest font-bold text-sm">
+            Pendaftaran Batch Baru Dibuka! 🔥 Diskon 20% Khusus Bulan Ini 🎸 Belajar Gitar, Drum, & Keyboard Bareng Pro 🎹 Join JIA Sekarang! 🥁&nbsp;
+        </div>
+    </div>
+
+    <!-- Hero Section: First impression itu penting, Bro! -->
+    <header id="home" class="relative bg-indigo-900 h-[70vh] flex items-center justify-center text-center text-white px-4">
+        <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center"></div>
+        <div class="relative z-10 max-w-3xl">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 leading-tight">Jago Musik Bareng <span class="text-indigo-400 dark:text-red-500">JIA</span></h1>
+            <p class="text-lg md:text-xl mb-8 text-gray-200">Bosen cuma dengerin musik doang? Yuk, saatnya lo yang mainin! Privat gitar, drum, sama keyboard dengan guru yang asik parah.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#instrumen" class="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-lg font-bold text-lg transition">Lihat Kelas</a>
+                <button onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" class="border-2 border-white hover:bg-white hover:text-indigo-900 px-8 py-3 rounded-lg font-bold text-lg transition">
+                    Cek Lokasi
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Instrument Section: Menu utama kita nih -->
+    <section id="instrumen" class="py-20 bg-gray-900 container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-2 text-white">Pilih Senjata Lo!</h2>
+            <p class="text-gray-400">Tentukan instrumen yang pengen lo taklukin.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Card Gitar -->
+            <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:-translate-y-2 hover:z-50 transition duration-300 border border-gray-700">
+                <div class="h-56 bg-[url('https://images.unsplash.com/photo-1525201548112-c99abb179895?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center"></div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-3 italic text-white">Gitar</h3>
+                    <p class="text-gray-300 mb-6">Dari genjrengan santai sampe solo melodi yang bikin merinding. Kita ajarin sampe fasih!</p>
+                    <button class="text-indigo-600 font-bold group-hover:underline">Cek Detail &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Card Drum -->
+            <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:-translate-y-2 hover:z-50 transition duration-300 border border-gray-700">
+                <div class="h-56 bg-[url('https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center"></div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-3 italic text-white">Drum</h3>
+                    <p class="text-gray-300 mb-6">Bakar kalori sambil hajar beat! Cocok banget buat lo yang energinya nggak abis-abis.</p>
+                    <button class="text-indigo-600 font-bold group-hover:underline">Cek Detail &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Card Keyboard -->
+            <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:-translate-y-2 hover:z-50 transition duration-300 border border-gray-700">
+                <div class="h-56 bg-[url('https://images.unsplash.com/photo-1513883049090-d0b7439799bf?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center"></div>
+                <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-3 italic text-white">Keyboard</h3>
+                    <p class="text-gray-300 mb-6">Mainin chord mewah atau bikin komposisi lagu sendiri. Bikin lo keliatan jenius di panggung.</p>
+                    <button class="text-indigo-600 font-bold group-hover:underline">Cek Detail &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimony Section: Carousel ala-ala (Scroll Snapping) -->
+    <section id="testimony" class="relative py-20 bg-[url('bgbody.jpg')] bg-cover bg-fixed bg-center transition-colors">
+        <div class="absolute inset-0 bg-black/70"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="text-4xl font-bold mb-12 text-center text-white italic">Apa Kata Mereka?</h2>
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 hide-scrollbar pb-8">
+                <!-- Testimony 1 -->
+                <div class="relative z-0 min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-lg border-b-4 border-indigo-500 dark:border-red-900 transition-all duration-300 hover:scale-110 hover:z-50 hover:ring-4 hover:ring-indigo-300 dark:hover:ring-red-500 cursor-pointer">
+                    <p class="italic mb-6 text-lg text-gray-600 dark:text-gray-300">"Gokil sih, baru 4 kali pertemuan udah bisa mainin lagu favorit gue di gitar. Gurunya asik parah!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold">R</div>
+                        <div><h4 class="font-bold">Rian Satria</h4><span class="text-xs text-indigo-500 uppercase">Murid Gitar</span></div>
+                    </div>
+                </div>
+                <!-- Testimony 2 -->
+                <div class="relative z-0 min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-lg border-b-4 border-indigo-500 dark:border-red-900 transition-all duration-300 hover:scale-110 hover:z-50 hover:ring-4 hover:ring-indigo-300 dark:hover:ring-red-500 cursor-pointer">
+                    <p class="italic mb-6 text-lg text-gray-600 dark:text-gray-300">"Anak gue happy banget les drum di JIA. Progresnya cepet banget kelihatan. Mantap!"</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold">B</div>
+                        <div><h4 class="font-bold">Bunda Maya</h4><span class="text-xs text-indigo-500 uppercase">Orang Tua Murid</span></div>
+                    </div>
+                </div>
+                <!-- Testimony 3 -->
+                <div class="relative z-0 min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-lg border-b-4 border-indigo-500 dark:border-red-900 transition-all duration-300 hover:scale-110 hover:z-50 hover:ring-4 hover:ring-indigo-300 dark:hover:ring-red-500 cursor-pointer">
+                    <p class="italic mb-6 text-lg text-gray-600 dark:text-gray-300">"Belajar keyboard jadi nggak ngebosenin karena diajarin teori yang praktis banget."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold">S</div>
+                        <div><h4 class="font-bold">Siska Amelia</h4><span class="text-xs text-indigo-500 uppercase">Murid Keyboard</span></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-sm text-gray-400 mt-4">← Geser buat liat lainnya →</p>
+        </div>
+    </section>
+
+    <!-- Kenapa Kami? Section: Biar makin yakin -->
+    <section id="about" class="relative py-20 bg-[url('bgbody.jpg')] bg-cover bg-fixed bg-center transition-colors">
+        <div class="absolute inset-0 bg-black/75"></div>
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="text-white">
+                <h2 class="text-4xl font-bold mb-6 italic text-white dark:text-red-500">Kenapa Harus JIA?</h2>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-indigo-600 text-white rounded-full p-1 mt-1">✓</span>
+                        <span><strong>Guru Gokil:</strong> Pengajar kita bukan cuma jago, tapi asik diajak nongkrong.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-indigo-600 text-white rounded-full p-1 mt-1">✓</span>
+                        <span><strong>Waktu Fleksibel:</strong> Sibuk sekolah atau kerja? Atur jadwal sesuka hati lo.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-indigo-600 text-white rounded-full p-1 mt-1">✓</span>
+                        <span><strong>Materi Up-to-Date:</strong> Nggak cuma lagu lawas, kita belajar lagu yang lagi hits sekarang.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="rounded-3xl overflow-hidden shadow-2xl rotate-2">
+                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&w=800&q=80" alt="Music Session">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Maps Section: Jangan sampe nyasar -->
+    <section id="contact" class="py-20 container mx-auto px-6">
+        <div class="bg-white dark:bg-gray-800 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+            <div class="p-12 md:w-1/2">
+                <h2 class="text-4xl font-bold mb-6 dark:text-white italic">Mampir Yuk!</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                    Kalo lo pengen liat-liat studio atau mau konsultasi langsung sambil ngopi, langsung aja gas ke basecamp kita:
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">📍</span>
+                        <span>Jl. Melodi Indah No. 42, Jakarta Selatan</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">📞</span>
+                        <span>+62 812 3456 7890</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">⏰</span>
+                        <span>Setiap Hari (09.00 - 21.00)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 h-80 md:h-auto min-h-[300px]">
+                <!-- Ganti ini sama Embed Map dari Google Maps lo sendiri -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.174828330752!2d106.8202511!3d-6.2241438!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e490538053%3A0x60037a508931215b!2sKuningan%20City!5e0!3m2!1sen!2sid!4v1711900000000!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer: Biar nggak putus hubungan -->
+    <footer class="relative bg-[url('bgbody.jpg')] bg-cover bg-fixed bg-center py-10 text-center transition-colors border-t border-white/10">
+        <div class="absolute inset-0 bg-black/85"></div>
+        <div class="relative z-10">
+            <p class="text-2xl font-bold text-indigo-400 mb-4">JIA.</p>
+            <p class="text-gray-300 mb-6 italic">Ngajar musik dengan hati, biar lo jadi bintang di hari ini.</p>
+            <div class="flex justify-center space-x-6 mb-8 text-gray-400">
+                <a href="#" class="hover:text-indigo-400">Instagram</a>
+                <a href="#" class="hover:text-indigo-400">TikTok</a>
+                <a href="#" class="hover:text-indigo-400">YouTube</a>
+            </div>
+            <p class="text-xs text-gray-500 uppercase tracking-widest">&copy; 2024 JIA Private Music Lesson. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Login: Biar masuk ke dashboard sesuai role -->
+    <div id="login-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-all">
+        <div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-8 relative transform transition-all border border-gray-100 dark:border-gray-700">
+            <!-- Tombol Close (X) -->
+            <button id="close-login" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl">&times;</button>
+            
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-indigo-600 dark:text-red-500 italic">Login JIA</h2>
+                <p class="text-gray-500 text-sm">Masuk buat lanjutin progres musik lo!</p>
+            </div>
+
+            <form action="#" class="space-y-5">
+                <!-- Role Selector: Admin, Teacher, Student -->
+                <div>
+                    <label class="block text-sm font-semibold mb-3 ml-1 text-gray-700 dark:text-gray-300">Lo Masuk Sebagai:</label>
+                    <div class="relative bg-gray-100 dark:bg-gray-700 p-1 rounded-2xl flex items-center transition-all h-12">
+                        <!-- Si Geser (Indicator) -->
+                        <div id="role-indicator" class="absolute top-1 left-1 bottom-1 w-[calc(33.33%-4px)] bg-white dark:bg-red-900 rounded-xl shadow-md transition-all duration-300 ease-out"></div>
+                        
+                        <button type="button" onclick="changeRole(0, 'student')" class="role-btn relative z-10 flex-1 text-sm font-bold transition-colors text-indigo-600 dark:text-white">Student</button>
+                        <button type="button" onclick="changeRole(1, 'teacher')" class="role-btn relative z-10 flex-1 text-sm font-bold transition-colors text-gray-500 dark:text-gray-400">Teacher</button>
+                        <button type="button" onclick="changeRole(2, 'admin')" class="role-btn relative z-10 flex-1 text-sm font-bold transition-colors text-gray-500 dark:text-gray-400">Admin</button>
+                    </div>
+                    <!-- Hidden input biar tetep bisa dikirim lewat form -->
+                    <input type="hidden" id="role-value" name="role" value="student">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2 ml-1">Email / Username</label>
+                    <input type="text" placeholder="musik@jia.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 ring-indigo-500 dark:focus:ring-red-800 outline-none transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-2 ml-1">Password</label>
+                    <input type="password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 ring-indigo-500 dark:focus:ring-red-800 outline-none transition">
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-red-800 dark:hover:bg-red-900 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-indigo-200 dark:shadow-none mt-4">
+                    Masuk Sekarang!
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script Tombol Dark Mode -->
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+        
+        toggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            
+            // Update icon biar makin asik
+            if (document.documentElement.classList.contains('dark')) {
+                icon.innerText = '☀️';
+            } else {
+                icon.innerText = '🌙';
+            }
+        });
+    </script>
+
+    <!-- Script Buat Handle Modal Login -->
+    <script>
+        const openLogin = document.getElementById('open-login');
+        const closeLogin = document.getElementById('close-login');
+        const loginModal = document.getElementById('login-modal');
+
+        // Munculin modal pas tombol login diklik
+        openLogin.addEventListener('click', () => {
+            loginModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Biar background gak bisa di-scroll
+        });
+
+        // Tutup modal
+        closeLogin.addEventListener('click', () => {
+            loginModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Aktifin scroll lagi
+        });
+    </script>
+
+    <!-- Script Buat Slider Role -->
+    <script>
+        function changeRole(index, val) {
+            const indicator = document.getElementById('role-indicator');
+            const btns = document.querySelectorAll('.role-btn');
+            const roleInput = document.getElementById('role-value');
+
+            // Pindahin si background putih/indigo sesuai index (0, 1, 2)
+            indicator.style.transform = `translateX(${index * 100}%)`;
+            roleInput.value = val;
+
+            // Ganti warna teks biar makin kontras pas kepilih
+            btns.forEach((btn, i) => {
+                if(i === index) {
+                    btn.classList.add('text-indigo-600', 'dark:text-white');
+                    btn.classList.remove('text-gray-500', 'dark:text-gray-400');
+                } else {
+                    btn.classList.remove('text-indigo-600', 'dark:text-white');
+                    btn.classList.add('text-gray-500', 'dark:text-gray-400');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
