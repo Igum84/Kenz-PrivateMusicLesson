@@ -21,30 +21,30 @@
     ========================================= */
     :root,
     [data-theme="light"] {
-      --gold:         #C07B20;
-      --gold2:        #E09A30;
-      --gold-bg:      rgba(192,123,32,0.10);
-      --gold-border:  rgba(192,123,32,0.22);
+      --gold:         #F0B040;
+      --gold2:        #F5C96A;
+      --gold-bg:      rgba(240,176,64,0.15);
+      --gold-border:  rgba(240,176,64,0.35);
 
-      --bg:           #F7F4EF;
-      --bg2:          #EFEBE3;
-      --bg3:          #E8E3D8;
-      --card:         #FFFFFF;
-      --border:       rgba(0,0,0,0.09);
-      --text:         #1A1208;
-      --muted:        #7A6B55;
+      --bg:           transparent;
+      --bg2:          rgba(10,8,4,0.45);
+      --bg3:          rgba(10,8,4,0.55);
+      --card:         rgba(15,12,6,0.72);
+      --border:       rgba(255,255,255,0.12);
+      --text:         #F5F0E8;
+      --muted:        #C8B898;
 
-      --nav-bg:       rgba(247,244,239,0.88);
-      --mob-bg:       rgba(247,244,239,0.97);
-      --modal-bg:     #FFFFFF;
-      --modal-card:   #F7F4EF;
-      --scrollbar-tr: #E8E3D8;
-      --footer-bg:    #1A1208;
-      --footer-text:  #B8AA96;
+      --nav-bg:       rgba(10,8,4,0.82);
+      --mob-bg:       rgba(10,8,4,0.97);
+      --modal-bg:     #1A1510;
+      --modal-card:   #201A12;
+      --scrollbar-tr: #2A2218;
+      --footer-bg:    rgba(5,4,2,0.92);
+      --footer-text:  #A89878;
 
-      --hero-overlay: linear-gradient(135deg,rgba(247,244,239,0.94) 35%,rgba(192,123,32,0.06) 100%);
-      --about-glow:   rgba(192,123,32,0.07);
-      --cta-btn:      #1A1208;
+      --hero-overlay: linear-gradient(135deg,rgba(10,8,4,0.82) 35%,rgba(192,123,32,0.18) 100%);
+      --about-glow:   rgba(240,176,64,0.10);
+      --cta-btn:      #0A0804;
 
       --radius: 18px;
       --font-display: 'Bebas Neue', sans-serif;
@@ -55,29 +55,29 @@
        THEME TOKENS — DARK
     ========================================= */
     [data-theme="dark"] {
-      --gold:         #D4943A;
-      --gold2:        #F0B95A;
-      --gold-bg:      rgba(212,148,58,0.10);
-      --gold-border:  rgba(212,148,58,0.18);
+      --gold:         #F0B040;
+      --gold2:        #F5C96A;
+      --gold-bg:      rgba(240,176,64,0.12);
+      --gold-border:  rgba(240,176,64,0.25);
 
-      --bg:           #0A0A0A;
-      --bg2:          #111111;
-      --bg3:          #181818;
-      --card:         #141414;
-      --border:       rgba(255,255,255,0.07);
+      --bg:           transparent;
+      --bg2:          rgba(0,0,0,0.55);
+      --bg3:          rgba(0,0,0,0.65);
+      --card:         rgba(0,0,0,0.78);
+      --border:       rgba(255,255,255,0.08);
       --text:         #EDEDEC;
-      --muted:        #888888;
+      --muted:        #AAAAAA;
 
-      --nav-bg:       rgba(10,10,10,0.88);
-      --mob-bg:       rgba(10,10,10,0.97);
+      --nav-bg:       rgba(0,0,0,0.88);
+      --mob-bg:       rgba(0,0,0,0.97);
       --modal-bg:     #181818;
       --modal-card:   #141414;
       --scrollbar-tr: #1a1a1a;
-      --footer-bg:    #0A0A0A;
-      --footer-text:  #555555;
+      --footer-bg:    rgba(0,0,0,0.92);
+      --footer-text:  #666666;
 
-      --hero-overlay: linear-gradient(135deg,rgba(10,10,10,0.94) 40%,rgba(212,148,58,0.07) 100%);
-      --about-glow:   rgba(212,148,58,0.06);
+      --hero-overlay: linear-gradient(135deg,rgba(0,0,0,0.88) 40%,rgba(212,148,58,0.10) 100%);
+      --about-glow:   rgba(212,148,58,0.08);
       --cta-btn:      #0A0A0A;
     }
 
@@ -86,7 +86,7 @@
     ========================================= */
     body {
       font-family: var(--font-body);
-      background: var(--bg);
+      background: url('bgbody.jpg') center center / cover fixed no-repeat;
       color: var(--text);
       overflow-x: hidden;
       cursor: none;
