@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – KENZ Guitar Lesson</title>
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --text: #1A1A1A;
+      --muted: #666;
+      --bg: #FFFFFF;
+      --surface: #F5F5F5;
+      --border: #E0E0E0;
+      --footer-bg: #1A1208;
+      --footer-text: #B8AA96;
+    }
+
+    [data-theme="dark"] {
+      --text: #FFFFFF;
+      --muted: #AAAAAA;
+      --bg: #0A0A0A;
+      --surface: #1A1A1A;
+      --border: #333333;
+      --footer-bg: #0A0A0A;
+      --footer-text: #555555;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .3s, color .3s;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface);
+    }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 8px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+
+    .admin-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .admin-role {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* MAIN CONTENT */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    .dashboard-header {
+      margin-bottom: 50px;
+    }
+
+    .dashboard-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .dashboard-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    /* MENU GRID */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .menu-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 32px 24px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all .3s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .menu-btn:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.15);
+    }
+
+    .menu-btn.logout {
+      border-color: #FF6B6B;
+    }
+
+    .menu-btn.logout:hover {
+      border-color: #FF6B6B;
+      box-shadow: 0 8px 24px rgba(255, 107, 107, 0.15);
+    }
+
+    .menu-icon {
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .menu-label {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--text);
+    }
+
+    .menu-btn.logout .menu-label {
+      color: #FF6B6B;
+    }
+
+    /* CONTENT AREA */
+    .content-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      min-height: 400px;
+      display: none;
+    }
+
+    .content-area.active {
+      display: block;
+    }
+
+    .content-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .content-subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .placeholder-content {
+      padding: 40px;
+      background: var(--bg);
+      border-radius: 12px;
+      border: 2px dashed var(--border);
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--footer-bg);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 32px;
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--footer-text);
+      font-size: 14px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav {
+        padding: 12px 16px;
+      }
+
+      .nav-brand {
+        font-size: 20px;
+      }
+
+      .nav-right {
+        gap: 12px;
+      }
+
+      .admin-info {
+        display: none;
+      }
+
+      .container {
+        padding: 24px 16px;
+      }
+
+      .dashboard-title {
+        font-size: 28px;
+      }
+
+      .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .menu-btn {
+        padding: 24px 16px;
+        gap: 12px;
+      }
+
+      .menu-icon {
+        font-size: 36px;
+      }
+
+      .menu-label {
+        font-size: 14px;
+      }
+
+      .content-area {
+        padding: 24px;
+      }
+
+      .content-title {
+        font-size: 24px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="KENZ">
+      KENZ.
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar">K</div>
+        <div class="admin-details">
+          <div class="admin-name">Admin Kenz</div>
+          <div class="admin-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Admin Dashboard</h1>
+      <p class="dashboard-subtitle">Kelola semua data dan konfigurasi untuk KENZ Private Guitar Lesson</p>
+    </div>
+
+    <!-- MENU BUTTONS -->
+    <div class="menu-grid">
+      <button class="menu-btn" data-menu="profil" onclick="showMenu('profil')">
+        <div class="menu-icon">👤</div>
+        <div class="menu-label">Profil</div>
+      </button>
+
+      <button class="menu-btn" data-menu="siswa" onclick="showMenu('siswa')">
+        <div class="menu-icon">👨‍🎓</div>
+        <div class="menu-label">Siswa</div>
+      </button>
+
+      <button class="menu-btn" data-menu="guru" onclick="showMenu('guru')">
+        <div class="menu-icon">👨‍🏫</div>
+        <div class="menu-label">Guru</div>
+      </button>
+
+      <button class="menu-btn" data-menu="nilai" onclick="showMenu('nilai')">
+        <div class="menu-icon">📊</div>
+        <div class="menu-label">Nilai</div>
+      </button>
+
+      <button class="menu-btn" data-menu="kurikulum" onclick="showMenu('kurikulum')">
+        <div class="menu-icon">📚</div>
+        <div class="menu-label">Kurikulum</div>
+      </button>
+
+      <button class="menu-btn" data-menu="video" onclick="showMenu('video')">
+        <div class="menu-icon">🎥</div>
+        <div class="menu-label">Video Pembelajaran</div>
+      </button>
+
+      <button class="menu-btn" data-menu="sertifikat" onclick="showMenu('sertifikat')">
+        <div class="menu-icon">🏆</div>
+        <div class="menu-label">Sertifikat</div>
+      </button>
+
+      <button class="menu-btn" data-menu="backup" onclick="showMenu('backup')">
+        <div class="menu-icon">💾</div>
+        <div class="menu-label">Backup Data</div>
+      </button>
+
+      <button class="menu-btn" data-menu="restore" onclick="showMenu('restore')">
+        <div class="menu-icon">♻️</div>
+        <div class="menu-label">Restore Data</div>
+      </button>
+
+      <button class="menu-btn logout" data-menu="logout" onclick="logout()">
+        <div class="menu-icon">🚪</div>
+        <div class="menu-label">Log Out</div>
+      </button>
+    </div>
+
+    <!-- CONTENT AREAS -->
+    <div id="profil" class="content-area active">
+      <h2 class="content-title">Profil</h2>
+      <p class="content-subtitle">Kelola profil admin dan informasi dasar KENZ Private Guitar Lesson</p>
+      <div class="placeholder-content">
+        <p>📝 Konten Profil - Form edit data profil admin dan informasi sekolah</p>
+      </div>
+    </div>
+
+    <div id="siswa" class="content-area">
+      <h2 class="content-title">Data Siswa</h2>
+      <p class="content-subtitle">Lihat, tambah, edit, dan hapus data semua siswa</p>
+      <div class="placeholder-content">
+        <p>👥 Data Siswa - Tabel daftar siswa dengan opsi CRUD</p>
+      </div>
+    </div>
+
+    <div id="guru" class="content-area">
+      <h2 class="content-title">Data Guru</h2>
+      <p class="content-subtitle">Kelola data guru dan instruktur KENZ</p>
+      <div class="placeholder-content">
+        <p>👨‍🏫 Data Guru - Tabel daftar guru dengan opsi CRUD</p>
+      </div>
+    </div>
+
+    <div id="nilai" class="content-area">
+      <h2 class="content-title">Nilai & Progres Siswa</h2>
+      <p class="content-subtitle">Pantau perkembangan dan nilai semua siswa</p>
+      <div class="placeholder-content">
+        <p>📊 Nilai - Tabel nilai siswa dengan filter dan export</p>
+      </div>
+    </div>
+
+    <div id="kurikulum" class="content-area">
+      <h2 class="content-title">Kurikulum</h2>
+      <p class="content-subtitle">Kelola kurikulum pembelajaran untuk setiap level kelas</p>
+      <div class="placeholder-content">
+        <p>📚 Kurikulum - Form input kurikulum untuk Basic, Intermediate, Performer</p>
+      </div>
+    </div>
+
+    <div id="video" class="content-area">
+      <h2 class="content-title">Video Pembelajaran</h2>
+      <p class="content-subtitle">Upload dan kelola video pembelajaran untuk siswa</p>
+      <div class="placeholder-content">
+        <p>🎥 Video - Uploader video dan gallery media pembelajaran</p>
+      </div>
+    </div>
+
+    <div id="sertifikat" class="content-area">
+      <h2 class="content-title">Sertifikat</h2>
+      <p class="content-subtitle">Generate dan kelola sertifikat untuk siswa yang lulus</p>
+      <div class="placeholder-content">
+        <p>🏆 Sertifikat - Template sertifikat dan daftar sertifikat yang sudah diterbitkan</p>
+      </div>
+    </div>
+
+    <div id="backup" class="content-area">
+      <h2 class="content-title">Backup Data</h2>
+      <p class="content-subtitle">Buat backup data untuk keamanan dan pencegahan kehilangan data</p>
+      <div class="placeholder-content">
+        <p>💾 Backup - Tombol backup data dan riwayat backup sebelumnya</p>
+      </div>
+    </div>
+
+    <div id="restore" class="content-area">
+      <h2 class="content-title">Restore Data</h2>
+      <p class="content-subtitle">Pulihkan data dari backup yang sudah dibuat sebelumnya</p>
+      <div class="placeholder-content">
+        <p>♻️ Restore - Pilih backup file untuk di-restore</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 KENZ Private Guitar Lesson. All rights reserved.</p>
+      <p>Admin Dashboard v1.0</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    /* THEME TOGGLE */
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+
+    function getTheme() {
+      return html.getAttribute('data-theme') || 'light';
+    }
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('kenz-theme', theme);
+    }
+
+    function toggleTheme() {
+      applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
+    }
+
+    const savedTheme = localStorage.getItem('kenz-theme') || 'light';
+    applyTheme(savedTheme);
+
+    themeToggle.addEventListener('click', toggleTheme);
+
+    /* MENU NAVIGATION */
+    function showMenu(menuId) {
+      // Hide all content areas
+      document.querySelectorAll('.content-area').forEach(area => {
+        area.classList.remove('active');
+      });
+
+      // Show selected content area
+      const selectedArea = document.getElementById(menuId);
+      if (selectedArea) {
+        selectedArea.classList.add('active');
+      }
+
+      // Update active button
+      document.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.style.borderColor = '';
+      });
+      const activeBtn = document.querySelector(`[data-menu="${menuId}"]`);
+      if (activeBtn) {
+        activeBtn.style.borderColor = 'var(--gold)';
+      }
+    }
+
+    /* LOGOUT */
+    function logout() {
+      if (confirm('Apakah Anda yakin ingin logout?')) {
+        // Redirect to login atau index
+        window.location.href = 'index.html';
+      }
+    }
+  </script>
+</body>
+</html>
