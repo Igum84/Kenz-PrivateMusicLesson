@@ -1,347 +1,1126 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JIA - Private Music Lesson | Jago Musik Tanpa Ribet</title>
-    <!-- Pake Tailwind CSS biar styling-nya sat-set wat-wet -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Konfigurasi dark mode biar Tailwind tau kita pake class
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    animation: {
-                        'marquee': 'marquee 25s linear infinite',
-                    },
-                    keyframes: {
-                        marquee: {
-                            '0%': { transform: 'translateX(0%)' },
-                            '100%': { transform: 'translateX(-100%)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background-image: url('bgbody.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            transition: background-color 0.3s, color 0.3s; 
-        }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kenz – Private Guitar Lesson | Gitar Akustik & Elektrik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* =========================================
+       RESET
+    ========================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    /* =========================================
+       THEME TOKENS — LIGHT (default)
+    ========================================= */
+    :root,
+    [data-theme="light"] {
+      --gold:         #C07B20;
+      --gold2:        #E09A30;
+      --gold-bg:      rgba(192,123,32,0.10);
+      --gold-border:  rgba(192,123,32,0.22);
+
+      --bg:           #F7F4EF;
+      --bg2:          #EFEBE3;
+      --bg3:          #E8E3D8;
+      --card:         #FFFFFF;
+      --border:       rgba(0,0,0,0.09);
+      --text:         #1A1208;
+      --muted:        #7A6B55;
+
+      --nav-bg:       rgba(247,244,239,0.88);
+      --mob-bg:       rgba(247,244,239,0.97);
+      --modal-bg:     #FFFFFF;
+      --modal-card:   #F7F4EF;
+      --scrollbar-tr: #E8E3D8;
+      --footer-bg:    #1A1208;
+      --footer-text:  #B8AA96;
+
+      --hero-overlay: linear-gradient(135deg,rgba(247,244,239,0.94) 35%,rgba(192,123,32,0.06) 100%);
+      --about-glow:   rgba(192,123,32,0.07);
+      --cta-btn:      #1A1208;
+
+      --radius: 18px;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    /* =========================================
+       THEME TOKENS — DARK
+    ========================================= */
+    [data-theme="dark"] {
+      --gold:         #D4943A;
+      --gold2:        #F0B95A;
+      --gold-bg:      rgba(212,148,58,0.10);
+      --gold-border:  rgba(212,148,58,0.18);
+
+      --bg:           #0A0A0A;
+      --bg2:          #111111;
+      --bg3:          #181818;
+      --card:         #141414;
+      --border:       rgba(255,255,255,0.07);
+      --text:         #EDEDEC;
+      --muted:        #888888;
+
+      --nav-bg:       rgba(10,10,10,0.88);
+      --mob-bg:       rgba(10,10,10,0.97);
+      --modal-bg:     #181818;
+      --modal-card:   #141414;
+      --scrollbar-tr: #1a1a1a;
+      --footer-bg:    #0A0A0A;
+      --footer-text:  #555555;
+
+      --hero-overlay: linear-gradient(135deg,rgba(10,10,10,0.94) 40%,rgba(212,148,58,0.07) 100%);
+      --about-glow:   rgba(212,148,58,0.06);
+      --cta-btn:      #0A0A0A;
+    }
+
+    /* =========================================
+       BASE
+    ========================================= */
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+      transition: background .35s ease, color .35s ease;
+    }
+
+    /* noise */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.45;
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-tr); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+    /* utility */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .gold { color: var(--gold); }
+
+    /* =========================================
+       CUSTOM CURSOR
+    ========================================= */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, background .2s, border .2s;
+    }
+    #cursor.big {
+      width: 40px; height: 40px;
+      background: var(--gold-bg);
+      border: 1.5px solid var(--gold);
+    }
+
+    /* =========================================
+       THEME TOGGLE BUTTON
+    ========================================= */
+    .theme-toggle {
+      width: 52px; height: 28px;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      position: relative;
+      cursor: none;
+      transition: background .3s, border-color .3s;
+      flex-shrink: 0;
+      display: flex; align-items: center;
+      padding: 0 3px;
+    }
+    .theme-toggle .knob {
+      width: 20px; height: 20px;
+      background: var(--gold);
+      border-radius: 50%;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    [data-theme="dark"] .theme-toggle .knob { transform: translateX(24px); }
+    [data-theme="light"] .theme-toggle .knob { transform: translateX(0); }
+
+    /* =========================================
+       MARQUEE TICKER
+    ========================================= */
+    .ticker {
+      background: var(--gold);
+      color: #0A0A0A;
+      padding: 9px 0;
+      overflow: hidden; white-space: nowrap;
+      position: relative; z-index: 60;
+    }
+    .ticker-inner { display: inline-flex; animation: ticker-move 28s linear infinite; }
+    .ticker-inner span {
+      font-family: var(--font-display);
+      font-size: 14px; letter-spacing: 2px; padding: 0 40px;
+    }
+    .ticker-inner span::after { content: '♦'; margin-left: 40px; opacity: .5; }
+    @keyframes ticker-move { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* =========================================
+       NAVBAR
+    ========================================= */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background .35s, border-color .35s, box-shadow .3s;
+    }
+    .nav-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; height: 70px;
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-size: 28px;
+      letter-spacing: 1px; color: var(--gold);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo .dot { color: var(--text); }
+    .nav-logo svg { width: 32px; height: 32px; }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; letter-spacing: .5px;
+      color: var(--muted); transition: color .2s; position: relative;
+      padding: 8px 12px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0;
+      width: 0; height: 1.5px; background: var(--gold); transition: width .3s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+
+    /* buttons */
+    .btn-primary {
+      background: var(--gold); color: #0A0A0A;
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: .5px;
+      padding: 10px 24px; border: none; border-radius: 50px;
+      cursor: none; display: inline-block;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--gold2); transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent; color: var(--gold);
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: .5px;
+      padding: 10px 24px; border: 1.5px solid var(--gold); border-radius: 50px;
+      cursor: none; display: inline-block;
+      transition: background .2s, color .2s, transform .15s;
+    }
+    .btn-outline:hover { background: var(--gold); color: #0A0A0A; transform: translateY(-1px); }
+
+    /* hamburger */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform .3s, opacity .3s, background .35s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* mobile menu */
+    .mobile-menu {
+      display: none; position: fixed; top: 70px; left: 0; right: 0;
+      background: var(--mob-bg); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); z-index: 49;
+      padding: 24px; flex-direction: column; gap: 20px;
+      transition: background .35s;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 18px; font-weight: 500; color: var(--muted);
+      padding: 8px 0; border-bottom: 1px solid var(--border); transition: color .2s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+
+    /* =========================================
+       HERO
+    ========================================= */
+    #home {
+      position: relative; min-height: 96vh;
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        var(--hero-overlay),
+        url('https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      transition: background .35s;
+    }
+    .hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 700px 500px at 80% 50%, var(--gold-bg) 0%, transparent 70%);
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 720px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold-bg); border: 1px solid var(--gold-border);
+      color: var(--gold); font-size: 12px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 50px; margin-bottom: 28px;
+      animation: fadeUp .6s ease both;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; background: var(--gold);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(68px,10vw,130px); line-height: .92;
+      letter-spacing: -1px; margin-bottom: 28px;
+      animation: fadeUp .7s .1s ease both;
+    }
+    .hero-title em {
+      font-style: normal;
+      -webkit-text-stroke: 1.5px var(--gold);
+      color: transparent;
+    }
+    .hero-desc {
+      font-size: 17px; line-height: 1.7; color: var(--muted);
+      max-width: 540px; margin-bottom: 40px;
+      animation: fadeUp .7s .2s ease both; font-weight: 300;
+    }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; animation: fadeUp .7s .3s ease both; }
+
+    .hero-stats {
+      position: absolute; bottom: 48px; right: 24px;
+      display: flex; gap: 48px; animation: fadeUp .7s .4s ease both; z-index: 2;
+    }
+    .hero-stat { text-align: right; }
+    .hero-stat .num { font-family: var(--font-display); font-size: 42px; line-height: 1; color: var(--gold); }
+    .hero-stat .label { font-size: 12px; font-weight: 300; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+    .hero-deco {
+      position: absolute; right: 5%; top: 50%;
+      transform: translateY(-50%);
+      width: clamp(220px,30vw,420px); opacity: 0.07; z-index: 1;
+      animation: float 6s ease-in-out infinite;
+    }
+    [data-theme="light"] .hero-deco { opacity: 0.12; }
+    @keyframes float { 0%,100%{transform:translateY(-50%) rotate(-5deg)} 50%{transform:translateY(calc(-50% - 18px)) rotate(-3deg)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+
+    /* =========================================
+       SECTION COMMON
+    ========================================= */
+    .section-label {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px,6vw,70px); line-height: 1; margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 16px; font-weight: 300; color: var(--muted); line-height: 1.7; max-width: 480px;
+    }
+
+    /* =========================================
+       INSTRUMENT SECTION
+    ========================================= */
+    #instrumen { padding: 120px 0; }
+    .instrument-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-end; flex-wrap: wrap; gap: 24px; margin-bottom: 64px;
+    }
+    .cards-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto; gap: 20px;
+    }
+    .card-feature, .card-small {
+      position: relative; border-radius: var(--radius); overflow: hidden;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; flex-direction: column; cursor: none;
+      transition: border-color .3s, transform .3s, background .35s, box-shadow .3s;
+    }
+    .card-feature { grid-row: 1 / 3; min-height: 520px; }
+    .card-small { min-height: 245px; }
+    .card-feature:hover, .card-small:hover {
+      border-color: var(--gold); transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.1);
+    }
+    [data-theme="light"] .card-feature:hover,
+    [data-theme="light"] .card-small:hover { box-shadow: 0 12px 40px rgba(192,123,32,.12); }
+
+    .card-img { width: 100%; object-fit: cover; flex-shrink: 0; }
+    .card-feature .card-img { height: 320px; }
+    .card-small .card-img { height: 150px; }
+    .card-body { padding: 28px; flex: 1; display: flex; flex-direction: column; }
+    .card-tag { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+    .card-name { font-family: var(--font-display); font-size: clamp(30px,3vw,44px); line-height: 1.05; margin-bottom: 12px; }
+    .card-desc { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.7; flex: 1; }
+    .card-small .card-name { font-size: 26px; }
+    .card-arrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 20px; font-size: 13px; font-weight: 600; color: var(--gold); letter-spacing: .5px;
+    }
+    .card-arrow svg { transition: transform .3s; }
+    .card-feature:hover .card-arrow svg, .card-small:hover .card-arrow svg { transform: translateX(5px); }
+    .card-badge {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--gold); color: #0A0A0A;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      padding: 4px 12px; border-radius: 50px;
+    }
+
+    /* =========================================
+       WHY US
+    ========================================= */
+    #about {
+      padding: 120px 0; background: var(--bg2); position: relative; overflow: hidden;
+      transition: background .35s;
+    }
+    #about::before {
+      content: ''; position: absolute; top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--about-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .about-img-wrap { position: relative; }
+    .about-img-wrap img { width: 100%; border-radius: var(--radius); aspect-ratio: 4/5; object-fit: cover; }
+    .about-img-wrap::before {
+      content: ''; position: absolute; inset: -12px -12px 12px 12px;
+      border: 1px solid var(--gold-border); border-radius: var(--radius); z-index: -1;
+    }
+    .about-img-tag {
+      position: absolute; bottom: 24px; left: 24px;
+      background: var(--card); border: 1px solid var(--border);
+      backdrop-filter: blur(10px); border-radius: 14px; padding: 16px 20px;
+      transition: background .35s, border-color .35s;
+    }
+    .about-img-tag .num { font-family: var(--font-display); font-size: 38px; color: var(--gold); line-height: 1; }
+    .about-img-tag .lbl { font-size: 12px; font-weight: 300; color: var(--muted); }
+
+    .perks { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+    .perk {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 20px 24px; background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color .3s, background .35s;
+    }
+    .perk:hover { border-color: var(--gold); }
+    .perk-icon {
+      width: 42px; height: 42px; flex-shrink: 0;
+      background: var(--gold-bg); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .perk-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .perk-desc { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.6; }
+
+    /* =========================================
+       PRICING
+    ========================================= */
+    #harga { padding: 120px 0; }
+    .pricing-header { text-align: center; margin-bottom: 64px; }
+    .pricing-header .section-sub { margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; align-items: start; }
+    .price-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 36px 32px; position: relative;
+      transition: border-color .3s, transform .3s, background .35s;
+    }
+    .price-card:hover { border-color: var(--gold); transform: translateY(-6px); }
+    .price-card.featured { border-color: var(--gold); }
+    [data-theme="dark"] .price-card.featured { background: linear-gradient(145deg,#181208,#141414); }
+    [data-theme="light"] .price-card.featured { background: linear-gradient(145deg,#fffbf3,#ffffff); }
+    .price-card.featured::before {
+      content: 'PALING POPULER'; position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: #0A0A0A;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px; padding: 4px 16px; border-radius: 50px;
+    }
+    .price-name { font-family: var(--font-display); font-size: 30px; margin-bottom: 6px; }
+    .price-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+    .price-num { font-family: var(--font-display); font-size: 52px; color: var(--gold); line-height: 1; }
+    .price-num sup { font-size: 22px; vertical-align: top; margin-top: 10px; }
+    .price-period { font-size: 12px; color: var(--muted); margin-bottom: 28px; margin-top: 4px; }
+    .price-divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 28px; }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .price-features li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; font-weight: 300; color: var(--muted); }
+    .price-features li .chk { color: var(--gold); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+    /* =========================================
+       TESTIMONIALS
+    ========================================= */
+    #testimony { padding: 120px 0; background: var(--bg2); position: relative; overflow: hidden; transition: background .35s; }
+    .testi-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 24px; margin-bottom: 56px; }
+    .testi-scroll {
+      display: flex; gap: 20px; overflow-x: auto;
+      scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 8px;
+    }
+    .testi-scroll::-webkit-scrollbar { display: none; }
+    .testi-card {
+      scroll-snap-align: start; flex-shrink: 0;
+      width: clamp(300px,38vw,460px);
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 36px;
+      transition: border-color .3s, background .35s;
+    }
+    .testi-card:hover { border-color: var(--gold); }
+    .testi-stars { color: var(--gold); font-size: 16px; margin-bottom: 20px; letter-spacing: 2px; }
+    .testi-quote {
+      font-size: 16px; font-weight: 300; line-height: 1.75; color: var(--text);
+      margin-bottom: 28px; font-style: italic; opacity: .85;
+    }
+    .testi-quote::before { content: '\201C'; font-size: 48px; color: var(--gold); opacity: .35; line-height: 0; vertical-align: -20px; margin-right: 4px; }
+    .testi-author { display: flex; gap: 12px; align-items: center; }
+    .testi-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg,var(--gold),#7A5020);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-size: 22px; color: #0A0A0A; flex-shrink: 0;
+      overflow: hidden;
+    }
+    .testi-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .testi-name { font-weight: 600; font-size: 14px; }
+    .testi-role { font-size: 12px; color: var(--muted); }
+    .testi-nav { display: flex; gap: 10px; margin-top: 32px; }
+    .testi-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text); cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .testi-btn:hover { background: var(--gold); border-color: var(--gold); color: #0A0A0A; }
+
+    /* =========================================
+       CONTACT
+    ========================================= */
+    #contact { padding: 120px 0; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: stretch; }
+    .contact-info { display: flex; flex-direction: column; gap: 20px; }
+    .contact-item {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 20px 22px; background: var(--card);
+      border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color .3s, background .35s;
+    }
+    .contact-item:hover { border-color: var(--gold); }
+    .contact-ico {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: var(--gold-bg); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .contact-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .contact-val { font-size: 14px; color: var(--text); line-height: 1.5; }
+    .map-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); min-height: 400px; }
+    .map-wrap iframe { width: 100%; height: 100%; min-height: 400px; border: 0; display: block; filter: grayscale(.4) brightness(.9); }
+    [data-theme="light"] .map-wrap iframe { filter: none; }
+
+    /* =========================================
+       CTA BANNER
+    ========================================= */
+    .cta-banner {
+      background: var(--gold); border-radius: var(--radius);
+      padding: 72px 60px; text-align: center;
+      margin: 0 24px 120px; position: relative; overflow: hidden;
+    }
+    .cta-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230A0A0A' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cta-banner h2 {
+      font-family: var(--font-display); font-size: clamp(40px,6vw,72px);
+      color: #0A0A0A; line-height: 1; margin-bottom: 16px; position: relative;
+    }
+    .cta-banner p { font-size: 16px; color: rgba(10,10,10,.6); max-width: 480px; margin: 0 auto 36px; position: relative; }
+    .btn-dark {
+      background: var(--cta-btn); color: var(--gold);
+      font-family: var(--font-body); font-weight: 700; font-size: 14px; letter-spacing: .5px;
+      padding: 14px 32px; border-radius: 50px; display: inline-block; cursor: none;
+      transition: transform .2s, opacity .2s; position: relative;
+    }
+    .btn-dark:hover { transform: translateY(-2px); opacity: .9; }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+    footer {
+      background: var(--footer-bg); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 60px 0 32px;
+      transition: background .35s;
+    }
+    .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-brand-name { font-family: var(--font-display); font-size: 36px; color: var(--gold); margin-bottom: 12px; }
+    .footer-brand-desc { font-size: 14px; font-weight: 300; color: var(--footer-text); line-height: 1.7; max-width: 280px; }
+    .footer-socials { display: flex; gap: 12px; margin-top: 24px; }
+    .social-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: var(--footer-text);
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .social-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-bg); }
+    .footer-col h4 { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul a { font-size: 14px; font-weight: 300; color: var(--footer-text); transition: color .2s; }
+    .footer-col ul a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 12px; color: var(--footer-text); }
+
+    /* =========================================
+       LOGIN MODAL
+    ========================================= */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--modal-bg); border: 1px solid var(--border);
+      border-radius: 24px; width: 100%; max-width: 440px; padding: 44px 40px;
+      position: relative; animation: modalIn .25s ease;
+      transition: background .35s, border-color .35s;
+    }
+    @keyframes modalIn { from{opacity:0;transform:scale(.95) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; background: var(--modal-card);
+      border: 1px solid var(--border); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--muted); cursor: none;
+      transition: color .2s, border-color .2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--gold); }
+    .modal-title { font-family: var(--font-display); font-size: 36px; margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+    .role-tabs {
+      display: flex; gap: 8px; background: var(--modal-card);
+      border: 1px solid var(--border); border-radius: 50px; padding: 5px; margin-bottom: 28px;
+      transition: background .35s;
+    }
+    .role-tab {
+      flex: 1; text-align: center; font-size: 13px; font-weight: 600;
+      padding: 8px 0; border-radius: 50px; color: var(--muted);
+      cursor: none; border: none; background: none; transition: background .25s, color .25s;
+    }
+    .role-tab.active { background: var(--gold); color: #0A0A0A; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%; background: var(--modal-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 16px;
+      font-family: var(--font-body); font-size: 14px; color: var(--text);
+      outline: none; transition: border-color .2s, background .35s; cursor: none;
+    }
+    .form-group input:focus { border-color: var(--gold); }
+    .form-group input::placeholder { color: var(--muted); opacity: .6; }
+    .btn-submit {
+      width: 100%; background: var(--gold); color: #0A0A0A;
+      font-family: var(--font-body); font-weight: 700; font-size: 15px;
+      padding: 14px; border: none; border-radius: 50px; cursor: none;
+      transition: background .2s, transform .15s; margin-top: 8px;
+    }
+    .btn-submit:hover { background: var(--gold2); transform: translateY(-1px); }
+
+    /* =========================================
+       WHATSAPP FLOAT
+    ========================================= */
+    .wa-float {
+      position: fixed; bottom: 28px; right: 28px; z-index: 100;
+      width: 56px; height: 56px; background: #25D366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,.4);
+      transition: transform .2s, box-shadow .2s; cursor: none;
+    }
+    .wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,.5); }
+    .wa-float svg { width: 28px; height: 28px; fill: #fff; }
+
+    /* =========================================
+       SCROLL REVEAL
+    ========================================= */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+    @media (max-width: 1024px) {
+      .cards-grid { grid-template-columns: 1fr 1fr; }
+      .card-feature { grid-row: auto; }
+      .about-grid { gap: 48px; }
+      .pricing-grid { grid-template-columns: 1fr 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-right { display: none; }
+      .hamburger { display: flex; }
+      .mob-toggle-wrap { display: flex; gap: 12px; align-items: center; }
+
+      .hero-stats { position: static; justify-content: flex-start; margin-top: 48px; gap: 32px; }
+      .hero-stat { text-align: left; }
+      .hero-deco { display: none; }
+
+      .cards-grid { grid-template-columns: 1fr; }
+      .card-feature { grid-row: auto; min-height: auto; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-img-wrap { order: -1; }
+      .about-img-wrap img { aspect-ratio: 16/9; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .cta-banner { padding: 48px 28px; margin: 0 0 80px; border-radius: 0; }
+      .instrument-header, .testi-header { flex-direction: column; align-items: flex-start; }
+      #instrumen, #about, #harga, #testimony, #contact { padding: 80px 0; }
+      .modal-box { padding: 36px 24px; }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: 58px; }
+      .hero-stats { gap: 24px; }
+      .hero-stat .num { font-size: 32px; }
+    }
+  </style>
 </head>
-<body class="text-gray-800 dark:text-gray-100">
+<body>
 
-    <!-- Header / Navbar: Biar navigasi nggak nyasar -->
-    <nav class="bg-[#B8860B] shadow-md sticky top-0 z-50 transition-colors">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="flex items-center gap-3 group">
-                <img src="logojia.png" alt="Logo JIA" class="w-14 h-14 object-cover rounded-xl shadow-md border border-gray-100 dark:border-gray-700 transition-transform group-hover:scale-110">
-                <span class="text-3xl font-bold text-white tracking-tighter">JIA.</span>
-            </a>
-            <div class="hidden md:flex space-x-8 font-medium text-white">
-                <a href="#home" class="hover:opacity-70 transition">Home</a>
-                <a href="#instrumen" class="hover:opacity-70 transition">Instrumen</a>
-                <a href="#testimony" class="hover:opacity-70 transition">Testimoni</a>
-                <a href="#contact" class="hover:opacity-70 transition">Lokasi</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <!-- Tombol Ganti Tema (Dark/Light) -->
-                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:ring-2 ring-indigo-400 dark:ring-red-800 transition-all">
-                    <span id="theme-toggle-icon">🌙</span>
-                </button>
-                <button id="open-login" class="bg-indigo-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-indigo-700 transition">
-                    Login
-                </button>
-            </div>
-        </div>
-    </nav>
+<!-- Custom cursor -->
+<div id="cursor"></div>
 
-    <!-- Running Text: Biar ada rame-ramenya dikit -->
-    <div class="bg-indigo-600 text-white py-2 overflow-hidden whitespace-nowrap">
-        <div class="inline-block animate-marquee uppercase tracking-widest font-bold text-sm">
-            Pendaftaran Batch Baru Dibuka! 🔥 Diskon 20% Khusus Bulan Ini 🎸 Belajar Gitar, Drum, & Keyboard Bareng Pro 🎹 Join JIA Sekarang! 🥁&nbsp;
-        </div>
-        <div class="inline-block animate-marquee uppercase tracking-widest font-bold text-sm">
-            Pendaftaran Batch Baru Dibuka! 🔥 Diskon 20% Khusus Bulan Ini 🎸 Belajar Gitar, Drum, & Keyboard Bareng Pro 🎹 Join JIA Sekarang! 🥁&nbsp;
-        </div>
+<!-- WhatsApp Float -->
+<a href="https://wa.me/6281234567890?text=Halo%20Kenz%2C%20saya%20ingin%20daftar%20les%20gitar!" class="wa-float" aria-label="WhatsApp" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner">
+    <span>PENDAFTARAN MURID BARU DIBUKA</span><span>GITAR AKUSTIK & ELEKTRIK</span>
+    <span>KENZ PRIVATE GUITAR LESSON</span><span>Quota peserta terbatas</span>
+    <span>JADWAL FLEKSIBEL</span><span>GURU BERPENGALAMAN</span>
+    <span>PENDAFTARAN MURID BARU DIBUKA</span><span>GITAR AKUSTIK & ELEKTRIK</span>
+    <span>KENZ PRIVATE GUITAR LESSON</span><span>Quota peserta terbatas</span>
+    <span>JADWAL FLEKSIBEL</span><span>GURU BERPENGALAMAN</span>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#home" class="nav-logo">
+      <img src="logo.png" alt="KENZ" style="height: 32px; width: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);">
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#instrumen">Kelas</a></li>
+      <li><a href="#about">Tentang</a></li>
+      <li><a href="#harga">Harga</a></li>
+      <li><a href="#testimony">Testimoni</a></li>
+      <li><a href="#contact">Lokasi</a></li>
+    </ul>
+
+    <div class="nav-right-container" style="display: flex; align-items: center; gap: 12px;">
+      <!-- Tombol Dark Mode Tunggal -->
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
+        <div class="knob" id="theme-knob">☀️</div>
+      </button>
+      <div class="nav-right">
+        <a href="https://wa.me/6281234567890" class="btn-outline" target="_blank">WhatsApp</a>
+        <button class="btn-primary" id="open-login">Login</button>
+      </div>
+      <!-- Mobile: hamburger -->
+      <div class="mob-toggle-wrap">
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
+  </div>
+</nav>
 
-    <!-- Hero Section: First impression itu penting, Bro! -->
-    <header id="home" class="relative bg-indigo-900 h-[70vh] flex items-center justify-center text-center text-white px-4">
-        <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center"></div>
-        <div class="relative z-10 max-w-3xl">
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 leading-tight">Jago Musik Bareng <span class="text-indigo-400 dark:text-red-500">JIA</span></h1>
-            <p class="text-lg md:text-xl mb-8 text-gray-200">Bosen cuma dengerin musik doang? Yuk, saatnya lo yang mainin! Privat gitar, drum, sama keyboard dengan guru yang asik parah.</p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="#instrumen" class="bg-indigo-500 hover:bg-indigo-600 px-8 py-3 rounded-lg font-bold text-lg transition">Lihat Kelas</a>
-                <button onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" class="border-2 border-white hover:bg-white hover:text-indigo-900 px-8 py-3 rounded-lg font-bold text-lg transition">
-                    Cek Lokasi
-                </button>
-            </div>
-        </div>
-    </header>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#home" class="mob-link">Home</a>
+  <a href="#instrumen" class="mob-link">Kelas</a>
+  <a href="#about" class="mob-link">Tentang</a>
+  <a href="#harga" class="mob-link">Harga</a>
+  <a href="#testimony" class="mob-link">Testimoni</a>
+  <a href="#contact" class="mob-link">Lokasi</a>
+  <button class="btn-primary" id="open-login-mob" style="margin-top:8px;">Login</button>
+</div>
 
-    <!-- Instrument Section: Menu utama kita nih -->
-    <section id="instrumen" class="py-20 bg-gray-900 container mx-auto px-6">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-2 text-white">Pilih Senjata Lo!</h2>
-            <p class="text-gray-400">Tentukan instrumen yang pengen lo taklukin.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <!-- Card Gitar -->
-            <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:-translate-y-2 hover:z-50 transition duration-300 border border-gray-700">
-                <div class="h-56 bg-[url('https://images.unsplash.com/photo-1525201548112-c99abb179895?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center"></div>
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-3 italic text-white">Gitar</h3>
-                    <p class="text-gray-300 mb-6">Dari genjrengan santai sampe solo melodi yang bikin merinding. Kita ajarin sampe fasih!</p>
-                    <button class="text-indigo-600 font-bold group-hover:underline">Cek Detail &rarr;</button>
-                </div>
-            </div>
-
-            <!-- Card Drum -->
-            <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:-translate-y-2 hover:z-50 transition duration-300 border border-gray-700">
-                <div class="h-56 bg-[url('https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center"></div>
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-3 italic text-white">Drum</h3>
-                    <p class="text-gray-300 mb-6">Bakar kalori sambil hajar beat! Cocok banget buat lo yang energinya nggak abis-abis.</p>
-                    <button class="text-indigo-600 font-bold group-hover:underline">Cek Detail &rarr;</button>
-                </div>
-            </div>
-
-            <!-- Card Keyboard -->
-            <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden group hover:-translate-y-2 hover:z-50 transition duration-300 border border-gray-700">
-                <div class="h-56 bg-[url('https://images.unsplash.com/photo-1513883049090-d0b7439799bf?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center"></div>
-                <div class="p-8">
-                    <h3 class="text-2xl font-bold mb-3 italic text-white">Keyboard</h3>
-                    <p class="text-gray-300 mb-6">Mainin chord mewah atau bikin komposisi lagu sendiri. Bikin lo keliatan jenius di panggung.</p>
-                    <button class="text-indigo-600 font-bold group-hover:underline">Cek Detail &rarr;</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimony Section: Carousel ala-ala (Scroll Snapping) -->
-    <section id="testimony" class="relative py-20 bg-[url('bgbody.jpg')] bg-cover bg-fixed bg-center transition-colors">
-        <div class="absolute inset-0 bg-black/70"></div>
-        <div class="container mx-auto px-6 relative z-10">
-            <h2 class="text-4xl font-bold mb-12 text-center text-white italic">Apa Kata Mereka?</h2>
-            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 hide-scrollbar pb-8">
-                <!-- Testimony 1 -->
-                <div class="relative z-0 min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-lg border-b-4 border-indigo-500 dark:border-red-900 transition-all duration-300 hover:scale-110 hover:z-50 hover:ring-4 hover:ring-indigo-300 dark:hover:ring-red-500 cursor-pointer">
-                    <p class="italic mb-6 text-lg text-gray-600 dark:text-gray-300">"Gokil sih, baru 4 kali pertemuan udah bisa mainin lagu favorit gue di gitar. Gurunya asik parah!"</p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold">R</div>
-                        <div><h4 class="font-bold">Rian Satria</h4><span class="text-xs text-indigo-500 uppercase">Murid Gitar</span></div>
-                    </div>
-                </div>
-                <!-- Testimony 2 -->
-                <div class="relative z-0 min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-lg border-b-4 border-indigo-500 dark:border-red-900 transition-all duration-300 hover:scale-110 hover:z-50 hover:ring-4 hover:ring-indigo-300 dark:hover:ring-red-500 cursor-pointer">
-                    <p class="italic mb-6 text-lg text-gray-600 dark:text-gray-300">"Anak gue happy banget les drum di JIA. Progresnya cepet banget kelihatan. Mantap!"</p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold">B</div>
-                        <div><h4 class="font-bold">Bunda Maya</h4><span class="text-xs text-indigo-500 uppercase">Orang Tua Murid</span></div>
-                    </div>
-                </div>
-                <!-- Testimony 3 -->
-                <div class="relative z-0 min-w-[300px] md:min-w-[400px] snap-center bg-white dark:bg-gray-700 p-8 rounded-3xl shadow-lg border-b-4 border-indigo-500 dark:border-red-900 transition-all duration-300 hover:scale-110 hover:z-50 hover:ring-4 hover:ring-indigo-300 dark:hover:ring-red-500 cursor-pointer">
-                    <p class="italic mb-6 text-lg text-gray-600 dark:text-gray-300">"Belajar keyboard jadi nggak ngebosenin karena diajarin teori yang praktis banget."</p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-200 flex items-center justify-center font-bold">S</div>
-                        <div><h4 class="font-bold">Siska Amelia</h4><span class="text-xs text-indigo-500 uppercase">Murid Keyboard</span></div>
-                    </div>
-                </div>
-            </div>
-            <p class="text-center text-sm text-gray-400 mt-4">← Geser buat liat lainnya →</p>
-        </div>
-    </section>
-
-    <!-- Kenapa Kami? Section: Biar makin yakin -->
-    <section id="about" class="relative py-20 bg-[url('bgbody.jpg')] bg-cover bg-fixed bg-center transition-colors">
-        <div class="absolute inset-0 bg-black/75"></div>
-        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
-            <div class="text-white">
-                <h2 class="text-4xl font-bold mb-6 italic text-white dark:text-red-500">Kenapa Harus JIA?</h2>
-                <ul class="space-y-4">
-                    <li class="flex items-start gap-3">
-                        <span class="bg-indigo-600 text-white rounded-full p-1 mt-1">✓</span>
-                        <span><strong>Guru Gokil:</strong> Pengajar kita bukan cuma jago, tapi asik diajak nongkrong.</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="bg-indigo-600 text-white rounded-full p-1 mt-1">✓</span>
-                        <span><strong>Waktu Fleksibel:</strong> Sibuk sekolah atau kerja? Atur jadwal sesuka hati lo.</span>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <span class="bg-indigo-600 text-white rounded-full p-1 mt-1">✓</span>
-                        <span><strong>Materi Up-to-Date:</strong> Nggak cuma lagu lawas, kita belajar lagu yang lagi hits sekarang.</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="rounded-3xl overflow-hidden shadow-2xl rotate-2">
-                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&w=800&q=80" alt="Music Session">
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact & Maps Section: Jangan sampe nyasar -->
-    <section id="contact" class="py-20 container mx-auto px-6">
-        <div class="bg-white dark:bg-gray-800 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
-            <div class="p-12 md:w-1/2">
-                <h2 class="text-4xl font-bold mb-6 dark:text-white italic">Mampir Yuk!</h2>
-                <p class="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                    Kalo lo pengen liat-liat studio atau mau konsultasi langsung sambil ngopi, langsung aja gas ke basecamp kita:
-                </p>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4">
-                        <span class="text-2xl">📍</span>
-                        <span>Jl. Ledeng, Sungai Daeng, Kec. Muntok, Kabupaten Bangka Barat, Kepulauan Bangka Belitung 33351</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-2xl">📞</span>
-                        <span>+62 812 3456 7890</span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-2xl">⏰</span>
-                        <span>Setiap Hari (09.00 - 21.00)</span>
-                    </div>
-                </div>
-            </div>
-            <div class="md:w-1/2 h-80 md:h-auto min-h-[300px]">
-                <!-- Ganti ini sama Embed Map dari Google Maps lo sendiri -->
-                <iframe src="https://www.google.com/maps?q=-2.050770,105.168915&hl=id&z=15&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer: Biar nggak putus hubungan -->
-    <footer class="relative bg-[url('bgbody.jpg')] bg-cover bg-fixed bg-center py-10 text-center transition-colors border-t border-white/10">
-        <div class="absolute inset-0 bg-black/85"></div>
-        <div class="relative z-10">
-            <p class="text-2xl font-bold text-indigo-400 mb-4">JIA.</p>
-            <p class="text-gray-300 mb-6 italic">Ngajar musik dengan hati, biar lo jadi bintang di hari ini.</p>
-            <div class="flex justify-center space-x-6 mb-8 text-gray-400">
-                <a href="#" class="hover:text-indigo-400">Instagram</a>
-                <a href="#" class="hover:text-indigo-400">TikTok</a>
-                <a href="#" class="hover:text-indigo-400">YouTube</a>
-            </div>
-            <p class="text-xs text-gray-500 uppercase tracking-widest">&copy; 2024 JIA Private Music Lesson. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- Modal Login: Biar masuk ke dashboard sesuai role -->
-    <div id="login-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-all">
-        <div class="bg-white dark:bg-gray-800 w-full max-w-md rounded-3xl shadow-2xl p-8 relative transform transition-all border border-gray-100 dark:border-gray-700">
-            <!-- Tombol Close (X) -->
-            <button id="close-login" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl">&times;</button>
-            
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-indigo-600 dark:text-red-500 italic">Login JIA</h2>
-                <p class="text-gray-500 text-sm">Masuk buat lanjutin progres musik lo!</p>
-            </div>
-
-            <form action="#" class="space-y-5">
-                <!-- Role Selector: Admin, Teacher, Student -->
-                <div>
-                    <label class="block text-sm font-semibold mb-3 ml-1 text-gray-700 dark:text-gray-300">Lo Masuk Sebagai:</label>
-                    <div class="relative bg-gray-100 dark:bg-gray-700 p-1 rounded-2xl flex items-center transition-all h-12">
-                        <!-- Si Geser (Indicator) -->
-                        <div id="role-indicator" class="absolute top-1 left-1 bottom-1 w-[calc(33.33%-4px)] bg-white dark:bg-red-900 rounded-xl shadow-md transition-all duration-300 ease-out"></div>
-                        
-                        <button type="button" onclick="changeRole(0, 'student')" class="role-btn relative z-10 flex-1 text-sm font-bold transition-colors text-indigo-600 dark:text-white">Student</button>
-                        <button type="button" onclick="changeRole(1, 'teacher')" class="role-btn relative z-10 flex-1 text-sm font-bold transition-colors text-gray-500 dark:text-gray-400">Teacher</button>
-                        <button type="button" onclick="changeRole(2, 'admin')" class="role-btn relative z-10 flex-1 text-sm font-bold transition-colors text-gray-500 dark:text-gray-400">Admin</button>
-                    </div>
-                    <!-- Hidden input biar tetep bisa dikirim lewat form -->
-                    <input type="hidden" id="role-value" name="role" value="student">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold mb-2 ml-1">Email / Username</label>
-                    <input type="text" placeholder="musik@jia.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 ring-indigo-500 dark:focus:ring-red-800 outline-none transition">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold mb-2 ml-1">Password</label>
-                    <input type="password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 ring-indigo-500 dark:focus:ring-red-800 outline-none transition">
-                </div>
-
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-red-800 dark:hover:bg-red-900 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-indigo-200 dark:shadow-none mt-4">
-                    Masuk Sekarang!
-                </button>
-            </form>
-        </div>
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <svg class="hero-deco" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5">
+    <ellipse cx="150" cy="420" rx="100" ry="130"/>
+    <ellipse cx="150" cy="300" rx="70" ry="90"/>
+    <line x1="150" y1="210" x2="150" y2="50"/>
+    <line x1="130" y1="60" x2="170" y2="60"/>
+    <line x1="130" y1="75" x2="170" y2="75"/>
+    <rect x="125" y="40" width="50" height="30" rx="4"/>
+    <circle cx="150" cy="350" r="8"/>
+    <line x1="120" y1="320" x2="180" y2="320"/>
+    <line x1="115" y1="360" x2="185" y2="360"/>
+    <line x1="120" y1="400" x2="180" y2="400"/>
+  </svg>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span>Buka Kelas Baru — Daftar Sekarang</div>
+      <h1 class="hero-title">KUASAI<br><em>GITAR</em><br>BERSAMA<br>KENZ.</h1>
+      <p class="hero-desc">Les privat gitar akustik & elektrik. Belajar dari nol sampai jago, dengan kurikulum terstruktur dan guru yang berpengalaman.</p>
+      <div class="hero-cta">
+        <a href="#instrumen" class="btn-primary" style="font-size:15px;padding:13px 30px;">Lihat Kelas</a>
+        <a href="#contact" class="btn-outline" style="font-size:15px;padding:13px 30px;">Cek Lokasi</a>
+      </div>
     </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">3 Class</div><div class="label">Basic, Intermediate & Performer</div></div>
+      <div class="hero-stat"><div class="num">Teacher</div><div class="label">20 Tahun Pengalaman</div></div>
+      <div class="hero-stat"><div class="num">98%</div><div class="label">Puas & Rekomen</div></div>
+    </div>
+  </div>
+</section>
 
-    <!-- Script Tombol Dark Mode -->
-    <script>
-        const toggleBtn = document.getElementById('theme-toggle');
-        const icon = document.getElementById('theme-toggle-icon');
-        
-        toggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            
-            // Update icon biar makin asik
-            if (document.documentElement.classList.contains('dark')) {
-                icon.innerText = '☀️';
-            } else {
-                icon.innerText = '🌙';
-            }
-        });
-    </script>
+<!-- INSTRUMENT SECTION -->
+<section id="instrumen">
+  <div class="container">
+    <div class="instrument-header">
+      <div>
+        <span class="section-label">Pilih Kelas</span>
+        <h2 class="section-title">INSTRUMEN<br>KITA</h2>
+      </div>
+      <p class="section-sub">Dari chord pertama sampai solo yang bikin merinding — semua ada di Kenz.</p>
+    </div>
+    <div class="cards-grid reveal">
+      <div class="card-feature">
+        <div class="card-badge">🔥 Terlaris</div>
+        <img class="card-img" src="https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=700&q=80" alt="Gitar Akustik" loading="lazy" />
+        <div class="card-body">
+          <div class="card-tag">Instrumen Utama</div>
+          <h3 class="card-name">GITAR<br>AKUSTIK</h3>
+          <p class="card-desc">Mulai dari fingerpicking dasar, chord progression, strumming pattern, sampai fingerstyle lagu pop & folk hits. Cocok untuk semua umur.</p>
+          <span class="card-arrow">Pelajari lebih lanjut <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </div>
+      <div class="card-small">
+        <img class="card-img" src="hero elektrik.jpg" alt="Gitar Elektrik" loading="lazy" />
+        <div class="card-body">
+          <div class="card-tag">High Gain</div>
+          <h3 class="card-name">GITAR ELEKTRIK</h3>
+          <p class="card-desc">Rock, blues, metal, jazz — kuasai teknik bending, vibrato, sweep picking, dan tone shaping.</p>
+          <span class="card-arrow">Pelajari lebih lanjut <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </div>
+      <div class="card-small">
+        <img class="card-img" src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=700&q=80" alt="Teori Musik" loading="lazy" />
+        <div class="card-body">
+          <div class="card-tag">Bonus Materi</div>
+          <h3 class="card-name">TEORI MUSIK</h3>
+          <p class="card-desc">Baca not balok, pahami scale & mode, chord harmony, dan ear training agar lo makin peka nada.</p>
+          <span class="card-arrow">Pelajari lebih lanjut <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Script Buat Handle Modal Login -->
-    <script>
-        const openLogin = document.getElementById('open-login');
-        const closeLogin = document.getElementById('close-login');
-        const loginModal = document.getElementById('login-modal');
+<!-- WHY US -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid reveal">
+      <div class="about-img-wrap">
+        <img src="https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?auto=format&fit=crop&w=700&q=80" alt="Kenz Guitar Lesson" loading="lazy" />
+        <div class="about-img-tag">
+          <div class="num">8+</div>
+          <div class="lbl">Tahun mengajar gitar</div>
+        </div>
+      </div>
+      <div>
+        <span class="section-label">Kenapa Kenz?</span>
+        <h2 class="section-title">BUKAN<br>SEKADAR LES<br>BIASA.</h2>
+        <p class="section-sub">Kami percaya belajar musik harus menyenangkan, terukur, dan relevan dengan selera musik lo hari ini.</p>
+        <div class="perks">
+          <div class="perk"><div class="perk-icon">🎸</div><div><div class="perk-title">Kurikulum Personal</div><div class="perk-desc">Materi disesuaikan dengan genre favorit dan level kemampuan lo, bukan paket satu ukuran untuk semua.</div></div></div>
+          <div class="perk"><div class="perk-icon">⏰</div><div><div class="perk-title">Jadwal Super Fleksibel</div><div class="perk-desc">Sibuk sekolah atau kerja? Atur sesi belajar sesuai kesibukanmu, termasuk hari Sabtu & Minggu.</div></div></div>
+          <div class="perk"><div class="perk-icon">🏆</div><div><div class="perk-title">Progres Terukur</div><div class="perk-desc">Setiap bulan ada evaluasi dan rekap progres belajarmu agar kamu tahu sudah sejauh mana berkembang.</div></div></div>
+          <div class="perk"><div class="perk-icon">🎵</div><div><div class="perk-title">Lagu-Lagu Hits</div><div class="perk-desc">Belajar pakai lagu yang sedang trending, bukan hanya lagu latihan kuno yang membosankan.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Munculin modal pas tombol login diklik
-        openLogin.addEventListener('click', () => {
-            loginModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Biar background gak bisa di-scroll
-        });
+<!-- PRICING -->
+<section id="harga">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <span class="section-label">Paket Les</span>
+      <h2 class="section-title">PILIH PAKET<br>YANG COCOK</h2>
+      <p class="section-sub">Harga transparan, tidak ada biaya tersembunyi. Semua sudah termasuk materi & evaluasi bulanan.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="price-card">
+        <div class="price-name">Basic</div>
+        <div class="price-sub">Untuk kamu yang baru mulai</div>
+        <div class="price-num"><sup>Rp</sup>400<span style="font-size:28px">rb</span></div>
+        <div class="price-period">2 bulan · 8 sesi</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li><span class="chk">✦</span>4 sesi per bulan (120 menit/sesi)</li>
+          <li><span class="chk">✦</span>Materi gitar akustik dasar</li>
+          <li><span class="chk">✦</span>Chord & strumming dasar</li>
+          <li><span class="chk">✦</span>PDF materi & catatan progres</li>
+          <li><span class="chk">✦</span>Konsultasi via WhatsApp</li>
+        </ul>
+        <a href="https://wa.me/6281234567890" class="btn-outline" style="width:100%;text-align:center;display:block;" target="_blank">Daftar Sekarang</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">Intermediate</div>
+        <div class="price-sub">Paling direkomendasikan bagi peserta yang sudah memiliki dasar</div>
+        <div class="price-num"><sup>Rp</sup>600<span style="font-size:28px">rb</span></div>
+        <div class="price-period">2 bulan · 8 sesi</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li><span class="chk">✦</span>4 sesi per bulan (120 menit/sesi)</li>
+          <li><span class="chk">✦</span>Akustik + Elektrik + Teori Musik</li>
+          <li><span class="chk">✦</span>Teknik lead guitar</li>
+          <li><span class="chk">✦</span>PDF materi & catatan progres</li>
+          <li><span class="chk">✦</span>Evaluasi bulanan tertulis</li>
+        </ul>
+        <a href="https://wa.me/6281234567890" class="btn-primary" style="width:100%;text-align:center;display:block;" target="_blank">Daftar Sekarang</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">PERFORMER</div>
+    <div class="price-sub">Bagi peserta yang ingin mengasah kemampuan komposisi dan performing</div>
+        <div class="price-num"><sup>Rp</sup>750<span style="font-size:28px">rb</span></div>
+        <div class="price-period">3 bulan · 12 sesi</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li><span class="chk">✦</span>4 sesi per bulan (120 menit/sesi)</li>
+          <li><span class="chk">✦</span>Semua materi Paket Performer</li>
+          <li><span class="chk">✦</span>Komposisi & improvisasi lagu</li>
+          <li><span class="chk">✦</span>Persiapan pentas / audisi</li>
+          <li><span class="chk">✦</span>Prioritas jadwal & fast-response</li>
+        </ul>
+        <a href="https://wa.me/6281234567890" class="btn-outline" style="width:100%;text-align:center;display:block;" target="_blank">Daftar Sekarang</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Tutup modal
-        closeLogin.addEventListener('click', () => {
-            loginModal.classList.add('hidden');
-            document.body.style.overflow = 'auto'; // Aktifin scroll lagi
-        });
-    </script>
+<!-- TESTIMONIALS -->
+<section id="testimony">
+  <div class="container">
+    <div class="testi-header reveal">
+      <div>
+        <span class="section-label">Testimoni</span>
+        <h2 class="section-title">APA KATA<br>MEREKA?</h2>
+      </div>
+      <div class="testi-nav">
+        <button class="testi-btn" id="testi-prev" aria-label="Sebelumnya"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="testi-btn" id="testi-next" aria-label="Berikutnya"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+    <div class="testi-scroll" id="testi-scroll">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Baru 6 pertemuan udah bisa mainin lagu Payphone di gitar akustik. Kenz orangnya sabar banget ngajarin dari nol sampai jago. Rekomen banget!</p><div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=96&q=80" alt="Rian Satria"></div><div><div class="testi-name">Rian Satria</div><div class="testi-role">Murid Gitar Akustik · 3 bulan</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Anak saya umur 12 tahun belajar gitar di sini dan progresnya luar biasa cepat. Gurunya sabar, metodenya seru, anak saya selalu semangat setiap mau les.</p><div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=96&q=80" alt="Bunda Maya"></div><div><div class="testi-name">Bunda Maya</div><div class="testi-role">Orang Tua Murid · 5 bulan</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Dari dulu pengen bisa main gitar elektrik aliran blues. Setelah 4 bulan les bareng Kenz, sekarang udah bisa improvisasi sendiri. Teori musiknya bermanfaat!</p><div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=96&q=80" alt="Dimas Wahyu"></div><div><div class="testi-name">Dimas Wahyu</div><div class="testi-role">Murid Gitar Elektrik · 4 bulan</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Jadwalnya fleksibel banget, bisa disesuaikan sama jam kerja saya. Kualitas pengajaran premium tapi harganya masuk akal. Puas 100%!</p><div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=96&q=80" alt="Siska Amelia"></div><div><div class="testi-name">Siska Amelia</div><div class="testi-role">Murid Dewasa · 2 bulan</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Sebelumnya udah coba les di tempat lain tapi nggak betah. Di Kenz beda, diajarnya dari lagu yang aku suka, jadi semangat terus belajarnya!</p><div class="testi-author"><div class="testi-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=96&q=80" alt="Fajar Nugroho"></div><div><div class="testi-name">Fajar Nugroho</div><div class="testi-role">Murid Gitar Akustik · 6 bulan</div></div></div></div>
+    </div>
+  </div>
+</section>
 
-    <!-- Script Buat Slider Role -->
-    <script>
-        function changeRole(index, val) {
-            const indicator = document.getElementById('role-indicator');
-            const btns = document.querySelectorAll('.role-btn');
-            const roleInput = document.getElementById('role-value');
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:64px;" class="reveal">
+      <span class="section-label">Lokasi & Kontak</span>
+      <h2 class="section-title">MAMPIR<br>YUK!</h2>
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-info">
+        <div class="contact-item"><div class="contact-ico">📍</div><div><div class="contact-label">Alamat Studio</div><div class="contact-val">Jl. Musikku No. 12, Cikarang Barat,<br>Bekasi, Jawa Barat 17530</div></div></div>
+        <div class="contact-item"><div class="contact-ico">📞</div><div><div class="contact-label">Telepon / WhatsApp</div><div class="contact-val">+62 812-3456-7890</div></div></div>
+        <div class="contact-item"><div class="contact-ico">⏰</div><div><div class="contact-label">Jam Operasional</div><div class="contact-val">Setiap Hari · 09.00 – 21.00 WIB<br><span style="font-size:12px;color:var(--muted)">Sabtu & Minggu tetap buka</span></div></div></div>
+        <div class="contact-item"><div class="contact-ico">📸</div><div><div class="contact-label">Instagram</div><div class="contact-val">@kenz.guitarlesson</div></div></div>
+        <a href="https://wa.me/6281234567890?text=Halo%20Kenz%2C%20saya%20ingin%20daftar%20les%20gitar!" target="_blank" class="btn-primary" style="text-align:center;padding:14px 28px;font-size:15px;">💬 Chat via WhatsApp</a>
+      </div>
+      <div class="map-wrap">
+        <iframe src="https://www.google.com/maps?q=-6.350000,107.150000&hl=id&z=15&output=embed" allowfullscreen loading="lazy" title="Lokasi Kenz Guitar Lesson"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
 
-            // Pindahin si background putih/indigo sesuai index (0, 1, 2)
-            indicator.style.transform = `translateX(${index * 100}%)`;
-            roleInput.value = val;
+<!-- CTA BANNER -->
+<div class="container" style="max-width:1200px;">
+  <div class="cta-banner reveal">
+    <h2>SIAP MULAI<br>PETUALANGAN GITARMU?</h2>
+    <p>Daftar sekarang dan dapatkan sesi trial gratis untuk kelas pertama. Terbatas!</p>
+    <a href="https://wa.me/6281234567890?text=Halo%20Kenz%2C%20saya%20ingin%20sesi%20trial%20gratis!" class="btn-dark" target="_blank">Daftar Sekarang</a>
+  </div>
+</div>
 
-            // Ganti warna teks biar makin kontras pas kepilih
-            btns.forEach((btn, i) => {
-                if(i === index) {
-                    btn.classList.add('text-indigo-600', 'dark:text-white');
-                    btn.classList.remove('text-gray-500', 'dark:text-gray-400');
-                } else {
-                    btn.classList.remove('text-indigo-600', 'dark:text-white');
-                    btn.classList.add('text-gray-500', 'dark:text-gray-400');
-                }
-            });
-        }
-    </script>
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">KENZ.</div>
+        <p class="footer-brand-desc">Les privat gitar akustik & elektrik dengan kurikulum personal, jadwal fleksibel, dan guru berpengalaman.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram">IG</a>
+          <a href="#" class="social-btn" aria-label="TikTok">TT</a>
+          <a href="#" class="social-btn" aria-label="YouTube">YT</a>
+          <a href="#" class="social-btn" aria-label="Facebook">FB</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasi</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#instrumen">Kelas</a></li>
+          <li><a href="#about">Tentang Kami</a></li>
+          <li><a href="#harga">Harga</a></li>
+          <li><a href="#testimony">Testimoni</a></li>
+          <li><a href="#contact">Lokasi</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Kelas</h4>
+        <ul>
+          <li><a href="#harga">Basic</a></li>
+          <li><a href="#harga">Intermediate</a></li>
+          <li><a href="#harga">Performer</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 Kenz Private Guitar Lesson. All rights reserved.</p>
+      <p class="footer-copy">Made with ❤️ for music lovers</p>
+    </div>
+  </div>
+</footer>
 
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal-box">
+    <button class="modal-close" id="close-login">×</button>
+    <div class="modal-title">LOGIN<br><span class="gold">KENZ.</span></div>
+    <p class="modal-sub">Masuk untuk lihat jadwal & progress belajar kamu.</p>
+    <div class="role-tabs">
+      <button class="role-tab active" data-role="student">Murid</button>
+      <button class="role-tab" data-role="teacher">Guru</button>
+      <button class="role-tab" data-role="admin">Admin</button>
+    </div>
+    <input type="hidden" id="role-value" value="student" />
+    <div class="form-group"><label>Email / Username</label><input type="text" placeholder="kamu@email.com" /></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" /></div>
+    <button class="btn-submit">Masuk Sekarang</button>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+  /* ---- THEME TOGGLE ---- */
+  const html = document.documentElement;
+  const knob = document.getElementById('theme-knob');
+
+  function getTheme() { return html.getAttribute('data-theme') || 'light'; }
+
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    if(knob) knob.textContent = theme === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('kenz-theme', theme);
+  }
+
+  function toggleTheme() {
+    applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
+  }
+
+  // Load saved preference, default = light
+  const saved = localStorage.getItem('kenz-theme') || 'light';
+  applyTheme(saved);
+
+  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+  /* ---- CUSTOM CURSOR ---- */
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a,button,.card-feature,.card-small,.perk,.price-card,.testi-card,.contact-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+  });
+  if ('ontouchstart' in window) { cursor.style.display = 'none'; document.body.style.cursor = 'auto'; }
+
+  /* ---- HAMBURGER ---- */
+  const ham = document.getElementById('hamburger');
+  const mob = document.getElementById('mobile-menu');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
+  mob.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', () => { ham.classList.remove('open'); mob.classList.remove('open'); }));
+
+  /* ---- LOGIN MODAL ---- */
+  const modal = document.getElementById('login-modal');
+  [document.getElementById('open-login'), document.getElementById('open-login-mob')].forEach(btn => {
+    btn && btn.addEventListener('click', () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; });
+  });
+  document.getElementById('close-login').addEventListener('click', () => { modal.classList.remove('open'); document.body.style.overflow = ''; });
+  modal.addEventListener('click', e => { if(e.target === modal) { modal.classList.remove('open'); document.body.style.overflow = ''; } });
+
+  /* ---- ROLE TABS ---- */
+  document.querySelectorAll('.role-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('role-value').value = tab.dataset.role;
+    });
+  });
+
+  /* ---- TESTI SCROLL ---- */
+  const ts = document.getElementById('testi-scroll');
+  document.getElementById('testi-next').addEventListener('click', () => ts.scrollBy({left:480,behavior:'smooth'}));
+  document.getElementById('testi-prev').addEventListener('click', () => ts.scrollBy({left:-480,behavior:'smooth'}));
+
+  /* ---- SCROLL REVEAL ---- */
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+
+  /* ---- NAV SHADOW ---- */
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.boxShadow = window.scrollY > 30 ? '0 4px 30px rgba(0,0,0,.12)' : 'none';
+  });
+</script>
 </body>
 </html>
