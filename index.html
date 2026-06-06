@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     /* =========================================
        RESET
@@ -245,18 +247,52 @@
 
     /* mobile menu */
     .mobile-menu {
-      display: none; position: fixed; top: 70px; left: 0; right: 0;
+      position: fixed; top: 70px; left: 0; right: 0;
       background: var(--mob-bg); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border); z-index: 49;
-      padding: 24px; flex-direction: column; gap: 20px;
-      transition: background .35s;
+      border-bottom: 1px solid var(--border); z-index: 150;
+      padding: 0 24px; flex-direction: column; gap: 20px;
+      display: flex;
+      pointer-events: none;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: max-height .38s cubic-bezier(.4,0,.2,1),
+                  opacity .28s cubic-bezier(.4,0,.2,1),
+                  transform .32s cubic-bezier(.4,0,.2,1),
+                  padding .3s cubic-bezier(.4,0,.2,1),
+                  background .35s;
     }
-    .mobile-menu.open { display: flex; }
+    .mobile-menu.open {
+      max-height: 600px;
+      opacity: 1;
+      transform: translateY(0);
+      padding: 24px;
+      pointer-events: auto;
+    }
     .mobile-menu a {
       font-size: 18px; font-weight: 500; color: var(--muted);
       padding: 8px 0; border-bottom: 1px solid var(--border); transition: color .2s;
     }
     .mobile-menu a:hover { color: var(--gold); }
+
+    /* backdrop blur saat sidebar terbuka */
+    .menu-backdrop {
+      position: fixed; inset: 0; z-index: 140;
+      background: rgba(0,0,0,0);
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      pointer-events: none;
+      transition: background .35s ease,
+                  backdrop-filter .35s ease,
+                  -webkit-backdrop-filter .35s ease;
+    }
+    .menu-backdrop.active {
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      pointer-events: auto;
+    }
 
     /* =========================================
        HERO
@@ -283,8 +319,10 @@
       height: 200px;
       object-fit: contain;
       display: block;
-      margin: 0 auto 20px auto;
+      margin: 0 0 28px 0;
       border-radius: 32px;
+      position: relative;
+      z-index: 10;
       box-shadow:
         0 2px 0 rgba(255,255,255,0.15) inset,
         0 -2px 0 rgba(0,0,0,0.3) inset,
@@ -565,9 +603,13 @@
     }
     .contact-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
     .contact-val { font-size: 14px; color: var(--text); line-height: 1.5; }
-    .map-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); min-height: 400px; }
-    .map-wrap iframe { width: 100%; height: 100%; min-height: 400px; border: 0; display: block; filter: grayscale(.4) brightness(.9); }
-    [data-theme="light"] .map-wrap iframe { filter: none; }
+    .map-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); min-height: 400px; isolation: isolate; position: relative; z-index: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .leaflet-container { background: var(--card) !important; }
+    [data-theme="dark"] .leaflet-tile { filter: brightness(0.75) invert(1) hue-rotate(180deg) saturate(0.7); }
+    [data-theme="light"] .leaflet-tile { filter: none; }
+    [data-theme="dark"] .leaflet-control-attribution,
+    [data-theme="dark"] .leaflet-bar a { background: var(--card) !important; color: var(--text) !important; border-color: var(--border) !important; }
 
     /* =========================================
        CTA BANNER
@@ -628,7 +670,7 @@
        LOGIN MODAL
     ========================================= */
     .modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
+      position: fixed; inset: 0; z-index: 500;
       background: rgba(0,0,0,.6); backdrop-filter: blur(12px);
       display: none; align-items: center; justify-content: center; padding: 24px;
     }
@@ -748,7 +790,7 @@
 <div id="cursor"></div>
 
 <!-- WhatsApp Float -->
-<a href="https://wa.me/6281234567890?text=Halo%20Kenz%2C%20saya%20ingin%20daftar%20les%20gitar!" class="wa-float" aria-label="WhatsApp" target="_blank">
+<a href="#" id="wa-float-btn" class="wa-float" aria-label="WhatsApp" target="_blank">
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
@@ -768,7 +810,7 @@
 <nav>
   <div class="container nav-inner">
     <a href="#home" class="nav-logo">
-      <img src="logo.png" alt="KENZ" style="height: 32px; width: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);">
+      KENZ<span class="dot">.</span>
     </a>
 
     <ul class="nav-links">
@@ -786,7 +828,7 @@
         <div class="knob" id="theme-knob">☀️</div>
       </button>
       <div class="nav-right">
-        <a href="https://wa.me/6281234567890" class="btn-outline" target="_blank">WhatsApp</a>
+        <a href="#" id="wa-btn-nav" class="btn-outline" target="_blank">WhatsApp</a>
         <button class="btn-primary" id="open-login">Login</button>
       </div>
       <!-- Mobile: hamburger -->
@@ -798,6 +840,9 @@
     </div>
   </div>
 </nav>
+
+<!-- MENU BACKDROP -->
+<div class="menu-backdrop" id="menu-backdrop"></div>
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobile-menu">
@@ -935,7 +980,7 @@
           <li><span class="chk">✦</span>PDF materi & catatan progres</li>
           <li><span class="chk">✦</span>Konsultasi via WhatsApp</li>
         </ul>
-        <a href="https://wa.me/6281234567890" class="btn-outline" style="width:100%;text-align:center;display:block;" target="_blank">Daftar Sekarang</a>
+        <button onclick="openRegisterWithLevel('Basic')" class="btn-outline" style="width:100%;text-align:center;display:block;cursor:none;">Daftar Sekarang</button>
       </div>
       <div class="price-card featured">
         <div class="price-name">Intermediate</div>
@@ -950,7 +995,7 @@
           <li><span class="chk">✦</span>PDF materi & catatan progres</li>
           <li><span class="chk">✦</span>Evaluasi bulanan tertulis</li>
         </ul>
-        <a href="https://wa.me/6281234567890" class="btn-primary" style="width:100%;text-align:center;display:block;" target="_blank">Daftar Sekarang</a>
+        <button onclick="openRegisterWithLevel('Intermediate')" class="btn-primary" style="width:100%;text-align:center;display:block;cursor:none;">Daftar Sekarang</button>
       </div>
       <div class="price-card">
         <div class="price-name">PERFORMER</div>
@@ -965,7 +1010,7 @@
           <li><span class="chk">✦</span>Persiapan pentas / audisi</li>
           <li><span class="chk">✦</span>Prioritas jadwal & fast-response</li>
         </ul>
-        <a href="https://wa.me/6281234567890" class="btn-outline" style="width:100%;text-align:center;display:block;" target="_blank">Daftar Sekarang</a>
+        <button onclick="openRegisterWithLevel('Performer')" class="btn-outline" style="width:100%;text-align:center;display:block;cursor:none;">Daftar Sekarang</button>
       </div>
     </div>
   </div>
@@ -1003,14 +1048,22 @@
     </div>
     <div class="contact-grid reveal">
       <div class="contact-info">
-        <div class="contact-item"><div class="contact-ico">📍</div><div><div class="contact-label">Alamat Studio</div><div class="contact-val">Jl. Musikku No. 12, Cikarang Barat,<br>Bekasi, Jawa Barat 17530</div></div></div>
-        <div class="contact-item"><div class="contact-ico">📞</div><div><div class="contact-label">Telepon / WhatsApp</div><div class="contact-val">+62 812-3456-7890</div></div></div>
+        <div class="contact-item"><div class="contact-ico">📍</div><div><div class="contact-label">Alamat Studio</div><div class="contact-val" id="studio-alamat">Memuat…</div></div></div>
+        <div class="contact-item"><div class="contact-ico">📞</div><div><div class="contact-label">Telepon / WhatsApp</div><div class="contact-val" id="studio-tlp">Memuat…</div></div></div>
         <div class="contact-item"><div class="contact-ico">⏰</div><div><div class="contact-label">Jam Operasional</div><div class="contact-val">Setiap Hari · 09.00 – 21.00 WIB<br><span style="font-size:12px;color:var(--muted)">Sabtu & Minggu tetap buka</span></div></div></div>
         <div class="contact-item"><div class="contact-ico">📸</div><div><div class="contact-label">Instagram</div><div class="contact-val">@kenz.guitarlesson</div></div></div>
-        <a href="https://wa.me/6281234567890?text=Halo%20Kenz%2C%20saya%20ingin%20daftar%20les%20gitar!" target="_blank" class="btn-primary" style="text-align:center;padding:14px 28px;font-size:15px;">💬 Chat via WhatsApp</a>
+        <a href="#" id="wa-btn-contact" target="_blank" class="btn-primary" style="text-align:center;padding:14px 28px;font-size:15px;">💬 Chat via WhatsApp</a>
       </div>
-      <div class="map-wrap">
-        <iframe src="https://www.google.com/maps?q=-6.350000,107.150000&hl=id&z=15&output=embed" allowfullscreen loading="lazy" title="Lokasi Kenz Guitar Lesson"></iframe>
+      <div class="map-wrap" style="position:relative;">
+        <div id="leaflet-map" style="width:100%;height:100%;min-height:400px;border-radius:var(--radius);"></div>
+        <div id="map-loading" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--card);border-radius:var(--radius);z-index:10;gap:12px;">
+          <div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;"></div>
+          <span style="font-size:13px;color:var(--muted);">Memuat lokasi…</span>
+        </div>
+        <div id="map-error" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:var(--card);border-radius:var(--radius);z-index:10;flex-direction:column;gap:8px;">
+          <span style="font-size:28px;">📍</span>
+          <span style="font-size:13px;color:var(--muted);">Gagal memuat peta</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1021,7 +1074,7 @@
   <div class="cta-banner reveal">
     <h2>SIAP MULAI<br>PETUALANGAN GITARMU?</h2>
     <p>Daftar sekarang dan dapatkan sesi trial gratis untuk kelas pertama. Terbatas!</p>
-    <a href="https://wa.me/6281234567890?text=Halo%20Kenz%2C%20saya%20ingin%20sesi%20trial%20gratis!" class="btn-dark" target="_blank">Daftar Sekarang</a>
+    <button class="btn-dark" onclick="openRegisterModal()">Daftar Sekarang</button>
   </div>
 </div>
 
@@ -1078,15 +1131,436 @@
       <button class="role-tab" data-role="admin">Admin</button>
     </div>
     <input type="hidden" id="role-value" value="student" />
-    <div class="form-group"><label>Email / Username</label><input type="text" placeholder="kamu@email.com" /></div>
-    <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" /></div>
-    <button class="btn-submit">Masuk Sekarang</button>
+    <div class="form-group"><label>Email / Username</label><input type="text" id="login-username" placeholder="kamu@email.com" /></div>
+    <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" /></div>
+    <div id="login-error" style="display:none;color:#ff6b6b;font-size:13px;margin-bottom:8px;text-align:center;"></div>
+    <button class="btn-submit" id="btn-submit-login">Masuk Sekarang</button>
+    <p id="register-hint" style="text-align:center;margin-top:18px;font-size:13px;color:var(--muted);">
+      Belum punya akun..? <a href="#" id="open-register-link" style="color:var(--gold);font-weight:600;text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Daftar Kelas</a>
+    </p>
   </div>
 </div>
 
+<!-- REGISTER MODAL (Daftar Kelas) -->
+<div class="modal-overlay" id="register-modal" style="z-index:600;overflow-y:auto;align-items:flex-start;padding:24px;">
+  <div id="register-modal-box" style="
+    background: var(--modal-bg);
+    border: 1px solid var(--gold-border);
+    border-radius: 24px;
+    width: 100%; max-width: 680px;
+    overflow: hidden;
+    margin: auto;
+    animation: modalIn .25s ease;
+    transition: background .35s, border-color .35s;
+  ">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid var(--border);background:var(--modal-card);">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#9A7020);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🎸</div>
+        <div>
+          <div style="font-family:var(--font-display);font-size:22px;color:var(--text);">DAFTAR <span style="color:var(--gold)">KELAS MUSIK</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Biaya pendaftaran <strong style="color:var(--gold)">Rp 25.000</strong> · Isi data dengan benar</div>
+        </div>
+      </div>
+      <button id="close-register" style="background:var(--modal-bg);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted);cursor:none;transition:color .2s,border-color .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">×</button>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:24px 28px;max-height:72vh;overflow-y:auto;">
+
+      <!-- Data Pendaftar -->
+      <div class="reg-divider"><div class="reg-line"></div><span class="reg-sect-label">🪪 Data Pendaftar</span><div class="reg-line"></div></div>
+
+      <!-- Tanggal & Jam Berjalan -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--modal-card);border:1px solid var(--border);border-radius:12px;padding:12px 18px;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">📅</span>
+          <div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Hari / Tanggal</div>
+            <div id="reg-live-date" style="font-size:13px;font-weight:600;color:var(--text);">-</div>
+          </div>
+        </div>
+        <div style="width:1px;height:32px;background:var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">🕐</span>
+          <div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Jam</div>
+            <div id="reg-live-time" style="font-size:13px;font-weight:600;color:var(--text);font-family:monospace;letter-spacing:1px;">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="reg-grid">
+        <div class="reg-group">
+          <label class="reg-label-txt">ID Pendaftaran <span class="reg-badge-auto">Auto</span></label>
+          <input type="text" class="reg-input" id="r-id" readonly />
+        </div>
+        <div class="reg-group">
+          <label class="reg-label-txt">Nama Lengkap <span class="reg-required">*</span></label>
+          <div class="reg-input-wrap"><span class="reg-icon">👤</span><input type="text" class="reg-input reg-has-icon" id="r-nama" placeholder="Nama lengkap kamu" /></div>
+        </div>
+        <div class="reg-group" style="position:relative;">
+          <label class="reg-label-txt">Level Kelas <span class="reg-required">*</span>
+            <button type="button" id="level-info-btn" onclick="toggleLevelPopup(event)" style="background:none;border:1.5px solid var(--gold);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;cursor:none;color:var(--gold);font-size:9px;font-weight:700;margin-left:6px;vertical-align:middle;transition:background .2s,color .2s;flex-shrink:0;" onmouseover="this.style.background='var(--gold)';this.style.color='#0A0A0A'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">i</button>
+          </label>
+          <!-- Level Info Popup -->
+          <div id="level-popup" style="display:none;position:absolute;z-index:999;margin-top:4px;background:var(--modal-bg);border:1px solid var(--gold-border);border-radius:14px;padding:16px 18px;box-shadow:0 8px 32px rgba(0,0,0,0.35);width:280px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">Info Level Kelas</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="background:rgba(99,200,99,0.15);color:#2E7D32;font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;white-space:nowrap;margin-top:1px;">Basic</span>
+                <span style="font-size:12px;color:var(--muted);line-height:1.5;">Untuk Anda yang belum memiliki dasar bermain gitar</span>
+              </div>
+              <div style="height:1px;background:var(--border);"></div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="background:rgba(255,165,0,0.15);color:#E65100;font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;white-space:nowrap;margin-top:1px;">Inter</span>
+                <span style="font-size:12px;color:var(--muted);line-height:1.5;">Untuk Anda yang telah memiliki dasar bermain instrumen gitar</span>
+              </div>
+              <div style="height:1px;background:var(--border);"></div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="background:rgba(240,176,64,0.15);color:var(--gold);font-size:10px;font-weight:700;padding:2px 8px;border-radius:50px;white-space:nowrap;margin-top:1px;">Performer</span>
+                <span style="font-size:12px;color:var(--muted);line-height:1.5;">Bagi peserta yang ingin mengasah kemampuan komposisi dan performing</span>
+              </div>
+            </div>
+          </div>
+          <select class="reg-select" id="r-level">
+            <option value="">-- Pilih Level --</option>
+            <option value="Basic">Basic</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Performer">Performer</option>
+          </select>
+        </div>
+        <div class="reg-group">
+          <label class="reg-label-txt">Kelas Instrumen <span class="reg-required">*</span></label>
+          <select class="reg-select" id="r-kelas">
+            <option value="">-- Pilih Instrumen --</option>
+            <option value="Gitar Akustik">Gitar Akustik</option>
+            <option value="Gitar Elektrik">Gitar Elektrik</option>
+            <option value="Bass">Bass</option>
+          </select>
+        </div>
+        <div class="reg-group reg-span2">
+          <label class="reg-label-txt">Alamat <span class="reg-required">*</span></label>
+          <textarea class="reg-textarea" id="r-alamat" placeholder="Jalan, No., RT/RW, Kelurahan, Kecamatan, Kota"></textarea>
+        </div>
+        <div class="reg-group reg-span2">
+          <label class="reg-label-txt">Nomor Telepon / WA Aktif <span class="reg-required">*</span></label>
+          <div class="reg-input-wrap"><span class="reg-icon">📱</span><input type="text" class="reg-input reg-has-icon" id="r-tlp" placeholder="+62 8xx xxxx xxxx" /></div>
+        </div>
+      </div>
+
+      <!-- Pembayaran Pendaftaran -->
+      <div class="reg-divider"><div class="reg-line"></div><span class="reg-sect-label">💳 Pembayaran Pendaftaran</span><div class="reg-line"></div></div>
+
+      <!-- Tagihan -->
+      <div style="background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:14px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Biaya Pendaftaran</div>
+          <div style="font-family:var(--font-display);font-size:28px;color:var(--text);">Rp 25.000</div>
+        </div>
+        <div style="font-size:28px;">🎸</div>
+      </div>
+
+      <!-- Jenis Pembayaran -->
+      <div class="reg-group" style="margin-bottom:16px;">
+        <label class="reg-label-txt">Jenis Pembayaran <span class="reg-required">*</span></label>
+        <select class="reg-select" id="r-jenis-bayar" onchange="handlePaymentChange(this.value)">
+          <option value="">⏳ Memuat metode pembayaran…</option>
+        </select>
+      </div>
+
+      <!-- Pesan Bayar Di Tempat -->
+      <div id="pay-cash-info" style="display:none;background:rgba(240,176,64,0.08);border:1px solid var(--gold-border);border-radius:14px;padding:16px 20px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:24px;">🏠</span>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">Bayar Di Tempat Les</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.6;">Silahkan lakukan pembayaran sebesar <strong style="color:var(--gold)">Rp 25.000</strong> langsung di tempat les saat pertemuan pertama. Tunjukkan bukti pendaftaran ini kepada instruktur.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Transfer / Dana -->
+      <div id="pay-online-info" style="display:none;margin-bottom:16px;">
+        <div style="background:var(--modal-card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:14px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Detail Pembayaran</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+              <span style="font-size:13px;color:var(--muted);">Metode</span>
+              <span id="pay-method-name" style="font-size:13px;font-weight:600;color:var(--text);">-</span>
+            </div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+              <span style="font-size:13px;color:var(--muted);">Alamat Pembayaran</span>
+              <span id="pay-address" style="font-size:14px;font-weight:700;color:var(--gold);letter-spacing:1px;">-</span>
+            </div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+              <span style="font-size:13px;color:var(--muted);">Nama Pemilik Akun</span>
+              <span id="pay-owner" style="font-size:13px;font-weight:600;color:var(--text);">-</span>
+            </div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+              <span style="font-size:13px;color:var(--muted);">Jumlah Transfer</span>
+              <span style="font-size:16px;font-weight:700;color:var(--gold);font-family:var(--font-display);">Rp 25.000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Bukti -->
+        <div class="reg-group">
+          <label class="reg-label-txt">Upload Bukti Pembayaran <span class="reg-required">*</span></label>
+          <div class="reg-photo-zone" id="r-bukti-zone">
+            <div style="font-size:28px;">📎</div>
+            <div style="font-size:13px;font-weight:600;margin-top:6px;color:var(--text);">Klik atau drag bukti transfer</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;">PNG, JPG • Maks 3 MB</div>
+          </div>
+          <input type="file" id="r-bukti-file" accept="image/*" style="display:none" />
+          <div class="reg-photo-preview" id="r-bukti-preview">
+            <img id="r-bukti-img" src="" alt="Bukti" style="width:52px;height:52px;border-radius:10px;object-fit:cover;border:2px solid var(--gold-border);" />
+            <div style="flex:1;text-align:left;">
+              <div id="r-bukti-name" style="font-size:13px;font-weight:600;color:var(--text);">-</div>
+              <div id="r-bukti-size" style="font-size:11px;color:var(--muted);margin-top:2px;">-</div>
+            </div>
+            <button type="button" id="r-remove-bukti" style="background:none;border:none;font-size:16px;cursor:none;color:#ff6b6b;">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="reg-error" style="display:none;color:#ff6b6b;font-size:13px;margin-top:12px;text-align:center;padding:10px;background:rgba(255,107,107,0.08);border-radius:10px;border:1px solid rgba(255,107,107,0.2);"></div>
+
+    </div><!-- /body -->
+
+    <!-- Footer -->
+    <div style="padding:18px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:12px;background:var(--modal-card);flex-wrap:wrap;">
+      <button onclick="closeRegisterModal()" style="padding:11px 22px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:50px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:none;transition:border-color .2s,color .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">✕ Batal</button>
+      <button id="r-save-btn" onclick="simpanRegistrasi()" class="btn-submit" style="width:auto;padding:11px 28px;border-radius:50px;">✅ Konfirmasi Pendaftaran</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ===== REGISTER MODAL STYLES ===== */
+  .reg-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .reg-span2 { grid-column:span 2; }
+  .reg-group { display:flex; flex-direction:column; gap:6px; }
+  .reg-label-txt { font-size:12px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:var(--muted); }
+  .reg-required { color:#ff6b6b; margin-left:2px; }
+  .reg-badge-auto {
+    font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+    background:linear-gradient(135deg,var(--gold),#9A7020); color:#0A0A0A;
+    padding:2px 7px; border-radius:50px; margin-left:5px;
+  }
+  .reg-input, .reg-select, .reg-textarea {
+    width:100%; padding:11px 14px;
+    background:var(--modal-card); border:1.5px solid var(--border);
+    border-radius:12px; font-family:var(--font-body); font-size:14px;
+    color:var(--text); outline:none; transition:border-color .2s, box-shadow .2s; cursor:none;
+  }
+  .reg-input:focus, .reg-select:focus, .reg-textarea:focus {
+    border-color:var(--gold); box-shadow:0 0 0 3px rgba(240,176,64,0.12);
+  }
+  .reg-input::placeholder, .reg-textarea::placeholder { color:var(--muted); opacity:.6; }
+  .reg-textarea { resize:vertical; min-height:76px; }
+  .reg-select {
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center; padding-right:36px;
+  }
+  .reg-input-wrap { position:relative; display:flex; align-items:center; }
+  .reg-icon { position:absolute; left:12px; font-size:14px; pointer-events:none; }
+  .reg-has-icon { padding-left:38px; }
+  .reg-hint { font-size:11px; color:var(--muted); }
+  .reg-divider { display:flex; align-items:center; gap:12px; margin:22px 0 16px; }
+  .reg-line { flex:1; height:1px; background:var(--border); }
+  .reg-sect-label { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; white-space:nowrap; }
+  .reg-photo-zone {
+    border:2px dashed var(--border); border-radius:12px; padding:18px;
+    text-align:center; cursor:pointer; transition:all .2s; background:var(--modal-card);
+  }
+  .reg-photo-zone:hover { border-color:var(--gold); background:rgba(240,176,64,0.04); }
+  .reg-photo-zone.dragover { border-color:var(--gold); background:rgba(240,176,64,0.08); }
+  .reg-photo-preview { display:none; align-items:center; gap:12px; background:var(--bg2); border-radius:12px; padding:10px 14px; margin-top:10px; border:1px solid var(--border); }
+  .reg-photo-preview.show { display:flex; }
+  @media (max-width:600px) {
+    .reg-grid { grid-template-columns:1fr; }
+    .reg-span2 { grid-column:span 1; }
+  }
+</style>
+
+<!-- WELCOME MODAL -->
+<div class="welcome-overlay" id="welcome-modal">
+  <div class="welcome-box">
+    <div class="welcome-glow"></div>
+    <div class="welcome-icon">🎸</div>
+    <div class="welcome-label">LOGIN BERHASIL</div>
+    <h2 class="welcome-title">Selamat Datang,<br><span id="welcome-name">Admin</span>!</h2>
+    <p class="welcome-sub">Mengalihkan ke Dashboard...</p>
+    <div class="welcome-bar"><div class="welcome-bar-fill" id="welcome-bar-fill"></div></div>
+  </div>
+</div>
+
+<style>
+  .welcome-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+  }
+  .welcome-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .welcome-box {
+    position: relative;
+    background: linear-gradient(145deg, #1A1208, #0A0804);
+    border: 1px solid rgba(240,176,64,0.35);
+    border-radius: 28px;
+    padding: 52px 48px 44px;
+    text-align: center;
+    max-width: 420px; width: 90%;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 60px rgba(240,176,64,0.08);
+    animation: welcomePop .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes welcomePop {
+    from { transform: scale(.7) translateY(40px); opacity: 0; }
+    to   { transform: scale(1) translateY(0);     opacity: 1; }
+  }
+
+  .welcome-glow {
+    position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(240,176,64,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .welcome-icon {
+    font-size: 56px; margin-bottom: 16px;
+    animation: iconBounce .6s .3s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes iconBounce {
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+  }
+
+  .welcome-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    color: var(--gold); margin-bottom: 16px;
+    font-family: var(--font-display);
+  }
+
+  .welcome-title {
+    font-family: var(--font-display);
+    font-size: 36px; line-height: 1.15;
+    color: #F5F0E8; margin-bottom: 12px;
+  }
+  .welcome-title span { color: var(--gold); }
+
+  .welcome-sub {
+    font-size: 13px; color: #A89878; margin-bottom: 28px;
+    font-weight: 300; letter-spacing: .5px;
+  }
+
+  .welcome-bar {
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px; overflow: hidden;
+  }
+  .welcome-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #F5C96A);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 2s linear;
+  }
+</style>
+
 <!-- SCRIPTS -->
 <script>
-  /* ---- THEME TOGGLE ---- */
+  /* ---- SUPABASE CONFIG ---- */
+  const SUPABASE_URL     = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPABASE_ANON    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+
+  /* ---- ADMIN LOGIN ---- */
+  document.getElementById('btn-submit-login').addEventListener('click', async () => {
+    const role     = document.getElementById('role-value').value;
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errEl    = document.getElementById('login-error');
+    const btnEl    = document.getElementById('btn-submit-login');
+
+    errEl.style.display = 'none';
+
+    if (!username || !password) {
+      errEl.textContent = '⚠️ Username dan password wajib diisi.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    if (role !== 'admin') {
+      errEl.textContent = '⚠️ Login Murid & Guru akan segera hadir.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btnEl.textContent = '⏳ Memverifikasi...';
+    btnEl.disabled = true;
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/identitas?username=eq.${encodeURIComponent(username)}&select=username,password,owner&limit=1`,
+        {
+          headers: {
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+          }
+        }
+      );
+
+      const rows = await res.json();
+
+      if (!rows || rows.length === 0 || rows[0].password !== password) {
+        errEl.textContent = '❌ Username atau password salah.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      // Login berhasil — tampilkan welcome modal
+      const ownerName = rows[0].owner || username;
+      document.getElementById('welcome-name').textContent = ownerName;
+
+      // Tutup login modal
+      document.getElementById('login-modal').classList.remove('open');
+      document.body.style.overflow = 'hidden';
+
+      // Tampilkan welcome modal + animasi progress bar
+      const wModal = document.getElementById('welcome-modal');
+      wModal.classList.add('open');
+      setTimeout(() => {
+        document.getElementById('welcome-bar-fill').style.width = '100%';
+      }, 100);
+
+      // Redirect ke dashboard setelah 2.3 detik
+      setTimeout(() => {
+        window.location.href = 'dashboardadmin.html';
+      }, 2300);
+
+    } catch (err) {
+      errEl.textContent = '❌ Gagal terhubung ke server.';
+      errEl.style.display = 'block';
+    } finally {
+      btnEl.textContent = 'Masuk Sekarang';
+      btnEl.disabled = false;
+    }
+  });
+
+  // Submit dengan Enter
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-submit-login').click();
+  });
+
+
   const html = document.documentElement;
   const knob = document.getElementById('theme-knob');
 
@@ -1108,6 +1582,609 @@
 
   document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
+  function openRegisterWithLevel(level) {
+    openRegisterModal();
+    if (level) {
+      const sel = document.getElementById('r-level');
+      if (sel) sel.value = level;
+    }
+  }
+
+  function toggleLevelPopup(e) {
+    e.stopPropagation();
+    const popup = document.getElementById('level-popup');
+    popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+  }
+
+  // Close level popup when clicking outside
+  document.addEventListener('click', e => {
+    const popup = document.getElementById('level-popup');
+    const btn   = document.getElementById('level-info-btn');
+    if (popup && btn && !btn.contains(e.target) && !popup.contains(e.target)) {
+      popup.style.display = 'none';
+    }
+  });
+
+  /* ---- REGISTER MODAL (DAFTAR KELAS) ---- */
+  const SUPABASE_URL_REG  = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPABASE_ANON_REG = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+  const BUCKET_REG        = 'aset';
+
+  // Cache data akun pembayaran dari Supabase
+  let akunPembayaranList = [];
+
+  async function loadAkunPembayaran() {
+    const sel = document.getElementById('r-jenis-bayar');
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL_REG}/rest/v1/akunpembayaran?select=id,nama_pembayaran,nama_akun,nomor_akun&order=nama_pembayaran.asc`,
+        { headers: { 'apikey': SUPABASE_ANON_REG, 'Authorization': `Bearer ${SUPABASE_ANON_REG}` } }
+      );
+      if (!res.ok) throw new Error('Gagal fetch');
+      akunPembayaranList = await res.json();
+    } catch (_) {
+      akunPembayaranList = [];
+    }
+
+    // Rebuild dropdown
+    sel.innerHTML = '<option value="">-- Pilih Metode --</option>';
+
+    // Opsi cash selalu ada
+    const optCash = document.createElement('option');
+    optCash.value = '__cash__';
+    optCash.textContent = '💵 Bayar Di Tempat';
+    sel.appendChild(optCash);
+
+    // Opsi dari database
+    akunPembayaranList.forEach(akun => {
+      const opt = document.createElement('option');
+      opt.value = akun.id;
+      opt.textContent = `💳 ${akun.nama_pembayaran}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  let regBuktiFile = null;
+  let regBuktiDataUrl = null;
+
+  function genStudentId() {
+    const ts   = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2,5).toUpperCase();
+    return `SIS-${ts}-${rand}`;
+  }
+
+  let regClockInterval = null;
+
+  function updateRegClock() {
+    const now  = new Date();
+    const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const hari = HARI[now.getDay()];
+    const tgl  = now.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+    const jam  = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false });
+    const dateEl = document.getElementById('reg-live-date');
+    const timeEl = document.getElementById('reg-live-time');
+    if (dateEl) dateEl.textContent = `${hari}, ${tgl}`;
+    if (timeEl) timeEl.textContent = jam;
+  }
+
+  function openRegisterModal() {
+    document.getElementById('register-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('r-id').value = genStudentId();
+    loadAkunPembayaran();
+    updateRegClock();
+    regClockInterval = setInterval(updateRegClock, 1000);
+  }
+
+  function closeRegisterModal() {
+    document.getElementById('register-modal').classList.remove('open');
+    document.body.style.overflow = '';
+    clearInterval(regClockInterval);
+    regClockInterval = null;
+    clearRegModal();
+  }
+
+  function clearRegModal() {
+    ['r-nama','r-alamat','r-tlp'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    const lvl = document.getElementById('r-level');       if (lvl) lvl.value = '';
+    const kls = document.getElementById('r-kelas');       if (kls) kls.value = '';
+    const jb  = document.getElementById('r-jenis-bayar'); if (jb)  jb.value  = '';
+    const err = document.getElementById('reg-error');     if (err) err.style.display = 'none';
+    document.getElementById('pay-cash-info').style.display  = 'none';
+    document.getElementById('pay-online-info').style.display = 'none';
+    // reset bukti
+    const bf  = document.getElementById('r-bukti-file'); if (bf) bf.value = '';
+    const bp  = document.getElementById('r-bukti-preview'); if (bp) bp.classList.remove('show');
+    const bi  = document.getElementById('r-bukti-img'); if (bi) bi.src = '';
+    regBuktiFile = null; regBuktiDataUrl = null;
+  }
+
+  function handlePaymentChange(val) {
+    const cashInfo   = document.getElementById('pay-cash-info');
+    const onlineInfo = document.getElementById('pay-online-info');
+    cashInfo.style.display   = 'none';
+    onlineInfo.style.display = 'none';
+
+    if (val === '__cash__') {
+      cashInfo.style.display = 'block';
+    } else if (val) {
+      const akun = akunPembayaranList.find(a => a.id === val);
+      if (akun) {
+        document.getElementById('pay-method-name').textContent = akun.nama_pembayaran;
+        document.getElementById('pay-address').textContent     = akun.nomor_akun;
+        document.getElementById('pay-owner').textContent       = akun.nama_akun;
+        onlineInfo.style.display = 'block';
+      }
+    }
+  }
+
+  // Open register on link click
+  document.addEventListener('click', e => {
+    if (e.target && e.target.id === 'open-register-link') {
+      e.preventDefault();
+      document.getElementById('login-modal').classList.remove('open');
+      openRegisterModal();
+    }
+  });
+
+  document.getElementById('register-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('register-modal')) closeRegisterModal();
+  });
+  document.getElementById('close-register').addEventListener('click', closeRegisterModal);
+
+  // Upload bukti bayar
+  const rBuktiZone = document.getElementById('r-bukti-zone');
+  const rBuktiFile = document.getElementById('r-bukti-file');
+  rBuktiZone.addEventListener('click', () => rBuktiFile.click());
+  rBuktiFile.addEventListener('change', e => { if (e.target.files[0]) handleBuktiFile(e.target.files[0]); });
+  rBuktiZone.addEventListener('dragover', e => { e.preventDefault(); rBuktiZone.classList.add('dragover'); });
+  rBuktiZone.addEventListener('dragleave', () => rBuktiZone.classList.remove('dragover'));
+  rBuktiZone.addEventListener('drop', e => {
+    e.preventDefault(); rBuktiZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) handleBuktiFile(e.dataTransfer.files[0]);
+  });
+
+  function handleBuktiFile(file) {
+    if (!file.type.startsWith('image/')) { showRegError('❌ File harus berupa gambar'); return; }
+    if (file.size > 3 * 1024 * 1024)    { showRegError('❌ Ukuran file melebihi 3 MB'); return; }
+    regBuktiFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      regBuktiDataUrl = ev.target.result;
+      document.getElementById('r-bukti-img').src = ev.target.result;
+      document.getElementById('r-bukti-name').textContent = file.name;
+      document.getElementById('r-bukti-size').textContent = (file.size/1024).toFixed(1) + ' KB';
+      document.getElementById('r-bukti-preview').classList.add('show');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('r-remove-bukti').addEventListener('click', () => {
+    rBuktiFile.value = ''; regBuktiFile = null; regBuktiDataUrl = null;
+    document.getElementById('r-bukti-img').src = '';
+    document.getElementById('r-bukti-preview').classList.remove('show');
+  });
+
+  function showRegError(msg) {
+    const err = document.getElementById('reg-error');
+    err.textContent = msg; err.style.display = 'block';
+    setTimeout(() => err.style.display = 'none', 4500);
+  }
+
+  async function uploadBuktiPayment(idSiswa) {
+    if (!regBuktiFile) return null;
+    const ext      = regBuktiFile.name.split('.').pop();
+    const fileName = `bukti/${idSiswa}-${Date.now()}.${ext}`;
+    try {
+      const res = await fetch(`${SUPABASE_URL_REG}/storage/v1/object/${BUCKET_REG}/${fileName}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${SUPABASE_ANON_REG}`, 'Content-Type': regBuktiFile.type, 'x-upsert': 'true' },
+        body: regBuktiFile,
+      });
+      if (res.ok) return `${SUPABASE_URL_REG}/storage/v1/object/public/${BUCKET_REG}/${fileName}`;
+    } catch (_) {}
+    return regBuktiDataUrl;
+  }
+
+  /* ================================================================
+     GENERATE BUKTI PENDAFTARAN PDF
+  ================================================================ */
+  async function generateBuktiPDF(payload) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const PW = 210; // A4 width mm
+    const PH = 297; // A4 height mm
+
+    // ── Fetch identitas (logo & nama_usaha) ──────────────────────
+    let namaUsaha = 'KENZ Private Guitar Lesson';
+    let logoDataUrl = null;
+    try {
+      const res  = await fetch(
+        `${SUPABASE_URL_REG}/rest/v1/identitas?select=nama_usaha,logo&limit=1`,
+        { headers: { 'apikey': SUPABASE_ANON_REG, 'Authorization': `Bearer ${SUPABASE_ANON_REG}` } }
+      );
+      const rows = await res.json();
+      if (Array.isArray(rows) && rows[0]) {
+        if (rows[0].nama_usaha) namaUsaha = rows[0].nama_usaha;
+        if (rows[0].logo) {
+          // Fetch logo dan konversi ke base64
+          try {
+            const imgRes  = await fetch(rows[0].logo);
+            const blob    = await imgRes.blob();
+            logoDataUrl   = await new Promise(resolve => {
+              const reader = new FileReader();
+              reader.onload = e => resolve(e.target.result);
+              reader.readAsDataURL(blob);
+            });
+          } catch(_) {}
+        }
+      }
+    } catch(_) {}
+
+    // ── Helpers warna ────────────────────────────────────────────
+    const GOLD   = [212, 160, 40];
+    const DARK   = [18,  13,  8];
+    const DARK2  = [30,  22,  12];
+    const WHITE  = [255, 255, 255];
+    const LIGHT  = [245, 238, 220];
+    const MUTED  = [160, 140, 110];
+    const ACCENT = [240, 176, 64];
+
+    // ── Background gelap seluruh halaman ─────────────────────────
+    doc.setFillColor(...DARK);
+    doc.rect(0, 0, PW, PH, 'F');
+
+    // ── Dekorasi background: garis diagonal subtle ───────────────
+    doc.setDrawColor(30, 22, 12);
+    doc.setLineWidth(0.3);
+    for (let i = -PH; i < PW + PH; i += 14) {
+      doc.line(i, 0, i + PH, PH);
+    }
+
+    // ── Header band emas ─────────────────────────────────────────
+    doc.setFillColor(...GOLD);
+    doc.rect(0, 0, PW, 52, 'F');
+
+    // Noise texture di header (titik-titik kecil)
+    doc.setFillColor(200, 140, 20);
+    for (let xi = 2; xi < PW; xi += 6) {
+      for (let yi = 2; yi < 52; yi += 6) {
+        if (Math.sin(xi * 0.7 + yi * 1.3) > 0.5) {
+          doc.circle(xi, yi, 0.35, 'F');
+        }
+      }
+    }
+
+    // ── Logo (jika ada) ──────────────────────────────────────────
+    let headerTextX = 16;
+    if (logoDataUrl) {
+      try {
+        const fmt = logoDataUrl.includes('png') ? 'PNG' : 'JPEG';
+        doc.addImage(logoDataUrl, fmt, 12, 8, 34, 34);
+        headerTextX = 52;
+      } catch(_) {}
+    } else {
+      // Fallback: kotak emas dengan ikon gitar teks
+      doc.setFillColor(...DARK);
+      doc.roundedRect(12, 9, 32, 32, 6, 6, 'F');
+      doc.setTextColor(...GOLD);
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text('🎸', 28, 30, { align: 'center' });
+      headerTextX = 52;
+    }
+
+    // ── Nama usaha di header ──────────────────────────────────────
+    doc.setTextColor(...DARK);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text(namaUsaha.toUpperCase(), headerTextX, 22);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(50, 35, 10);
+    doc.text('BUKTI PENDAFTARAN SISWA BARU', headerTextX, 31);
+    doc.text('Private Guitar Lesson', headerTextX, 38);
+
+    // No. pendaftaran di pojok kanan header
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(50, 35, 10);
+    doc.text(`No. ${payload.id}`, PW - 14, 22, { align: 'right' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    const tglFormatted = payload.tanggal
+      ? new Date(payload.tanggal).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' })
+      : payload.tanggal;
+    doc.text(tglFormatted, PW - 14, 30, { align: 'right' });
+    doc.text(payload.jam, PW - 14, 37, { align: 'right' });
+
+    // ── Garis bawah header ───────────────────────────────────────
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.8);
+    doc.line(0, 52, PW, 52);
+
+    // ── Badge "RESMI" di tengah bawah header ─────────────────────
+    doc.setFillColor(...DARK);
+    doc.roundedRect(PW/2 - 22, 46, 44, 12, 6, 6, 'F');
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(PW/2 - 22, 46, 44, 12, 6, 6, 'S');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...GOLD);
+    doc.text('✦  DOKUMEN RESMI  ✦', PW/2, 53.8, { align: 'center' });
+
+    // ── Judul section DATA PENDAFTAR ─────────────────────────────
+    let y = 68;
+    function sectionTitle(label) {
+      doc.setFillColor(...DARK2);
+      doc.roundedRect(14, y - 5, PW - 28, 10, 2, 2, 'F');
+      doc.setDrawColor(...GOLD);
+      doc.setLineWidth(0.3);
+      doc.line(14, y - 5, 18, y - 5);
+      doc.line(14, y - 5, 14, y + 5);
+      doc.setFillColor(...GOLD);
+      doc.rect(14, y - 5, 3, 10, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...GOLD);
+      doc.text(label, 21, y + 1.2);
+      y += 14;
+    }
+
+    function dataRow(key, value, highlight = false) {
+      const rowH = 11;
+      // Background baris
+      doc.setFillColor(highlight ? 28 : 22, highlight ? 20 : 16, highlight ? 10 : 8);
+      doc.roundedRect(14, y - 4, PW - 28, rowH, 1.5, 1.5, 'F');
+      // Border kiri aksen
+      if (highlight) {
+        doc.setFillColor(...GOLD);
+        doc.rect(14, y - 4, 2.5, rowH, 'F');
+      }
+      // Key
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...MUTED);
+      doc.text(key.toUpperCase(), 21, y + 2.8);
+      // Value
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(highlight ? ACCENT[0] : WHITE[0], highlight ? ACCENT[1] : WHITE[1], highlight ? ACCENT[2] : WHITE[2]);
+      const maxW = PW - 28 - 65;
+      const lines = doc.splitTextToSize(String(value || '-'), maxW);
+      doc.text(lines[0], 80, y + 2.8);
+      y += rowH + 2;
+    }
+
+    // ── SECTION: Data Diri ────────────────────────────────────────
+    sectionTitle('DATA PENDAFTAR');
+    dataRow('Nomor Pendaftaran', payload.id, true);
+    dataRow('Nama Lengkap',      payload.nama_lengkap, true);
+    dataRow('Nomor HP / WA',     payload.tlp);
+    dataRow('Alamat',            payload.alamat);
+
+    y += 4;
+
+    // ── SECTION: Detail Kelas ────────────────────────────────────
+    sectionTitle('DETAIL KELAS');
+    dataRow('Level Kelas',       payload.level, true);
+    dataRow('Instrumen',         payload.instrumen, true);
+
+    y += 4;
+
+    // ── SECTION: Informasi Pembayaran ────────────────────────────
+    sectionTitle('INFORMASI PEMBAYARAN');
+    dataRow('Jenis Pembayaran',  payload.jenis_bayar, true);
+    dataRow('Tanggal Daftar',    tglFormatted);
+    dataRow('Jam',               payload.jam);
+    dataRow('Status',            payload.jenis_bayar === 'Bayar Di Tempat'
+      ? 'Bayar saat sesi pertama'
+      : 'Menunggu verifikasi admin');
+
+    y += 10;
+
+    // ── Kotak keterangan ─────────────────────────────────────────
+    const boxH = 38;
+    doc.setFillColor(22, 16, 8);
+    doc.roundedRect(14, y, PW - 28, boxH, 4, 4, 'F');
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(14, y, PW - 28, boxH, 4, 4, 'S');
+
+    // Ikon gitar dekorasi (lingkaran emas kecil di pojok)
+    doc.setFillColor(...GOLD);
+    doc.circle(22, y + 8, 4, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(...DARK);
+    doc.text('i', 22, y + 9.5, { align: 'center' });
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...GOLD);
+    doc.text('PENTING', 30, y + 9);
+
+    const keterangan =
+      'Terimakasih telah melakukan pendaftaran siswa baru di Kenz Private\n' +
+      'Guitar Lesson. Bawa bukti pendaftaran ini saat anda latihan sesi\n' +
+      'pertama. Kami akan menghubungi anda via WA Chat untuk informasi\n' +
+      'selanjutnya.';
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...LIGHT);
+    const ktLines = keterangan.split('\n');
+    ktLines.forEach((line, i) => {
+      doc.text(line, 30, y + 17 + i * 5.5);
+    });
+
+    y += boxH + 10;
+
+    // ── Garis dekorasi sebelum footer ───────────────────────────
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.4);
+    doc.line(14, y, PW - 14, y);
+    doc.setFillColor(...GOLD);
+    doc.circle(PW / 2, y, 1.5, 'F');
+
+    // ── Footer ──────────────────────────────────────────────────
+    y += 8;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...GOLD);
+    doc.text(namaUsaha.toUpperCase(), PW / 2, y, { align: 'center' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...MUTED);
+    doc.text('Private Guitar Lesson · Akustik & Elektrik', PW / 2, y + 6, { align: 'center' });
+
+    // Watermark teks diagonal samar
+    doc.setGState(new doc.GState({ opacity: 0.04 }));
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(60);
+    doc.setTextColor(...GOLD);
+    doc.text('KENZ', PW / 2, PH / 2 + 20, { align: 'center', angle: 45 });
+    doc.setGState(new doc.GState({ opacity: 1 }));
+
+    // ── Save ────────────────────────────────────────────────────
+    const fileName = `bukti_pendaftaran_${(payload.nama_lengkap || 'siswa').replace(/\s+/g, '_')}_${payload.id}.pdf`;
+    doc.save(fileName);
+  }
+
+  async function simpanRegistrasi() {
+    const jenisBayar = document.getElementById('r-jenis-bayar').value;
+
+    // Validasi semua field wajib
+    const required = [
+      { id:'r-nama',  label:'Nama Lengkap' },
+      { id:'r-level', label:'Level Kelas' },
+      { id:'r-kelas', label:'Kelas Instrumen' },
+      { id:'r-alamat',label:'Alamat' },
+      { id:'r-tlp',   label:'Nomor Telepon/WA' },
+    ];
+    for (const f of required) {
+      const el = document.getElementById(f.id);
+      if (!el || !el.value.trim()) {
+        if (el) { el.focus(); el.style.borderColor = '#ff6b6b'; el.addEventListener('input', () => el.style.borderColor = '', { once:true }); }
+        showRegError(`⚠️ ${f.label} wajib diisi!`);
+        return;
+      }
+    }
+    if (!jenisBayar) { showRegError('⚠️ Pilih jenis pembayaran terlebih dahulu!'); return; }
+    if (jenisBayar !== '__cash__' && !regBuktiFile && !regBuktiDataUrl) {
+      showRegError('⚠️ Upload bukti pembayaran terlebih dahulu!'); return;
+    }
+
+    const saveBtn = document.getElementById('r-save-btn');
+    saveBtn.disabled = true; saveBtn.textContent = '⏳ Memproses…';
+
+    try {
+      const id    = document.getElementById('r-id').value;
+      const level = document.getElementById('r-level').value;
+
+      // Tentukan tabel tujuan berdasarkan level
+      const tabelMap = {
+        'Basic':        'daftar_basic',
+        'Intermediate': 'daftar_intermediate',
+        'Performer':    'daftar_performer',
+      };
+      const tabel = tabelMap[level];
+      if (!tabel) { showRegError('⚠️ Level kelas tidak valid!'); saveBtn.disabled = false; saveBtn.textContent = '✅ Konfirmasi Pendaftaran'; return; }
+
+      // Dapatkan label nama pembayaran
+      let payLabel;
+      if (jenisBayar === '__cash__') {
+        payLabel = 'Bayar Di Tempat';
+      } else {
+        const akun = akunPembayaranList.find(a => a.id === jenisBayar);
+        payLabel = akun ? akun.nama_pembayaran : jenisBayar;
+      }
+
+      // Upload bukti atau set '-' jika bayar di tempat
+      let buktiBayar = '-';
+      if (jenisBayar !== '__cash__') {
+        saveBtn.textContent = '⏳ Mengupload bukti…';
+        const uploaded = await uploadBuktiPayment(id);
+        if (!uploaded) { showRegError('❌ Gagal upload bukti pembayaran, coba lagi.'); saveBtn.disabled = false; saveBtn.textContent = '✅ Konfirmasi Pendaftaran'; return; }
+        buktiBayar = uploaded;
+      }
+
+      const now = new Date();
+      const tanggal = now.toLocaleDateString('sv-SE'); // format YYYY-MM-DD untuk kolom date
+      const jam     = [
+        String(now.getHours()).padStart(2,'0'),
+        String(now.getMinutes()).padStart(2,'0'),
+        String(now.getSeconds()).padStart(2,'0'),
+      ].join(':'); // pastikan format HH:MM:SS dengan titik dua
+
+      const payload = {
+        id,
+        nama_lengkap: document.getElementById('r-nama').value.trim(),
+        level,
+        instrumen:    document.getElementById('r-kelas').value,
+        alamat:       document.getElementById('r-alamat').value.trim(),
+        tlp:          document.getElementById('r-tlp').value.trim(),
+        jenis_bayar:  payLabel,
+        bukti_bayar:  buktiBayar,
+        tanggal,
+        jam,
+      };
+
+      saveBtn.textContent = '⏳ Menyimpan data…';
+      const res = await fetch(`${SUPABASE_URL_REG}/rest/v1/${tabel}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'apikey':        SUPABASE_ANON_REG,
+          'Authorization': `Bearer ${SUPABASE_ANON_REG}`,
+          'Prefer':        'return=minimal',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errBody = await res.text();
+        throw new Error(errBody);
+      }
+
+      // Sukses — download PDF bukti pendaftaran, lalu tutup modal & tampilkan welcome
+      saveBtn.textContent = '⏳ Membuat bukti PDF…';
+      await generateBuktiPDF(payload);
+
+      closeRegisterModal();
+      document.getElementById('welcome-name').textContent = payload.nama_lengkap;
+      document.getElementById('login-modal').classList.remove('open');
+      document.body.style.overflow = 'hidden';
+      const wLabel = document.querySelector('.welcome-label');
+      const wSub   = document.querySelector('.welcome-sub');
+      if (wLabel) wLabel.textContent = 'PENDAFTARAN BERHASIL';
+      if (wSub)   wSub.textContent   = jenisBayar === '__cash__'
+        ? `Terdaftar di kelas ${level}. Bayar di tempat saat sesi pertama.`
+        : `Terdaftar di kelas ${level}. Menunggu verifikasi bukti bayar oleh admin.`;
+      const wModal = document.getElementById('welcome-modal');
+      wModal.classList.add('open');
+      setTimeout(() => { document.getElementById('welcome-bar-fill').style.width = '100%'; }, 100);
+      setTimeout(() => {
+        wModal.classList.remove('open');
+        document.body.style.overflow = '';
+        if (wLabel) wLabel.textContent = 'LOGIN BERHASIL';
+        if (wSub)   wSub.textContent   = 'Mengalihkan ke Dashboard...';
+        document.getElementById('welcome-bar-fill').style.width = '0%';
+      }, 3500);
+
+    } catch (err) {
+      console.error('[Registrasi]', err);
+      showRegError('❌ Gagal mendaftar: ' + err.message);
+    } finally {
+      saveBtn.disabled = false; saveBtn.textContent = '✅ Konfirmasi Pendaftaran';
+    }
+  }
+
   /* ---- CUSTOM CURSOR ---- */
   const cursor = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {
@@ -1123,8 +2200,26 @@
   /* ---- HAMBURGER ---- */
   const ham = document.getElementById('hamburger');
   const mob = document.getElementById('mobile-menu');
-  ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
-  mob.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', () => { ham.classList.remove('open'); mob.classList.remove('open'); }));
+  const backdrop = document.getElementById('menu-backdrop');
+
+  function openMenu() {
+    ham.classList.add('open');
+    mob.classList.add('open');
+    backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    ham.classList.remove('open');
+    mob.classList.remove('open');
+    backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  ham.addEventListener('click', () => {
+    ham.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  mob.querySelectorAll('.mob-link').forEach(l => l.addEventListener('click', closeMenu));
+  backdrop.addEventListener('click', closeMenu);
 
   /* ---- LOGIN MODAL ---- */
   const modal = document.getElementById('login-modal');
@@ -1140,6 +2235,9 @@
       document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('role-value').value = tab.dataset.role;
+      // Tampilkan hint daftar hanya untuk role Murid
+      const hint = document.getElementById('register-hint');
+      if (hint) hint.style.display = tab.dataset.role === 'student' ? 'block' : 'none';
     });
   });
 
@@ -1156,6 +2254,180 @@
   window.addEventListener('scroll', () => {
     document.querySelector('nav').style.boxShadow = window.scrollY > 30 ? '0 4px 30px rgba(0,0,0,.12)' : 'none';
   });
+</script>
+<!-- LEAFLET MAP SCRIPT -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+  (async function initMap() {
+    const loadingEl  = document.getElementById('map-loading');
+    const errorEl    = document.getElementById('map-error');
+
+    // Helper: cari nilai koordinat dari row dengan nama kolom apapun
+    function findCoordValue(row) {
+      // Coba dulu kolom yang paling umum
+      const candidates = ['titik_koordinat','koordinat','koordinat_lokasi','coords','coordinate','location','latlong','lat_lng','latlng','titik'];
+      for (const key of candidates) {
+        if (row[key] != null && row[key] !== '') return { val: String(row[key]), key };
+      }
+      // Fallback: cari kolom yang isinya mengandung koma dan angka (lat,lng)
+      for (const key of Object.keys(row)) {
+        const v = String(row[key] ?? '');
+        if (/^-?\d+\.?\d*\s*,\s*-?\d+\.?\d*/.test(v)) return { val: v, key };
+      }
+      return null;
+    }
+
+    function findLabelValue(row, excludeKey) {
+      const nameCandidates = ['nama_lokasi','nama','name','label','title','lokasi','keterangan','deskripsi','description','alamat'];
+      for (const key of nameCandidates) {
+        if (key !== excludeKey && row[key] != null && row[key] !== '') return String(row[key]);
+      }
+      return null;
+    }
+
+    try {
+      // Fetch semua kolom agar tidak error 400 akibat nama kolom salah
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/titiklokasi?select=*&limit=200`,
+        {
+          headers: {
+            'apikey':        SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+          }
+        }
+      );
+
+      if (!res.ok) {
+        const errBody = await res.text();
+        throw new Error(`HTTP ${res.status}: ${errBody}`);
+      }
+
+      const rows = await res.json();
+      if (!Array.isArray(rows) || rows.length === 0) throw new Error('Tidak ada data lokasi');
+
+      // Log kolom yang tersedia untuk debugging
+      if (rows[0]) console.log('[Map] Kolom tersedia:', Object.keys(rows[0]));
+
+      // Parse koordinat dari tiap baris
+      const points = [];
+      for (const row of rows) {
+        const found = findCoordValue(row);
+        if (!found) continue;
+
+        const parts = found.val.split(',');
+        if (parts.length < 2) continue;
+        const lat = parseFloat(parts[0].trim());
+        const lng = parseFloat(parts[1].trim());
+        if (isNaN(lat) || isNaN(lng)) continue;
+
+        const nama = findLabelValue(row, found.key);
+        points.push({ lat, lng, nama });
+      }
+
+      if (points.length === 0) throw new Error('Tidak ada koordinat valid (cek format kolom titik_koordinat: "lat,lng")');
+
+      // Inisialisasi Leaflet map
+      const map = L.map('leaflet-map', { zoomControl: true, scrollWheelZoom: false });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19,
+      }).addTo(map);
+
+      // Custom gold pin marker
+      const goldIcon = L.divIcon({
+        className: '',
+        html: `<div style="
+          width:36px;height:36px;
+          background:linear-gradient(135deg,#F0B040,#9A7020);
+          border:3px solid #fff;
+          border-radius:50% 50% 50% 0;
+          transform:rotate(-45deg);
+          box-shadow:0 4px 16px rgba(0,0,0,0.4);
+        "></div>`,
+        iconSize:   [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor:[0, -40],
+      });
+
+      // Tambahkan marker
+      const markers = points.map(p => {
+        const marker = L.marker([p.lat, p.lng], { icon: goldIcon }).addTo(map);
+        let html = `<div style="font-family:'DM Sans',sans-serif;padding:4px 2px;min-width:140px;">`;
+        if (p.nama) html += `<strong style="font-size:13px;color:#2d1f00;display:block;margin-bottom:4px;">${p.nama}</strong>`;
+        html += `<span style="font-size:11px;color:#888;">📍 ${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</span>`;
+        html += `</div>`;
+        marker.bindPopup(html);
+        return marker;
+      });
+
+      // Fit view
+      if (points.length === 1) {
+        map.setView([points[0].lat, points[0].lng], 16);
+        markers[0].openPopup();
+      } else {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.25));
+      }
+
+      loadingEl.style.display = 'none';
+
+    } catch (err) {
+      console.error('[Map] Error:', err.message);
+      loadingEl.style.display = 'none';
+      errorEl.style.display   = 'flex';
+      errorEl.innerHTML = `<span style="font-size:24px;">📍</span><span style="font-size:12px;color:var(--muted);text-align:center;padding:0 16px;">${err.message}</span>`;
+    }
+  })();
+</script>
+<!-- IDENTITAS STUDIO SCRIPT -->
+<script>
+  (async function loadIdentitas() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/identitas?select=alamat,tlp&limit=1`,
+        {
+          headers: {
+            'apikey':        SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+          }
+        }
+      );
+      if (!res.ok) throw new Error('Fetch identitas gagal');
+      const rows = await res.json();
+      if (!Array.isArray(rows) || rows.length === 0) throw new Error('Data identitas kosong');
+
+      const { alamat, tlp } = rows[0];
+
+      // Format nomor: hilangkan karakter non-digit untuk wa.me
+      const tlpClean = tlp ? tlp.replace(/\D/g, '').replace(/^0/, '62') : '';
+      const waUrl    = tlpClean
+        ? `https://wa.me/${tlpClean}?text=Halo%20Kenz%2C%20saya%20ingin%20daftar%20les%20gitar!`
+        : '#';
+
+      // Alamat studio
+      const alamatEl = document.getElementById('studio-alamat');
+      if (alamatEl) alamatEl.innerHTML = alamat ? alamat.replace(/\n/g, '<br>') : '-';
+
+      // Nomor telepon
+      const tlpEl = document.getElementById('studio-tlp');
+      if (tlpEl) tlpEl.textContent = tlp || '-';
+
+      // Semua tombol WhatsApp
+      ['wa-btn-contact', 'wa-float-btn', 'wa-btn-nav'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.href = waUrl;
+      });
+
+    } catch (err) {
+      console.warn('[Identitas]', err.message);
+      // Fallback: teks placeholder
+      const alamatEl = document.getElementById('studio-alamat');
+      const tlpEl    = document.getElementById('studio-tlp');
+      if (alamatEl) alamatEl.textContent = 'Hubungi kami untuk info lokasi';
+      if (tlpEl)    tlpEl.textContent    = '-';
+    }
+  })();
 </script>
 </body>
 </html>
