@@ -329,15 +329,16 @@
   <!-- NAVBAR -->
   <nav>
     <a href="index.html" class="nav-brand">
-      <img src="logo.png" alt="KENZ">
-      KENZ.
+      <img id="nav-logo" src="logo.png" alt="KENZ" style="display:none;">
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-nama-usaha">KENZ.</span>
     </a>
     <div class="nav-right">
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
       <div class="admin-info">
-        <div class="admin-avatar">K</div>
+        <div class="admin-avatar" id="nav-avatar">K</div>
         <div class="admin-details">
-          <div class="admin-name">Admin Kenz</div>
+          <div class="admin-name" id="nav-owner">Admin Kenz</div>
           <div class="admin-role">Administrator</div>
         </div>
       </div>
@@ -353,12 +354,12 @@
 
     <!-- MENU BUTTONS -->
     <div class="menu-grid">
-      <button class="menu-btn" data-menu="profil" onclick="showMenu('profil')">
+      <button class="menu-btn" data-menu="profil" onclick="window.location.href='identitas.html'">
         <div class="menu-icon">👤</div>
         <div class="menu-label">Profil</div>
       </button>
 
-      <button class="menu-btn" data-menu="siswa" onclick="showMenu('siswa')">
+      <button class="menu-btn" data-menu="siswa" onclick="window.location.href='datasiswa.html'">
         <div class="menu-icon">👨‍🎓</div>
         <div class="menu-label">Siswa</div>
       </button>
@@ -396,6 +397,21 @@
       <button class="menu-btn" data-menu="restore" onclick="showMenu('restore')">
         <div class="menu-icon">♻️</div>
         <div class="menu-label">Restore Data</div>
+      </button>
+
+      <button class="menu-btn" data-menu="pendaftar" onclick="window.location.href='pendaftarbaru.html'">
+        <div class="menu-icon">📋</div>
+        <div class="menu-label">Pendaftar Baru</div>
+      </button>
+
+      <button class="menu-btn" data-menu="pembayaran" onclick="window.location.href='PembayaranSPP.html'">
+        <div class="menu-icon">💳</div>
+        <div class="menu-label">Pembayaran Les Siswa</div>
+      </button>
+
+      <button class="menu-btn" data-menu="pengaturan" onclick="window.location.href='pengaturan.html'">
+        <div class="menu-icon">⚙️</div>
+        <div class="menu-label">Pengaturan</div>
       </button>
 
       <button class="menu-btn logout" data-menu="logout" onclick="logout()">
@@ -488,6 +504,47 @@
 
   <!-- SCRIPTS -->
   <script>
+    /* SUPABASE CONFIG */
+    const SUPABASE_URL  = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+
+    /* LOAD NAVBAR DATA FROM SUPABASE */
+    async function loadNavbar() {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/identitas?select=logo,nama_usaha,owner&limit=1`,
+          {
+            headers: {
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            }
+          }
+        );
+        const rows = await res.json();
+        if (!rows || rows.length === 0) return;
+
+        const { logo, nama_usaha, owner } = rows[0];
+
+        if (logo) {
+          const img = document.getElementById('nav-logo');
+          img.src = logo;
+          img.style.display = 'block';
+          document.getElementById('nav-logo-fallback').style.display = 'none';
+        }
+        if (nama_usaha) {
+          document.getElementById('nav-nama-usaha').textContent = nama_usaha;
+        }
+        if (owner) {
+          document.getElementById('nav-owner').textContent = owner;
+          document.getElementById('nav-avatar').textContent = owner.charAt(0).toUpperCase();
+        }
+      } catch (err) {
+        console.warn('Gagal load navbar:', err.message);
+      }
+    }
+
+    loadNavbar();
+
     /* THEME TOGGLE */
     const html = document.documentElement;
     const themeToggle = document.getElementById('theme-toggle');
