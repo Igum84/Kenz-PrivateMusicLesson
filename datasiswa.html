@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Siswa – KENZ Guitar Lesson</title>
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --text: #1A1A1A;
+      --muted: #666;
+      --bg: #FFFFFF;
+      --surface: #F5F5F5;
+      --border: #E0E0E0;
+      --footer-bg: #1A1208;
+      --footer-text: #B8AA96;
+      --input-bg: #FFFFFF;
+      --input-border: #D0D0D0;
+      --input-focus: #D4AF37;
+      --label: #444;
+      --section-bg: #FAFAFA;
+    }
+
+    [data-theme="dark"] {
+      --text: #FFFFFF;
+      --muted: #AAAAAA;
+      --bg: #0A0A0A;
+      --surface: #1A1A1A;
+      --border: #333333;
+      --footer-bg: #0A0A0A;
+      --footer-text: #555555;
+      --input-bg: #141414;
+      --input-border: #333333;
+      --input-focus: #D4AF37;
+      --label: #CCCCCC;
+      --section-bg: #111111;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .3s, color .3s;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s;
+    }
+
+    .theme-toggle:hover { background: var(--surface); }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 8px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+
+    .admin-details { display: flex; flex-direction: column; }
+    .admin-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .admin-role { font-size: 12px; color: var(--muted); }
+
+    .btn-dashboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(212,175,55,0.25);
+    }
+
+    .btn-dashboard:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+      padding: 16px 32px;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breadcrumb a { color: var(--gold); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* ===== MAIN ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-title-wrap {}
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .page-title span { color: var(--gold); }
+
+    .page-subtitle { font-size: 14px; color: var(--muted); }
+
+    /* ===== ACTION BAR ===== */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      box-shadow: 0 2px 10px rgba(212,175,55,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212,175,55,0.35);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-export {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-export:hover { background: var(--border); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover { background: var(--border); }
+
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding: 10px 14px 10px 40px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      width: 260px;
+      transition: border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+    }
+
+    .search-input::placeholder { color: var(--muted); }
+
+    /* ===== STATS ROW ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .stat-info {}
+    .stat-value { font-size: 24px; font-weight: 800; color: var(--text); }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ===== TABLE CARD ===== */
+    .table-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .table-card-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-card-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .table-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .table-card-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .table-count {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--border);
+      padding: 2px 10px;
+      border-radius: 50px;
+    }
+
+    /* ===== TABLE WRAPPER ===== */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1200px;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(212,175,55,0.04); }
+
+    tbody td {
+      padding: 14px 16px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .td-id {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .td-photo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .student-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+
+    .student-avatar-fallback {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: #0A0A0A;
+      flex-shrink: 0;
+      border: 2px solid rgba(212,175,55,0.3);
+    }
+
+    .td-name { font-weight: 600; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-level-beginner  { background: rgba(99,200,99,0.15);  color: #2E7D32; }
+    .badge-level-intermediate { background: rgba(255,165,0,0.15); color: #E65100; }
+    .badge-level-advanced  { background: rgba(212,175,55,0.15); color: #9A7020; }
+
+    .badge-kelas {
+      background: rgba(212,175,55,0.12);
+      color: var(--gold);
+    }
+
+    /* table action buttons */
+    .tbl-actions { display: flex; gap: 6px; }
+
+    .btn-tbl {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all .15s;
+      font-family: inherit;
+    }
+
+    .btn-edit {
+      background: rgba(212,175,55,0.15);
+      color: #9A7020;
+    }
+
+    .btn-edit:hover { background: rgba(212,175,55,0.3); }
+
+    .btn-delete {
+      background: rgba(232,85,85,0.1);
+      color: #E85555;
+    }
+
+    .btn-delete:hover { background: rgba(232,85,85,0.2); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .empty-icon { font-size: 64px; margin-bottom: 16px; }
+    .empty-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-desc { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+    /* ===== MODAL OVERLAY ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 840px;
+      overflow: hidden;
+      transform: translateY(-24px);
+      transition: transform .25s;
+      margin: auto;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--text); }
+    .modal-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      color: var(--muted);
+      transition: background .15s;
+      line-height: 1;
+    }
+
+    .modal-close:hover { background: var(--border); }
+
+    .modal-body {
+      padding: 28px;
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 20px 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: var(--surface);
+      flex-wrap: wrap;
+    }
+
+    /* ===== FORM IN MODAL ===== */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 18px;
+    }
+
+    .section-divider-line { flex: 1; height: 1px; background: var(--border); }
+
+    .section-divider-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .span-2 { grid-column: span 2; }
+    .span-3 { grid-column: span 3; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--label);
+    }
+
+    .form-label .required { color: #E85555; margin-left: 3px; }
+    .form-label .badge-auto {
+      font-size: 10px;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      padding: 2px 8px;
+      border-radius: 50px;
+      margin-left: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      padding: 10px 14px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-textarea { resize: vertical; min-height: 80px; }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+    }
+
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .input-with-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .input-with-icon .form-input { padding-left: 38px; }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 6px;
+      transition: opacity .2s;
+    }
+
+    .password-toggle:hover { opacity: 0.7; }
+    .password-wrapper .form-input { padding-right: 42px; }
+
+    /* Photo upload mini */
+    .photo-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: var(--input-bg);
+    }
+
+    .photo-upload-zone:hover {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.03);
+    }
+
+    .photo-upload-zone.dragover {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.08);
+    }
+
+    .photo-preview-wrap {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 12px;
+    }
+
+    .photo-preview-wrap.show { display: flex; }
+
+    .photo-preview-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+    }
+
+    .photo-preview-info { flex: 1; text-align: left; }
+    .photo-preview-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .photo-preview-size { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    #remove-photo {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #E85555;
+      padding: 6px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #2E7D32;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all .3s;
+      z-index: 9999;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #E85555; }
+    .toast.info { background: #1976D2; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      text-align: center;
+      padding: 32px 24px;
+      margin-top: 60px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content { max-width: 1400px; margin: 0 auto; }
+    .footer-content p { margin: 4px 0; font-size: 13px; }
+
+    /* ===== RESPONSIVE – SMARTPHONE ===== */
+    @media (max-width: 480px) {
+
+      /* --- Body / Container --- */
+      .container {
+        padding: 16px 5px 60px;
+      }
+
+      /* --- Navbar (identitas.html style: column, brand top, controls bottom) --- */
+      nav {
+        padding: 12px 5px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .nav-brand {
+        font-size: 20px;
+        gap: 10px;
+        justify-content: flex-start;
+      }
+
+      .nav-brand img { height: 28px; }
+
+      .nav-right {
+        gap: 8px;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .admin-info {
+        padding: 6px 8px;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .admin-name { font-size: 13px; }
+      .admin-role { font-size: 11px; }
+
+      .btn-dashboard {
+        padding: 7px 12px;
+        font-size: 12px;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .theme-toggle {
+        padding: 6px;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      /* --- Page Header --- */
+      .page-header {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .page-title { font-size: 22px; }
+      .page-subtitle { font-size: 12px; }
+
+      /* --- Action Bar: vertical stack --- */
+      .action-bar {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .search-bar { width: 100%; }
+
+      .search-input {
+        width: 100%;
+        font-size: 13px;
+        padding: 9px 12px 9px 36px;
+      }
+
+      .action-bar .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 16px;
+        font-size: 13px;
+      }
+
+      /* --- Stats Row --- */
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .stat-card {
+        padding: 14px 12px;
+        gap: 10px;
+        border-radius: 12px;
+      }
+
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        border-radius: 10px;
+      }
+
+      .stat-value { font-size: 20px; }
+      .stat-label { font-size: 11px; }
+
+      /* --- Table Card --- */
+      .table-card { border-radius: 14px; }
+
+      .table-card-header {
+        padding: 14px 10px;
+        gap: 8px;
+      }
+
+      .table-card-title { font-size: 14px; }
+      .table-count { font-size: 11px; }
+
+      /* --- Table: switch to card stack on mobile --- */
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead { display: none; }
+
+      tbody tr {
+        margin: 0 5px 10px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 10px;
+        background: var(--section-bg);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      }
+
+      tbody td {
+        padding: 5px 0;
+        font-size: 13px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        border: none;
+      }
+
+      tbody td::before {
+        content: attr(data-label);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--muted);
+        min-width: 90px;
+        flex-shrink: 0;
+        padding-top: 2px;
+      }
+
+      /* Photo cell special */
+      tbody td.td-photo-cell {
+        justify-content: flex-start;
+      }
+
+      .td-photo { gap: 8px; }
+
+      .student-avatar,
+      .student-avatar-fallback {
+        width: 44px;
+        height: 44px;
+        font-size: 17px;
+      }
+
+      .tbl-actions {
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn-tbl {
+        padding: 7px 14px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+
+      /* --- Empty State --- */
+      .empty-state { padding: 48px 12px; }
+      .empty-icon { font-size: 48px; }
+      .empty-title { font-size: 16px; }
+      .empty-desc { font-size: 13px; }
+
+      /* --- Modal --- */
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal {
+        border-radius: 16px 16px 0 0;
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        max-height: 96vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Drag handle */
+      .modal::before {
+        content: '';
+        display: block;
+        width: 36px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin: 8px auto 0;
+        flex-shrink: 0;
+      }
+
+      .modal-header {
+        padding: 8px 10px 8px;
+        flex-shrink: 0;
+      }
+
+      .modal-header-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        border-radius: 8px;
+      }
+
+      .modal-header-left { gap: 8px; }
+
+      .modal-title { font-size: 13px; }
+      .modal-subtitle { font-size: 10px; }
+
+      .modal-close {
+        font-size: 16px;
+        padding: 4px 6px;
+      }
+
+      .modal-body {
+        padding: 8px 8px 4px;
+        flex: 1;
+        overflow-y: auto;
+        max-height: unset;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .modal-footer {
+        padding: 8px 8px;
+        flex-direction: row;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .modal-footer .btn {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 8px;
+        font-size: 13px;
+      }
+
+      /* --- Form Grid in Modal --- */
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .form-grid.cols-3 { grid-template-columns: 1fr 1fr; }
+      .span-2, .span-3 { grid-column: span 2; }
+
+      .form-group { gap: 3px; }
+
+      .form-label { font-size: 10px; }
+      .form-hint  { font-size: 10px; }
+
+      .form-input,
+      .form-select,
+      .form-textarea {
+        font-size: 13px;
+        padding: 7px 10px;
+        border-radius: 8px;
+      }
+
+      .form-textarea { min-height: 56px; }
+
+      .input-with-icon .form-input { padding-left: 30px; }
+      .input-icon { font-size: 12px; left: 9px; }
+
+      .password-wrapper .form-input { padding-right: 34px; }
+      .password-toggle { font-size: 13px; padding: 4px; }
+
+      .section-divider { margin: 10px 0 8px; }
+      .section-divider-label { font-size: 9px; letter-spacing: 0.5px; }
+      .section-divider-line  { height: 1px; }
+
+      /* Photo upload compact */
+      .photo-upload-zone { padding: 12px 8px; border-radius: 8px; }
+      .photo-upload-zone > div:first-child { font-size: 20px; }
+      .photo-upload-zone > div:nth-child(2) { font-size: 11px; margin-top: 4px; }
+      .photo-upload-zone > div:nth-child(3) { font-size: 10px; margin-top: 2px; }
+
+      .photo-preview-wrap { padding: 8px 10px; gap: 8px; border-radius: 8px; margin-top: 6px; }
+      .photo-preview-img  { width: 40px; height: 40px; }
+      .photo-preview-name { font-size: 11px; }
+      .photo-preview-size { font-size: 10px; }
+      #remove-photo       { font-size: 14px; padding: 4px; }
+
+      /* --- Toast --- */
+      .toast {
+        left: 5px;
+        right: 5px;
+        bottom: 12px;
+        max-width: unset;
+        font-size: 13px;
+        padding: 12px 14px;
+        text-align: center;
+      }
+
+      /* --- Footer --- */
+      footer {
+        padding: 20px 5px;
+        margin-top: 32px;
+      }
+
+      .footer-content p { font-size: 12px; }
+    }
+
+    /* ===== TABLET ===== */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .container { padding: 24px 10px 60px; }
+      nav { padding: 12px 10px; }
+      .breadcrumb { padding: 12px 10px; }
+      .page-header { flex-direction: column; gap: 12px; }
+      .page-title { font-size: 26px; }
+      .action-bar { width: 100%; flex-wrap: wrap; }
+      .search-input { width: 100%; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid.cols-3 { grid-template-columns: 1fr 1fr; }
+      .span-2, .span-3 { grid-column: span 1; }
+      .modal-footer { flex-direction: column; }
+      .modal-footer .btn { width: 100%; justify-content: center; }
+      .toast { left: 10px; right: 10px; max-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="dashboardadmin.html" class="nav-brand">
+      <img id="nav-logo" src="" alt="Logo" style="display:none;height:36px;width:36px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);" />
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-brand-name">KENZ</span>
+    </a>
+    <div class="nav-right">
+      <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
+      <button class="theme-toggle" id="theme-toggle">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">A</div>
+        <div class="admin-details">
+          <span class="admin-name" id="nav-owner">Admin</span>
+          <span class="admin-role">Data Siswa</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-title-wrap">
+        <h1 class="page-title">Data <span>Siswa</span></h1>
+        <p class="page-subtitle">Kelola seluruh data siswa tempat les musik Anda</p>
+      </div>
+      <div class="action-bar">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="search-input" placeholder="Cari nama, ID, kelas…" oninput="filterTable()" />
+        </div>
+        <button class="btn btn-export" onclick="exportPDF()">📄 Export PDF</button>
+        <button class="btn btn-primary" onclick="openModal()">➕ Tambah Data Siswa</button>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">👨‍🎓</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total Siswa</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🟢</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-beginner">0</div>
+          <div class="stat-label">Basic</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🟡</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-intermediate">0</div>
+          <div class="stat-label">Intermediate</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-advanced">0</div>
+          <div class="stat-label">Performer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div class="table-card-title-wrap">
+          <div class="table-card-icon">📋</div>
+          <div class="table-card-title">Daftar Siswa</div>
+          <span class="table-count" id="table-count">0 siswa</span>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrapper" id="table-wrapper">
+        <table id="student-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>ID Siswa</th>
+              <th>Photo</th>
+              <th>Nama Siswa</th>
+              <th>Level Class</th>
+              <th>Kelas Instrumen</th>
+              <th>Tempat Lahir</th>
+              <th>Tanggal Lahir</th>
+              <th>Alamat</th>
+              <th>Nama Ortu/Wali</th>
+              <th>No. Telp/WA</th>
+              <th>Motto / Slogan</th>
+              <th>Username</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="student-tbody"></tbody>
+        </table>
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">🎵</div>
+          <div class="empty-title">Belum Ada Data Siswa</div>
+          <div class="empty-desc">Klik tombol "Tambah Data Siswa" untuk menambahkan siswa pertama Anda.</div>
+          <button class="btn btn-primary" onclick="openModal()">➕ Tambah Data Siswa</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 KENZ Private Guitar Lesson. All rights reserved.</p>
+      <p>Admin Dashboard v1.0</p>
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== MODAL TAMBAH / EDIT SISWA ===== -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal" id="modal">
+
+      <!-- MODAL HEADER -->
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-header-icon">🎓</div>
+          <div>
+            <div class="modal-title" id="modal-title">Tambah Data Siswa</div>
+            <div class="modal-subtitle">Isi seluruh data siswa dengan lengkap dan benar</div>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <!-- MODAL BODY -->
+      <div class="modal-body">
+
+        <!-- Identitas Siswa -->
+        <div class="section-divider">
+          <div class="section-divider-line"></div>
+          <div class="section-divider-label">🪪 Identitas Siswa</div>
+          <div class="section-divider-line"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">ID Siswa <span class="badge-auto">Auto</span></label>
+            <input type="text" class="form-input" id="f-id" readonly />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Siswa <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-input" id="f-nama" placeholder="Nama lengkap siswa" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Level Class <span class="required">*</span></label>
+            <select class="form-select" id="f-level">
+              <option value="">-- Pilih Level --</option>
+              <option value="Basic">Basic</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Performer">Performer</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Kelas Instrumen <span class="required">*</span></label>
+            <select class="form-select" id="f-kelas">
+              <option value="">-- Pilih Instrumen --</option>
+              <option value="Gitar Akustik">Gitar Akustik</option>
+              <option value="Gitar Elektrik">Gitar Elektrik</option>
+              <option value="Bass">Bass</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tempat Lahir <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">📍</span>
+              <input type="text" class="form-input" id="f-tempat-lahir" placeholder="Jakarta" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tanggal Lahir <span class="required">*</span></label>
+            <input type="date" class="form-input" id="f-tgl-lahir" />
+          </div>
+
+          <div class="form-group span-2">
+            <label class="form-label">Alamat <span class="required">*</span></label>
+            <textarea class="form-textarea" id="f-alamat" placeholder="Jalan, No., RT/RW, Kelurahan, Kecamatan, Kota"></textarea>
+          </div>
+        </div>
+
+        <!-- Orang Tua / Wali -->
+        <div class="section-divider">
+          <div class="section-divider-line"></div>
+          <div class="section-divider-label">👨‍👩‍👧 Orang Tua / Wali</div>
+          <div class="section-divider-line"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Nama Orang Tua / Wali <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">👨‍👩‍👧</span>
+              <input type="text" class="form-input" id="f-ortu" placeholder="Nama orang tua atau wali" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nomor Telepon / WA <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">📱</span>
+              <input type="text" class="form-input" id="f-tlp" placeholder="+62 8xx xxxx xxxx" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Motto & Foto -->
+        <div class="section-divider">
+          <div class="section-divider-line"></div>
+          <div class="section-divider-label">🎵 Profil Musisi</div>
+          <div class="section-divider-line"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label class="form-label">Motto / Slogan Bermusik</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🎶</span>
+              <input type="text" class="form-input" id="f-motto" placeholder="Musik adalah bahasa jiwa" />
+            </div>
+          </div>
+
+          <div class="form-group span-2">
+            <label class="form-label">Photo Siswa</label>
+            <div class="photo-upload-zone" id="photo-upload-zone">
+              <div>📷</div>
+              <div style="font-size:13px;font-weight:600;margin-top:6px;">Klik atau drag foto siswa</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">PNG, JPG • Maks 2 MB</div>
+            </div>
+            <input type="file" id="f-photo-file" accept="image/*" style="display:none" />
+            <div class="photo-preview-wrap" id="photo-preview-wrap">
+              <img class="photo-preview-img" id="photo-preview-img" src="" alt="Preview" />
+              <div class="photo-preview-info">
+                <div class="photo-preview-name" id="photo-preview-name">-</div>
+                <div class="photo-preview-size" id="photo-preview-size">-</div>
+              </div>
+              <button type="button" id="remove-photo">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Akun -->
+        <div class="section-divider">
+          <div class="section-divider-line"></div>
+          <div class="section-divider-label">🔐 Akun Siswa</div>
+          <div class="section-divider-line"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Username <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-input" id="f-username" placeholder="siswa_kenz01" autocomplete="off" />
+            </div>
+            <span class="form-hint">Huruf kecil, angka, underscore. Min. 4 karakter.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" class="form-input" id="f-password" placeholder="••••••••" autocomplete="new-password" />
+              <button class="password-toggle" id="f-pass-toggle" type="button">👁️</button>
+            </div>
+            <span class="form-hint">Min. 6 karakter.</span>
+          </div>
+        </div>
+
+      </div><!-- /modal-body -->
+
+      <!-- MODAL FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">✕ Batal</button>
+        <button class="btn btn-primary" id="modal-save-btn" onclick="simpanSiswa()">💾 Simpan Data</button>
+      </div>
+
+    </div><!-- /modal -->
+  </div><!-- /modal-overlay -->
+
+  <script>
+    /* ===== SUPABASE CONFIG ===== */
+    const SUPABASE_URL     = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+    const REST_URL         = SUPABASE_URL + '/rest/v1';
+    const BUCKET_NAME      = 'aset';
+
+    /* ===== THEME ===== */
+    const html         = document.documentElement;
+    const themeToggle  = document.getElementById('theme-toggle');
+
+    function applyTheme(t) {
+      html.setAttribute('data-theme', t);
+      themeToggle.textContent = t === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('kenz-theme', t);
+    }
+
+    applyTheme(localStorage.getItem('kenz-theme') || 'light');
+    themeToggle.addEventListener('click', () => {
+      applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ===== LOAD NAVBAR FROM IDENTITAS ===== */
+    async function loadNavbar() {
+      try {
+        const res = await fetch(`${REST_URL}/identitas?limit=1`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          if (rows && rows.length) updateNavbar(rows[0]);
+          return;
+        }
+      } catch (_) {}
+      const raw = localStorage.getItem('kenz-identitas');
+      if (raw) { try { updateNavbar(JSON.parse(raw)); } catch(_) {} }
+    }
+
+    function updateNavbar(d) {
+      if (d.nama_usaha) document.getElementById('nav-brand-name').textContent = d.nama_usaha;
+      if (d.owner) {
+        document.getElementById('nav-owner').textContent = d.owner;
+        document.getElementById('nav-avatar').textContent = d.owner.charAt(0).toUpperCase();
+      }
+      if (d.logo) {
+        const img = document.getElementById('nav-logo');
+        const fb  = document.getElementById('nav-logo-fallback');
+        img.src = d.logo; img.style.display = 'block'; fb.style.display = 'none';
+      }
+    }
+
+    /* ===== ID GENERATOR ===== */
+    function generateStudentId() {
+      const ts   = Date.now().toString(36).toUpperCase();
+      const rand = Math.random().toString(36).substring(2, 5).toUpperCase();
+      return `SIS-${ts}-${rand}`;
+    }
+
+    /* ===== IN-MEMORY DATA ===== */
+    let students = [];
+    let editIndex = null;
+    let selectedPhotoFile = null;
+    let selectedPhotoDataUrl = null;
+
+    /* ===== STATS ===== */
+    function updateStats() {
+      document.getElementById('stat-total').textContent        = students.length;
+      document.getElementById('stat-beginner').textContent     = students.filter(s => s.level === 'Basic').length;
+      document.getElementById('stat-intermediate').textContent = students.filter(s => s.level === 'Intermediate').length;
+      document.getElementById('stat-advanced').textContent     = students.filter(s => s.level === 'Performer').length;
+    }
+
+    /* ===== RENDER TABLE ===== */
+    function renderTable(data) {
+      const tbody = document.getElementById('student-tbody');
+      const empty = document.getElementById('empty-state');
+      const tbl   = document.getElementById('student-table');
+      const count = document.getElementById('table-count');
+
+      tbody.innerHTML = '';
+      count.textContent = `${data.length} siswa`;
+
+      if (data.length === 0) {
+        empty.style.display = 'block';
+        tbl.style.display   = 'none';
+        return;
+      }
+
+      empty.style.display = 'none';
+      tbl.style.display   = 'table';
+
+      data.forEach((s, i) => {
+        const globalIdx = students.indexOf(s);
+        const levelBadge = {
+          Basic:        'badge-level-beginner',
+          Intermediate: 'badge-level-intermediate',
+          Performer:    'badge-level-advanced',
+        }[s.level] || '';
+
+        const photoCell = s.photo
+          ? `<img class="student-avatar" src="${s.photo}" alt="${s.nama_siswa}" />`
+          : `<div class="student-avatar-fallback">${(s.nama_siswa || '?').charAt(0).toUpperCase()}</div>`;
+
+        const tglFormatted = s.tanggal_lahir
+          ? new Date(s.tanggal_lahir).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' })
+          : '-';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td data-label="No">${i + 1}</td>
+          <td data-label="ID Siswa" class="td-id">${s.id}</td>
+          <td data-label="Photo" class="td-photo-cell"><div class="td-photo">${photoCell}</div></td>
+          <td data-label="Nama" class="td-name">${s.nama_siswa || '-'}</td>
+          <td data-label="Level"><span class="badge ${levelBadge}">${s.level || '-'}</span></td>
+          <td data-label="Instrumen"><span class="badge badge-kelas">${s.instrumen || '-'}</span></td>
+          <td data-label="Tempat Lahir">${s.tempat_lahir || '-'}</td>
+          <td data-label="Tgl Lahir">${tglFormatted}</td>
+          <td data-label="Alamat">${s.alamat || '-'}</td>
+          <td data-label="Ortu/Wali">${s.nama_ortu || '-'}</td>
+          <td data-label="No. Telp">${s.tlp || '-'}</td>
+          <td data-label="Motto" style="font-style:italic;color:var(--muted);">${s.motto || '-'}</td>
+          <td data-label="Username"><code style="font-size:12px;">${s.username || '-'}</code></td>
+          <td data-label="Aksi">
+            <div class="tbl-actions">
+              <button class="btn-tbl btn-edit" onclick="editSiswa(${globalIdx})">✏️ Edit</button>
+              <button class="btn-tbl btn-delete" onclick="hapusSiswa(${globalIdx})">🗑️ Hapus</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ===== FILTER ===== */
+    function filterTable() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const filtered = students.filter(s =>
+        (s.nama_siswa || '').toLowerCase().includes(q) ||
+        (s.id          || '').toLowerCase().includes(q) ||
+        (s.instrumen   || '').toLowerCase().includes(q) ||
+        (s.level       || '').toLowerCase().includes(q) ||
+        (s.username    || '').toLowerCase().includes(q)
+      );
+      renderTable(filtered);
+    }
+
+    /* ===== MODAL ===== */
+    function openModal(mode = 'add') {
+      document.getElementById('modal-title').textContent = mode === 'edit' ? 'Edit Data Siswa' : 'Tambah Data Siswa';
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (mode === 'add') {
+        document.getElementById('f-id').value = generateStudentId();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      clearModal();
+      editIndex = null;
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
+
+    function clearModal() {
+      ['f-nama','f-tempat-lahir','f-alamat','f-ortu','f-tlp','f-motto','f-username','f-password'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('f-level').value = '';
+      document.getElementById('f-kelas').value = '';
+      document.getElementById('f-tgl-lahir').value = '';
+      document.getElementById('f-photo-file').value = '';
+      selectedPhotoFile = null;
+      selectedPhotoDataUrl = null;
+      document.getElementById('photo-preview-wrap').classList.remove('show');
+      document.getElementById('photo-preview-img').src = '';
+      document.getElementById('f-password').type = 'password';
+      document.getElementById('f-pass-toggle').textContent = '👁️';
+    }
+
+    /* ===== EDIT SISWA ===== */
+    function editSiswa(idx) {
+      editIndex = idx;
+      const s = students[idx];
+      document.getElementById('f-id').value           = s.id;
+      document.getElementById('f-nama').value         = s.nama_siswa || '';
+      document.getElementById('f-level').value        = s.level || '';
+      document.getElementById('f-kelas').value        = s.instrumen || '';
+      document.getElementById('f-tempat-lahir').value = s.tempat_lahir || '';
+      document.getElementById('f-tgl-lahir').value    = s.tanggal_lahir || '';
+      document.getElementById('f-alamat').value       = s.alamat || '';
+      document.getElementById('f-ortu').value         = s.nama_ortu || '';
+      document.getElementById('f-tlp').value          = s.tlp || '';
+      document.getElementById('f-motto').value        = s.motto || '';
+      document.getElementById('f-username').value     = s.username || '';
+      document.getElementById('f-password').value     = s.password || '';
+
+      if (s.photo) {
+        document.getElementById('photo-preview-img').src   = s.photo;
+        document.getElementById('photo-preview-name').textContent = 'Foto tersimpan';
+        document.getElementById('photo-preview-size').textContent = '';
+        document.getElementById('photo-preview-wrap').classList.add('show');
+        selectedPhotoDataUrl = s.photo;
+      }
+
+      openModal('edit');
+    }
+
+    /* ===== HAPUS SISWA ===== */
+    function hapusSiswa(idx) {
+      const s = students[idx];
+      if (!confirm(`Hapus data siswa "${s.nama_siswa}"? Tindakan ini tidak dapat dibatalkan.`)) return;
+      students.splice(idx, 1);
+      simpanKeSupabase(s.id, null, true); // fire-and-forget delete
+      updateStats();
+      filterTable();
+      showToast('🗑️ Data siswa berhasil dihapus', 'success');
+    }
+
+    /* ===== SIMPAN SISWA ===== */
+    async function simpanSiswa() {
+      // Validasi
+      const required = [
+        { id: 'f-nama',        label: 'Nama Siswa' },
+        { id: 'f-level',       label: 'Level Class' },
+        { id: 'f-kelas',       label: 'Kelas Instrumen' },
+        { id: 'f-tempat-lahir',label: 'Tempat Lahir' },
+        { id: 'f-tgl-lahir',   label: 'Tanggal Lahir' },
+        { id: 'f-alamat',      label: 'Alamat' },
+        { id: 'f-ortu',        label: 'Nama Orang Tua/Wali' },
+        { id: 'f-tlp',         label: 'Nomor Telepon/WA' },
+        { id: 'f-username',    label: 'Username' },
+        { id: 'f-password',    label: 'Password' },
+      ];
+
+      for (const f of required) {
+        const el = document.getElementById(f.id);
+        if (!el || !el.value.trim()) {
+          el && el.focus();
+          if (el) { el.style.borderColor = '#E85555'; el.addEventListener('input', () => el.style.borderColor = '', { once: true }); }
+          showToast(`⚠️ ${f.label} wajib diisi!`, 'error');
+          return;
+        }
+      }
+
+      const saveBtn = document.getElementById('modal-save-btn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = '⏳ Menyimpan…';
+
+      try {
+        // Upload photo jika ada file baru
+        let photoUrl = selectedPhotoDataUrl || null;
+        if (selectedPhotoFile) {
+          photoUrl = await uploadPhoto(document.getElementById('f-id').value);
+        }
+
+        const payload = {
+          id:             document.getElementById('f-id').value,
+          nama_siswa:     document.getElementById('f-nama').value.trim(),
+          level:          document.getElementById('f-level').value,
+          instrumen:      document.getElementById('f-kelas').value,
+          tempat_lahir:   document.getElementById('f-tempat-lahir').value.trim(),
+          tanggal_lahir:  document.getElementById('f-tgl-lahir').value,
+          alamat:         document.getElementById('f-alamat').value.trim(),
+          nama_ortu:      document.getElementById('f-ortu').value.trim(),
+          tlp:            document.getElementById('f-tlp').value.trim(),
+          motto:          document.getElementById('f-motto').value.trim() || null,
+          username:       document.getElementById('f-username').value.trim(),
+          password:       document.getElementById('f-password').value,
+          photo:          photoUrl || null,
+        };
+
+        if (editIndex !== null) {
+          students[editIndex] = payload;
+        } else {
+          students.push(payload);
+        }
+
+        await simpanKeSupabase(payload.id, payload, false);
+        updateStats();
+        filterTable();
+        closeModal();
+        showToast(editIndex !== null ? '✅ Data siswa berhasil diperbarui!' : '✅ Data siswa berhasil ditambahkan!', 'success');
+
+      } catch (err) {
+        console.error(err);
+        showToast(`❌ Gagal menyimpan: ${err.message}`, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Simpan Data';
+      }
+    }
+
+    /* ===== SUPABASE: UPSERT / DELETE ===== */
+    async function simpanKeSupabase(id, payload, isDelete) {
+      try {
+        if (isDelete) {
+          await fetch(`${REST_URL}/datasiswa?id=eq.${id}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          });
+          return;
+        }
+
+        await fetch(`${REST_URL}/datasiswa`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey':        SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer':        'return=representation,resolution=merge-duplicates',
+          },
+          body: JSON.stringify(payload),
+        });
+      } catch (err) {
+        // Supabase gagal: data tetap ada di memori
+        console.warn('Supabase sync warning:', err.message);
+      }
+    }
+
+    /* ===== LOAD DATA SISWA DARI SUPABASE ===== */
+    async function loadSiswa() {
+      try {
+        const res = await fetch(`${REST_URL}/datasiswa?order=created_at.asc`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        });
+        if (res.ok) {
+          const rows = await res.json();
+          students = Array.isArray(rows) ? rows : [];
+          updateStats();
+          filterTable();
+          return;
+        }
+      } catch (err) {
+        console.warn('Load siswa warning:', err.message);
+      }
+      updateStats();
+      filterTable();
+    }
+
+    /* ===== UPLOAD PHOTO ===== */
+    async function uploadPhoto(idSiswa) {
+      if (!selectedPhotoFile) return null;
+      showToast('📤 Mengupload foto…', 'info');
+
+      const ext      = selectedPhotoFile.name.split('.').pop();
+      const fileName = `photos/${idSiswa}-${Date.now()}.${ext}`;
+
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET_NAME}/${fileName}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': selectedPhotoFile.type,
+          'x-upsert': 'true',
+        },
+        body: selectedPhotoFile,
+      });
+
+      if (!res.ok) {
+        // Fallback ke data URL jika upload gagal
+        console.warn('Photo upload failed, using local preview');
+        return selectedPhotoDataUrl;
+      }
+
+      return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${fileName}`;
+    }
+
+    /* ===== PHOTO UPLOAD UI ===== */
+    const photoUploadZone  = document.getElementById('photo-upload-zone');
+    const photoFileInput   = document.getElementById('f-photo-file');
+    const photoPreviewWrap = document.getElementById('photo-preview-wrap');
+    const photoPreviewImg  = document.getElementById('photo-preview-img');
+    const photoPreviewName = document.getElementById('photo-preview-name');
+    const photoPreviewSize = document.getElementById('photo-preview-size');
+
+    photoUploadZone.addEventListener('click', () => photoFileInput.click());
+    photoFileInput.addEventListener('change', e => { if (e.target.files[0]) handlePhoto(e.target.files[0]); });
+    photoUploadZone.addEventListener('dragover', e => { e.preventDefault(); photoUploadZone.classList.add('dragover'); });
+    photoUploadZone.addEventListener('dragleave', () => photoUploadZone.classList.remove('dragover'));
+    photoUploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      photoUploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handlePhoto(e.dataTransfer.files[0]);
+    });
+
+    function handlePhoto(file) {
+      if (!file.type.startsWith('image/')) { showToast('❌ File harus berupa gambar', 'error'); return; }
+      if (file.size > 2 * 1024 * 1024)    { showToast('❌ Ukuran foto melebihi 2 MB', 'error'); return; }
+      selectedPhotoFile = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        selectedPhotoDataUrl = e.target.result;
+        photoPreviewImg.src = e.target.result;
+        photoPreviewName.textContent = file.name;
+        photoPreviewSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+        photoPreviewWrap.classList.add('show');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('remove-photo').addEventListener('click', () => {
+      photoFileInput.value = '';
+      selectedPhotoFile = null;
+      selectedPhotoDataUrl = null;
+      photoPreviewImg.src = '';
+      photoPreviewWrap.classList.remove('show');
+    });
+
+    /* ===== PASSWORD TOGGLE ===== */
+    document.getElementById('f-pass-toggle').addEventListener('click', () => {
+      const inp  = document.getElementById('f-password');
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      document.getElementById('f-pass-toggle').textContent = show ? '🙈' : '👁️';
+    });
+
+    /* ===== EXPORT PDF ===== */
+    function exportPDF() {
+      if (students.length === 0) { showToast('⚠️ Tidak ada data untuk diexport', 'error'); return; }
+      showToast('📄 Menyiapkan PDF…', 'info');
+
+      const style = `
+        <style>
+          body { font-family: Arial, sans-serif; font-size: 11px; color: #1A1A1A; }
+          h2 { text-align:center; color: #9A7020; margin-bottom: 4px; }
+          p.sub { text-align:center; color:#666; font-size:10px; margin-bottom:16px; }
+          table { width:100%; border-collapse:collapse; font-size:10px; }
+          th { background: #9A7020; color:#fff; padding:7px 8px; text-align:left; }
+          td { padding:6px 8px; border-bottom:1px solid #eee; vertical-align:top; }
+          tr:nth-child(even) td { background:#fafafa; }
+        </style>
+      `;
+
+      const rows = students.map((s, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td>${s.id}</td>
+          <td>${s.nama_siswa || '-'}</td>
+          <td>${s.level || '-'}</td>
+          <td>${s.instrumen || '-'}</td>
+          <td>${s.tempat_lahir || '-'}</td>
+          <td>${s.tanggal_lahir ? new Date(s.tanggal_lahir).toLocaleDateString('id-ID') : '-'}</td>
+          <td>${s.alamat || '-'}</td>
+          <td>${s.nama_ortu || '-'}</td>
+          <td>${s.tlp || '-'}</td>
+          <td>${s.motto || '-'}</td>
+          <td>${s.username || '-'}</td>
+        </tr>
+      `).join('');
+
+      const html = `
+        <html><head><meta charset="UTF-8">${style}</head>
+        <body>
+          <h2>🎸 Data Siswa – KENZ Guitar Lesson</h2>
+          <p class="sub">Dicetak: ${new Date().toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
+          <table>
+            <thead>
+              <tr>
+                <th>No</th><th>ID Siswa</th><th>Nama</th><th>Level</th><th>Instrumen</th>
+                <th>Tempat Lahir</th><th>Tgl Lahir</th><th>Alamat</th>
+                <th>Ortu/Wali</th><th>No. Telp</th><th>Motto</th><th>Username</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </body></html>
+      `;
+
+      const w = window.open('', '_blank');
+      w.document.write(html);
+      w.document.close();
+      setTimeout(() => { w.print(); }, 400);
+    }
+
+    /* ===== TOAST ===== */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = `toast ${type} show`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    /* ===== KEYBOARD ESC ===== */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    /* ===== INIT ===== */
+    loadNavbar();
+    loadSiswa();
+  </script>
+</body>
+</html>

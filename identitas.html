@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Identitas Les – KENZ Guitar Lesson</title>
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --text: #1A1A1A;
+      --muted: #666;
+      --bg: #FFFFFF;
+      --surface: #F5F5F5;
+      --border: #E0E0E0;
+      --footer-bg: #1A1208;
+      --footer-text: #B8AA96;
+      --input-bg: #FFFFFF;
+      --input-border: #D0D0D0;
+      --input-focus: #D4AF37;
+      --label: #444;
+      --section-bg: #FAFAFA;
+    }
+
+    [data-theme="dark"] {
+      --text: #FFFFFF;
+      --muted: #AAAAAA;
+      --bg: #0A0A0A;
+      --surface: #1A1A1A;
+      --border: #333333;
+      --footer-bg: #0A0A0A;
+      --footer-text: #555555;
+      --input-bg: #141414;
+      --input-border: #333333;
+      --input-focus: #D4AF37;
+      --label: #CCCCCC;
+      --section-bg: #111111;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .3s, color .3s;
+    }
+
+    /* ===== NAVBAR (sama dengan dashboardadmin.html) ===== */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s;
+    }
+
+    .theme-toggle:hover { background: var(--surface); }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 8px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+
+    .admin-details { display: flex; flex-direction: column; }
+    .admin-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .admin-role { font-size: 12px; color: var(--muted); }
+
+    .btn-dashboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(212,175,55,0.25);
+    }
+
+    .btn-dashboard:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    }
+
+    .btn-dashboard:active {
+      transform: translateY(0);
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+      padding: 16px 32px;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breadcrumb a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* ===== MAIN ===== */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .page-header {
+      margin-bottom: 40px;
+    }
+
+    .page-title {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .page-title span { color: var(--gold); }
+
+    .page-subtitle {
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .form-card-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+    }
+
+    .form-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .form-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .form-card-body {
+      padding: 28px;
+    }
+
+    /* ===== FORM GRID ===== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-grid.single { grid-template-columns: 1fr; }
+    .span-2 { grid-column: span 2; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--label);
+      letter-spacing: 0.3px;
+    }
+
+    .form-label .required {
+      color: #E85555;
+      margin-left: 3px;
+    }
+
+    .form-label .badge-auto {
+      font-size: 10px;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      padding: 2px 8px;
+      border-radius: 50px;
+      margin-left: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .form-input,
+    .form-textarea {
+      padding: 11px 14px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--muted);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .input-with-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .input-with-icon .form-input {
+      padding-left: 40px;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 8px;
+      transition: opacity .2s;
+    }
+
+    .password-toggle:hover { opacity: 0.7; }
+
+    .password-wrapper .form-input {
+      padding-right: 44px;
+    }
+
+    .password-strength {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .strength-bar {
+      height: 4px;
+      flex: 1;
+      background: var(--border);
+      border-radius: 2px;
+      transition: background .2s;
+    }
+
+    .strength-bar.weak { background: #E85555; }
+    .strength-bar.medium { background: #F5A623; }
+    .strength-bar.strong { background: #6FCF97; }
+
+    .strength-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      display: block;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ===== UPLOAD ZONE ===== */
+    #upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: var(--input-bg);
+    }
+
+    #upload-zone:hover {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.03);
+    }
+
+    #upload-zone.dragover {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .upload-text-main {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .upload-text-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #logo-file {
+      display: none;
+    }
+
+    #upload-preview {
+      display: none;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #upload-preview.show {
+      display: flex;
+    }
+
+    #preview-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .preview-info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .preview-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .preview-size {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    #remove-logo {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #E85555;
+      padding: 8px;
+      transition: opacity .2s;
+    }
+
+    #remove-logo:hover { opacity: 0.7; }
+
+    /* ===== FORM ACTIONS ===== */
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding: 0 32px 32px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      text-align: center;
+      padding: 32px 24px;
+      margin-top: 60px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .footer-content p {
+      margin: 4px 0;
+      font-size: 13px;
+    }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #2E7D32;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all .3s;
+      z-index: 1000;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.error {
+      background: #E85555;
+    }
+
+    .toast.info {
+      background: #1976D2;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      nav {
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .container { padding: 24px 16px 60px; }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .span-2 { grid-column: span 1; }
+
+      .form-actions {
+        flex-direction: column;
+        padding: 0 16px 16px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="dashboardadmin.html" class="nav-brand">
+      <img id="nav-logo" src="" alt="Logo" style="display:none;height:36px;width:36px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);" />
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-brand-name">KENZ</span>
+    </a>
+    <div class="nav-right">
+      <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
+      <button class="theme-toggle" id="theme-toggle">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">A</div>
+        <div class="admin-details">
+          <span class="admin-name" id="nav-owner">Admin</span>
+          <span class="admin-role">Identitas Usaha</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <h1 class="page-title">Identitas <span>Les</span></h1>
+      <p class="page-subtitle">Kelola informasi dasar tempat les gitar Anda</p>
+    </div>
+
+    <!-- IDENTITAS USAHA CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-icon">🏢</div>
+        <div class="form-card-title">Informasi Usaha</div>
+      </div>
+      <div class="form-card-body">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label class="form-label">ID Les <span class="badge-auto">Auto</span></label>
+            <input type="text" class="form-input" id="id-les" readonly />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nama Les <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">📝</span>
+              <input type="text" class="form-input" id="nama-les" placeholder="KENZ Private Guitar Lesson" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">NIB <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">🆔</span>
+              <input type="text" class="form-input" id="nib" placeholder="1234567890123456" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tahun Berdiri <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">📅</span>
+              <input type="year" class="form-input" id="tahun-berdiri" placeholder="2020" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Owner / Pemilik <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-input" id="owner" placeholder="Nama lengkap pemilik" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Alamat <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">📍</span>
+              <input type="text" class="form-input" id="alamat" placeholder="Jalan, No., Kota, Provinsi" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Telepon / WhatsApp <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">📞</span>
+              <input type="text" class="form-input" id="telepon" placeholder="+62 8xx xxxx xxxx" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-with-icon">
+              <span class="input-icon">✉️</span>
+              <input type="email" class="form-input" id="email" placeholder="admin@kenz.lesson" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Instagram</label>
+            <div class="input-with-icon">
+              <span class="input-icon">📸</span>
+              <input type="text" class="form-input" id="instagram" placeholder="@kenz_guitar_lesson" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Facebook</label>
+            <div class="input-with-icon">
+              <span class="input-icon">👍</span>
+              <input type="text" class="form-input" id="facebook" placeholder="KENZ Guitar Lesson" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">YouTube</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🎥</span>
+              <input type="text" class="form-input" id="youtube" placeholder="@kenzguitarlesson" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">TikTok</label>
+            <div class="input-with-icon">
+              <span class="input-icon">🎵</span>
+              <input type="text" class="form-input" id="tiktok" placeholder="@kenzguitarlesson" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOAD LOGO CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-icon">🎨</div>
+        <div class="form-card-title">Logo Usaha</div>
+      </div>
+      <div class="form-card-body">
+        <div class="form-grid single">
+          <div class="form-group">
+            <label class="form-label">Upload Logo</label>
+            <div id="upload-zone">
+              <div class="upload-icon">📁</div>
+              <div class="upload-text-main">Drag & drop logo di sini</div>
+              <div class="upload-text-sub">atau klik untuk memilih file (PNG, JPG, SVG • Max 2 MB)</div>
+            </div>
+            <input type="file" id="logo-file" accept="image/*" />
+            <div id="upload-preview">
+              <img id="preview-img" src="" alt="Preview" />
+              <div class="preview-info">
+                <div class="preview-name" id="preview-name">-</div>
+                <div class="preview-size" id="preview-size">-</div>
+              </div>
+              <button type="button" id="remove-logo">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEAMANAN AKUN CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-icon">🔐</div>
+        <div class="form-card-title">Keamanan Akun</div>
+      </div>
+      <div class="form-card-body">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label class="form-label">Username <span class="required">*</span></label>
+            <div class="input-with-icon">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-input" id="username" placeholder="admin_kenz" autocomplete="off" />
+            </div>
+            <span class="form-hint">Huruf kecil, angka, dan underscore. Min. 5 karakter.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <div class="password-wrapper">
+              <input type="password" class="form-input" id="password" placeholder="••••••••" autocomplete="new-password" />
+              <button class="password-toggle" id="pass-toggle" type="button">👁️</button>
+            </div>
+            <div class="password-strength">
+              <div class="strength-bar" id="bar1"></div>
+              <div class="strength-bar" id="bar2"></div>
+              <div class="strength-bar" id="bar3"></div>
+              <div class="strength-bar" id="bar4"></div>
+            </div>
+            <span class="strength-label" id="strength-label">Masukkan password</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="resetForm()">↩ Reset</button>
+      <button class="btn btn-primary" id="save-btn" onclick="simpanData()">💾 Simpan Identitas</button>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2025 KENZ Private Guitar Lesson. All rights reserved.</p>
+      <p>Admin Dashboard v1.0</p>
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ===== SUPABASE CONFIG ===== */
+    const SUPABASE_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+    const REST_URL = SUPABASE_URL + '/rest/v1';
+    const STORAGE_URL = SUPABASE_URL + '/storage/v1/object/aset';
+    const BUCKET_NAME = 'aset';
+
+    /* ===== THEME TOGGLE ===== */
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('kenz-theme', theme);
+    }
+
+    const savedTheme = localStorage.getItem('kenz-theme') || 'light';
+    applyTheme(savedTheme);
+    themeToggle.addEventListener('click', () => {
+      applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ===== AUTO GENERATE ID ===== */
+    function generateId() {
+      const prefix = 'KENZ';
+      const ts = Date.now().toString(36).toUpperCase();
+      const rand = Math.random().toString(36).substring(2, 5).toUpperCase();
+      return `${prefix}-${ts}-${rand}`;
+    }
+
+    document.getElementById('id-les').value = generateId();
+
+    /* ===== UPLOAD LOGO ===== */
+    const logoFile    = document.getElementById('logo-file');
+    const uploadZone  = document.getElementById('upload-zone');
+    const uploadPreview = document.getElementById('upload-preview');
+    const previewImg  = document.getElementById('preview-img');
+    const previewName = document.getElementById('preview-name');
+    const previewSize = document.getElementById('preview-size');
+    const removeLogo  = document.getElementById('remove-logo');
+    
+    let selectedLogoFile = null;
+
+    logoFile.addEventListener('change', handleFile);
+
+    uploadZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFileObj(file);
+    });
+
+    uploadZone.addEventListener('click', () => logoFile.click());
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (file) handleFileObj(file);
+    }
+
+    function handleFileObj(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('❌ File harus berupa gambar (PNG, JPG, SVG)', 'error');
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        showToast('❌ Ukuran file melebihi 2 MB', 'error');
+        return;
+      }
+      
+      selectedLogoFile = file;
+      
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImg.src = e.target.result;
+        previewName.textContent = file.name;
+        previewSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+        uploadPreview.classList.add('show');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    removeLogo.addEventListener('click', () => {
+      logoFile.value = '';
+      selectedLogoFile = null;
+      previewImg.src = '';
+      uploadPreview.classList.remove('show');
+    });
+
+    /* ===== PASSWORD TOGGLE ===== */
+    const passInput  = document.getElementById('password');
+    const passToggle = document.getElementById('pass-toggle');
+
+    passToggle.addEventListener('click', () => {
+      const show = passInput.type === 'password';
+      passInput.type = show ? 'text' : 'password';
+      passToggle.textContent = show ? '🙈' : '👁️';
+    });
+
+    /* ===== PASSWORD STRENGTH ===== */
+    const bars = [
+      document.getElementById('bar1'),
+      document.getElementById('bar2'),
+      document.getElementById('bar3'),
+      document.getElementById('bar4'),
+    ];
+    const strengthLabel = document.getElementById('strength-label');
+
+    passInput.addEventListener('input', () => {
+      const val = passInput.value;
+      let score = 0;
+      if (val.length >= 8)            score++;
+      if (/[A-Z]/.test(val))          score++;
+      if (/[0-9]/.test(val))          score++;
+      if (/[^A-Za-z0-9]/.test(val))   score++;
+
+      const colors = ['', 'weak', 'weak', 'medium', 'strong'];
+      const labels = ['Masukkan password', 'Sangat lemah', 'Lemah', 'Cukup kuat', 'Kuat 💪'];
+
+      bars.forEach((bar, i) => {
+        bar.className = 'strength-bar';
+        if (i < score) bar.classList.add(colors[score]);
+      });
+
+      strengthLabel.textContent = val.length === 0 ? 'Masukkan password' : labels[score];
+    });
+
+    /* ===== TOAST ===== */
+    let toastTimer;
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = `toast ${type} show`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    /* ===== UPLOAD LOGO KE SUPABASE STORAGE ===== */
+    async function uploadLogo(idLes) {
+      if (!selectedLogoFile) return null;
+
+      showToast('📤 Mengupload logo...', 'info');
+
+      try {
+        const ext      = selectedLogoFile.name.split('.').pop();
+        const fileName = `logos/${idLes}-${Date.now()}.${ext}`;
+
+        // Coba POST dulu, kalau sudah ada (400 duplicate) pakai PUT untuk overwrite
+        let response = await fetch(
+          `${SUPABASE_URL}/storage/v1/object/${BUCKET_NAME}/${fileName}`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': selectedLogoFile.type,
+              'x-upsert': 'true',          // overwrite kalau path sama
+            },
+            body: selectedLogoFile,
+          }
+        );
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.message || `Upload gagal (HTTP ${response.status})`);
+        }
+
+        // Public URL
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${fileName}`;
+        console.log('✅ Logo uploaded:', publicUrl);
+        return publicUrl;
+
+      } catch (err) {
+        console.error('Upload logo error:', err);
+        showToast(`❌ Upload logo gagal: ${err.message}`, 'error');
+        throw err;
+      }
+    }
+
+    /* ===== SIMPAN DATA KE SUPABASE ===== */
+    async function simpanData() {
+
+      // --- VALIDASI (sesuai skema: * = wajib) ---
+      const required = [
+        { id: 'nama-les',      label: 'Nama Les' },
+        { id: 'tahun-berdiri', label: 'Tahun Berdiri' },
+        { id: 'owner',         label: 'Owner / Pemilik' },
+        { id: 'telepon',       label: 'Telepon / WhatsApp' },
+        { id: 'username',      label: 'Username' },
+        { id: 'password',      label: 'Password' },
+      ];
+
+      for (const field of required) {
+        const el = document.getElementById(field.id);
+        if (!el || !el.value.trim()) {
+          if (el) {
+            el.focus();
+            el.style.borderColor = '#E85555';
+            el.addEventListener('input', () => el.style.borderColor = '', { once: true });
+          }
+          showToast(`⚠️ ${field.label} wajib diisi!`, 'error');
+          return;
+        }
+      }
+
+      const saveBtn = document.getElementById('save-btn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = '⏳ Menyimpan...';
+
+      try {
+        const idLes = document.getElementById('id-les').value;
+
+        // 1. Upload logo jika ada file baru dipilih
+        let logoUrl = null;
+        if (selectedLogoFile) {
+          logoUrl = await uploadLogo(idLes);
+        }
+
+        // 2. Susun payload sesuai kolom tabel identitas
+        const payload = {
+          id:            idLes,
+          nama_usaha:    document.getElementById('nama-les').value.trim(),
+          nib:           document.getElementById('nib').value.trim()           || null,
+          tahun_berdiri: document.getElementById('tahun-berdiri').value.trim(),
+          owner:         document.getElementById('owner').value.trim(),
+          alamat:        document.getElementById('alamat').value.trim()        || null,
+          tlp:           document.getElementById('telepon').value.trim(),
+          email:         document.getElementById('email').value.trim()         || null,
+          ig:            document.getElementById('instagram').value.trim()     || null,
+          fb:            document.getElementById('facebook').value.trim()      || null,
+          yt:            document.getElementById('youtube').value.trim()       || null,
+          tt:            document.getElementById('tiktok').value.trim()        || null,
+          username:      document.getElementById('username').value.trim(),
+          password:      document.getElementById('password').value,
+        };
+
+        // Hanya update logo kalau ada file baru; kalau tidak ada, biarkan nilai lama di DB
+        if (logoUrl !== null) {
+          payload.logo = logoUrl;
+        }
+
+        showToast('💾 Menyimpan data ke Supabase...', 'info');
+        console.log('🔵 Payload:', payload);
+
+        // 3. Upsert ke tabel identitas
+        //    Prefer: resolution=merge-duplicates → INSERT kalau baru, UPDATE kalau id sudah ada
+        const res = await fetch(`${REST_URL}/identitas`, {
+          method: 'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'apikey':        SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer':        'return=representation,resolution=merge-duplicates',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const resText = await res.text();
+        console.log('🔵 Response', res.status, resText);
+
+        if (!res.ok) {
+          let msg = `HTTP ${res.status}`;
+          try { msg = JSON.parse(resText).message || msg; } catch(_) {}
+          throw new Error(msg);
+        }
+
+        // 4. Simpan juga ke localStorage sebagai cache lokal
+        const saved = { ...payload };
+        if (logoUrl) saved.logo = logoUrl;
+        localStorage.setItem('kenz-identitas', JSON.stringify(saved));
+
+        showToast('✅ Data identitas berhasil disimpan!', 'success');
+
+        // Update navbar langsung tanpa reload
+        populateForm({ ...payload, logo: logoUrl || payload.logo });
+
+      } catch (err) {
+        console.error('❌ Save error:', err);
+        showToast(`❌ Gagal menyimpan: ${err.message}`, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Simpan Identitas';
+      }
+    }
+
+    /* ===== RESET FORM ===== */
+    function resetForm() {
+      if (!confirm('Reset semua isian? Data yang belum disimpan akan hilang.')) return;
+      ['nama-les','nib','tahun-berdiri','owner','alamat','telepon','email',
+       'instagram','facebook','youtube','tiktok','username','password'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      logoFile.value = '';
+      selectedLogoFile = null;
+      uploadPreview.classList.remove('show');
+      bars.forEach(b => b.className = 'strength-bar');
+      strengthLabel.textContent = 'Masukkan password';
+      document.getElementById('id-les').value = generateId();
+      showToast('↩ Form berhasil direset', 'success');
+    }
+
+    /* ===== LOAD DATA — Supabase dulu, fallback localStorage ===== */
+    async function loadSaved() {
+      // Coba ambil dari Supabase terlebih dahulu
+      try {
+        const res = await fetch(`${REST_URL}/identitas?limit=1`, {
+          headers: {
+            'apikey':        SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        });
+
+        if (res.ok) {
+          const rows = await res.json();
+          if (rows && rows.length > 0) {
+            populateForm(rows[0]);
+            localStorage.setItem('kenz-identitas', JSON.stringify(rows[0]));
+            console.log('✅ Data loaded from Supabase');
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('⚠️ Tidak bisa load dari Supabase, fallback localStorage:', err.message);
+      }
+
+      // Fallback: localStorage
+      const raw = localStorage.getItem('kenz-identitas');
+      if (raw) {
+        try { populateForm(JSON.parse(raw)); } catch(_) {}
+      }
+    }
+
+    function populateForm(d) {
+      const map = {
+        'nama-les':      d.nama_usaha,
+        'nib':           d.nib,
+        'tahun-berdiri': d.tahun_berdiri,
+        'owner':         d.owner,
+        'alamat':        d.alamat,
+        'telepon':       d.tlp,
+        'email':         d.email,
+        'instagram':     d.ig,
+        'facebook':      d.fb,
+        'youtube':       d.yt,
+        'tiktok':        d.tt,
+        'username':      d.username,
+      };
+      for (const [id, val] of Object.entries(map)) {
+        const el = document.getElementById(id);
+        if (el && val) el.value = val;
+      }
+      if (d.id) document.getElementById('id-les').value = d.id;
+
+      // --- Update Navbar ---
+      if (d.nama_usaha) {
+        document.getElementById('nav-brand-name').textContent = d.nama_usaha;
+      }
+      if (d.owner) {
+        document.getElementById('nav-owner').textContent = d.owner;
+        document.getElementById('nav-avatar').textContent = d.owner.charAt(0).toUpperCase();
+      }
+      if (d.logo) {
+        const navLogo     = document.getElementById('nav-logo');
+        const navFallback = document.getElementById('nav-logo-fallback');
+        navLogo.src = d.logo;
+        navLogo.style.display = 'block';
+        navFallback.style.display = 'none';
+      }
+
+      // --- Preview logo upload ---
+      if (d.logo) {
+        previewImg.src = d.logo;
+        previewName.textContent = 'Logo tersimpan';
+        previewSize.textContent = '';
+        uploadPreview.classList.add('show');
+      }
+    }
+
+    loadSaved();
+  </script>
+</body>
+</html>
