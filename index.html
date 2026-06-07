@@ -637,6 +637,200 @@
     .btn-dark:hover { transform: translateY(-2px); opacity: .9; }
 
     /* =========================================
+       GALLERY
+    ========================================= */
+    #gallery { padding: 80px 0; }
+    
+    /* Gallery Tabs */
+    .gallery-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .gallery-tab {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      padding: 12px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .3s;
+      font-family: var(--font-body);
+    }
+    .gallery-tab:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .gallery-tab.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #0A0A0A;
+    }
+    
+    /* Gallery Content */
+    .gallery-content {
+      animation: fadeIn .5s ease;
+    }
+    
+    /* Photo Gallery */
+    .gallery-carousel {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .gallery-scroll {
+      flex: 1;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .gallery-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .gallery-grid {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      cursor: pointer;
+      transition: transform .3s, box-shadow .3s;
+      width: min(600px, 90vw);
+      flex-shrink: 0;
+    }
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      opacity: 0;
+      transition: opacity .3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+    .gallery-info {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    /* Gallery Navigation Buttons */
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      color: var(--gold);
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .gallery-nav:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #0A0A0A;
+      transform: translateY(-50%) scale(1.1);
+    }
+    .gallery-nav-prev {
+      left: -24px;
+    }
+    .gallery-nav-next {
+      right: -24px;
+    }
+    
+    /* Video Gallery */
+    .video-grid {
+      display: flex;
+      gap: 24px;
+      width: max-content;
+    }
+    .video-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+      width: min(700px, 90vw);
+      flex-shrink: 0;
+    }
+    .video-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .video-wrapper {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .video-info {
+      padding: 16px;
+    }
+    .video-info h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      font-family: var(--font-body);
+    }
+    .video-info p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    @media (max-width: 640px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-tabs {
+        gap: 12px;
+      }
+      .gallery-tab {
+        padding: 10px 24px;
+        font-size: 14px;
+      }
+    }
+
+    /* =========================================
        FOOTER
     ========================================= */
     footer {
@@ -774,7 +968,7 @@
       .footer-bottom { flex-direction: column; text-align: center; }
       .cta-banner { padding: 48px 28px; margin: 0 0 80px; border-radius: 0; }
       .instrument-header, .testi-header { flex-direction: column; align-items: flex-start; }
-      #instrumen, #about, #harga, #testimony, #contact { padding: 80px 0; }
+      #instrumen, #about, #harga, #testimony, #gallery, #contact { padding: 80px 0; }
       .modal-box { padding: 36px 24px; }
     }
     @media (max-width: 480px) {
@@ -819,6 +1013,7 @@
       <li><a href="#about">Tentang</a></li>
       <li><a href="#harga">Harga</a></li>
       <li><a href="#testimony">Testimoni</a></li>
+      <li><a href="#gallery">Galeri</a></li>
       <li><a href="#contact">Lokasi</a></li>
     </ul>
 
@@ -851,6 +1046,7 @@
   <a href="#about" class="mob-link">Tentang</a>
   <a href="#harga" class="mob-link">Harga</a>
   <a href="#testimony" class="mob-link">Testimoni</a>
+  <a href="#gallery" class="mob-link">Galeri</a>
   <a href="#contact" class="mob-link">Lokasi</a>
   <button class="btn-primary" id="open-login-mob" style="margin-top:8px;">Login</button>
 </div>
@@ -1032,6 +1228,48 @@
     <div class="testi-scroll" id="testi-scroll">
       <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Alhamdulillah, les selama 2 bulan septria lah bise memainkan chord gitar dengan lagu. Rekomended pokok e Kenz Private Guitar Lesson.</p><div class="testi-author"><div class="testi-avatar"><img src="testi1.jpg" alt="Bunda Yuni"></div><div><div class="testi-name">Bunda Yuni</div><div class="testi-role">Orang Tua Murid · 2 bulan</div></div></div></div>
       <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Mantap. materi mudah di pelajarin, jam les fleksible. makasih coach</p><div class="testi-author"><div class="testi-avatar"><img src="testi2.jpg" alt="Deri"></div><div><div class="testi-name">Deri</div><div class="testi-role">Simpang Teritip</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERI SISWA -->
+<section id="gallery">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px;" class="reveal">
+      <span class="section-label">Galeri</span>
+      <h2 class="section-title">GALERI<br>SISWA</h2>
+    </div>
+    
+    <!-- Gallery Tabs -->
+    <div class="gallery-tabs reveal">
+      <button class="gallery-tab active" data-tab="photo">📷 Foto</button>
+      <button class="gallery-tab" data-tab="video">🎬 Video</button>
+    </div>
+    
+    <!-- Photo Gallery -->
+    <div class="gallery-content reveal" id="gallery-photo">
+      <div class="gallery-carousel">
+        <button class="gallery-nav gallery-nav-prev" id="photo-prev">❮</button>
+        <div class="gallery-scroll" id="photo-scroll">
+          <div class="gallery-grid" id="photo-grid">
+            <!-- Photo items will be loaded from Supabase -->
+          </div>
+        </div>
+        <button class="gallery-nav gallery-nav-next" id="photo-next">❯</button>
+      </div>
+    </div>
+    
+    <!-- Video Gallery -->
+    <div class="gallery-content reveal" id="gallery-video" style="display:none;">
+      <div class="gallery-carousel">
+        <button class="gallery-nav gallery-nav-prev" id="video-prev">❮</button>
+        <div class="gallery-scroll" id="video-scroll">
+          <div class="video-grid" id="video-grid">
+            <!-- Video items will be loaded from Supabase -->
+          </div>
+        </div>
+        <button class="gallery-nav gallery-nav-next" id="video-next">❯</button>
+      </div>
     </div>
   </div>
 </section>
@@ -2313,6 +2551,159 @@
   window.addEventListener('scroll', () => {
     document.querySelector('nav').style.boxShadow = window.scrollY > 30 ? '0 4px 30px rgba(0,0,0,.12)' : 'none';
   });
+
+  /* ---- GALLERY TABS ---- */
+  document.querySelectorAll('.gallery-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs
+      document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+      // Add active class to clicked tab
+      tab.classList.add('active');
+
+      // Hide all gallery content
+      document.querySelectorAll('.gallery-content').forEach(content => {
+        content.style.display = 'none';
+      });
+
+      // Show selected content
+      const tabName = tab.dataset.tab;
+      document.getElementById(`gallery-${tabName}`).style.display = 'block';
+    });
+  });
+
+  /* ---- GALLERY CAROUSEL ---- */
+  function initCarousel(scrollId, prevId, nextId) {
+    const scroll = document.getElementById(scrollId);
+    const prevBtn = document.getElementById(prevId);
+    const nextBtn = document.getElementById(nextId);
+    const grid = scroll.querySelector('.gallery-grid') || scroll.querySelector('.video-grid');
+
+    if (!scroll || !prevBtn || !nextBtn || !grid) return;
+
+    let autoSlideInterval;
+
+    function slideNext() {
+      const maxScroll = scroll.scrollWidth - scroll.clientWidth;
+      if (scroll.scrollLeft >= maxScroll - 10) {
+        scroll.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        scroll.scrollBy({ left: scroll.clientWidth, behavior: 'smooth' });
+      }
+    }
+
+    function slidePrev() {
+      if (scroll.scrollLeft <= 10) {
+        scroll.scrollTo({ left: scroll.scrollWidth - scroll.clientWidth, behavior: 'smooth' });
+      } else {
+        scroll.scrollBy({ left: -scroll.clientWidth, behavior: 'smooth' });
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      slideNext();
+      resetAutoSlide();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      slidePrev();
+      resetAutoSlide();
+    });
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(slideNext, 8000);
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      startAutoSlide();
+    }
+
+    // Pause on hover
+    scroll.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+    scroll.addEventListener('mouseleave', startAutoSlide);
+
+    // Start auto-slide
+    startAutoSlide();
+  }
+
+  // Initialize carousels
+  initCarousel('photo-scroll', 'photo-prev', 'photo-next');
+  initCarousel('video-scroll', 'video-prev', 'video-next');
+
+  /* ---- LOAD GALLERY FROM SUPABASE ---- */
+  const SUPABASE_URL_GALLERY = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPABASE_ANON_GALLERY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+  const headersGallery = {
+    'apikey': SUPABASE_ANON_GALLERY,
+    'Authorization': `Bearer ${SUPABASE_ANON_GALLERY}`,
+    'Content-Type': 'application/json'
+  };
+
+  async function loadGalleryFromSupabase() {
+    try {
+      // Load photos
+      const photoRes = await fetch(`${SUPABASE_URL_GALLERY}/rest/v1/galeriphoto`, { headers: headersGallery });
+      const photos = await photoRes.json();
+      renderPhotos(photos);
+
+      // Load videos
+      const videoRes = await fetch(`${SUPABASE_URL_GALLERY}/rest/v1/galerivideo`, { headers: headersGallery });
+      const videos = await videoRes.json();
+      renderVideos(videos);
+    } catch (err) {
+      console.error('Gagal memuat galeri:', err);
+    }
+  }
+
+  function renderPhotos(photos) {
+    const photoGrid = document.getElementById('photo-grid');
+    if (!photoGrid) return;
+    
+    if (!photos || photos.length === 0) {
+      photoGrid.innerHTML = '<p style="color:var(--muted);">Belum ada foto galeri.</p>';
+      return;
+    }
+
+    photoGrid.innerHTML = photos.map(photo => `
+      <div class="gallery-item">
+        <img src="${photo.photo}" alt="${photo.judul}">
+        <div class="gallery-overlay">
+          <div class="gallery-info">
+            <div style="font-weight:700;">${photo.judul}</div>
+            <div style="font-size:12px;margin-top:4px;">${photo.deskripsi || ''}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderVideos(videos) {
+    const videoGrid = document.getElementById('video-grid');
+    if (!videoGrid) return;
+    
+    if (!videos || videos.length === 0) {
+      videoGrid.innerHTML = '<p style="color:var(--muted);">Belum ada video galeri.</p>';
+      return;
+    }
+
+    videoGrid.innerHTML = videos.map(video => `
+      <div class="video-item">
+        <div class="video-wrapper">
+          <video controls style="width:100%;height:100%;object-fit:cover;">
+            <source src="${video.video}" type="video/mp4">
+            Browser Anda tidak mendukung video.
+          </video>
+        </div>
+        <div class="video-info">
+          <h4>${video.judul}</h4>
+          <p>${video.deskripsi || ''}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Load gallery on page load
+  loadGalleryFromSupabase();
 </script>
 <!-- LEAFLET MAP SCRIPT -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
