@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Portal Siswa – KENZ Guitar Lesson</title>
+  <style>
+    /* ===== TOKENS ===== */
+    :root {
+      --gold: #D4AF37;
+      --gold2: #F0C84A;
+      --gold-dim: rgba(212,175,55,0.12);
+      --gold-border: rgba(212,175,55,0.3);
+      --text: #0F0D08;
+      --muted: #6B6459;
+      --bg: #F7F4EE;
+      --surface: #FFFFFF;
+      --surface2: #F0EDE5;
+      --border: #E2DDD4;
+      --nav-bg: rgba(247,244,238,0.92);
+      --footer-bg: #0F0D08;
+      --footer-text: #5A5249;
+      --green: #2D8A5F;
+      --green-dim: rgba(45,138,95,0.12);
+      --blue: #2D5FA8;
+      --blue-dim: rgba(45,95,168,0.12);
+      --purple: #7A3EA6;
+      --purple-dim: rgba(122,62,166,0.12);
+      --red: #C84040;
+      --red-dim: rgba(200,64,64,0.12);
+      --radius: 16px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+      --font: 'Times New Roman', Times, Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --text: #F0EDE5;
+      --muted: #9A9080;
+      --bg: #0C0A06;
+      --surface: #181510;
+      --surface2: #201C14;
+      --border: #2A2518;
+      --nav-bg: rgba(12,10,6,0.92);
+      --footer-bg: #080604;
+      --footer-text: #3A3228;
+      --gold-dim: rgba(212,175,55,0.10);
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      transition: background .35s, color .35s;
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR — selalu gelap ===== */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: #0F0D08;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,175,55,0.18);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.45);
+    }
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-family: var(--font); font-size: 22px; font-weight: 700;
+      color: var(--gold);
+    }
+    .nav-brand img { height: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .theme-toggle {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; padding: 8px 10px;
+      font-size: 17px; cursor: pointer;
+      transition: background .2s, border-color .2s; line-height: 1;
+    }
+    .theme-toggle:hover { border-color: var(--gold); background: rgba(212,175,55,0.12); }
+    .admin-info {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 14px 7px 7px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 50px;
+    }
+    .admin-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A0A0A; font-weight: 700; font-size: 14px; flex-shrink: 0;
+      font-family: var(--font);
+    }
+    .admin-name { font-size: 13px; font-weight: 600; color: #F0EDE5; font-family: var(--font); }
+    .admin-role { font-size: 11px; color: #9A9080; font-family: var(--font); }
+
+    /* ===== MAIN ===== */
+    .main-wrap {
+      max-width: 700px; margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in { animation: fadeIn .5s ease both; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+    .fi-1{animation-delay:.05s} .fi-2{animation-delay:.10s} .fi-3{animation-delay:.15s} .fi-4{animation-delay:.20s}
+
+    /* ===== PROFIL CARD ===== */
+    .profil-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      transition: background .35s, border-color .35s;
+    }
+    .profil-banner {
+      height: 90px;
+      background: linear-gradient(135deg, #1a1200 0%, #3d2b00 45%, #7A5020 100%);
+      position: relative;
+    }
+    .profil-banner::after {
+      content: '🎸';
+      position: absolute; right: 20px; bottom: -8px;
+      font-size: 52px; opacity: 0.12; pointer-events: none;
+    }
+    .profil-body { padding: 20px 20px 20px; }
+    .profil-photo-wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .profil-photo {
+      width: 100%; height: 180px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      border: 4px solid var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px; font-weight: 800; color: #0A0A0A;
+      box-shadow: 0 4px 20px rgba(212,175,55,0.3);
+      flex-shrink: 0; overflow: hidden;
+      transition: border-color .35s;
+      font-family: var(--font);
+    }
+    .profil-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-edit-profil {
+      background: var(--gold-dim); border: 1.5px solid var(--gold-border);
+      color: var(--gold); border-radius: 10px;
+      padding: 7px 16px; font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: var(--font);
+      display: flex; align-items: center; gap: 6px;
+      transition: background .2s, border-color .2s, transform .15s;
+      text-decoration: none;
+    }
+    .btn-edit-profil:hover { background: rgba(212,175,55,0.22); border-color: var(--gold); transform: translateY(-1px); }
+
+    .profil-nama {
+      font-family: var(--font); font-size: 22px; font-weight: 700;
+      color: var(--text); line-height: 1.15; margin-bottom: 4px;
+    }
+    .profil-motto {
+      font-family: var(--font); font-size: 13px; font-style: italic;
+      color: var(--muted); margin-bottom: 10px; line-height: 1.5;
+    }
+    .profil-level {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      color: var(--gold); border-radius: 99px;
+      padding: 3px 12px; font-size: 11px; font-weight: 700;
+      margin-bottom: 16px; font-family: var(--font);
+    }
+
+    /* grid data profil */
+    .profil-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .profil-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 14px;
+      transition: background .35s, border-color .35s;
+    }
+    .profil-item.full { grid-column: 1 / -1; }
+    .profil-item-label {
+      font-size: 10px; color: var(--muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 3px;
+      font-family: var(--font);
+    }
+    .profil-item-value {
+      font-size: 13px; font-weight: 600; color: var(--text);
+      font-family: var(--font); word-break: break-word;
+    }
+    /* field tersembunyi (username/password) */
+    .secret-row { display: flex; align-items: center; gap: 8px; }
+    .secret-text { flex: 1; font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 2px; }
+    .btn-eye {
+      background: none; border: none; cursor: pointer;
+      font-size: 15px; color: var(--muted); padding: 2px 4px;
+      transition: color .2s; flex-shrink: 0;
+    }
+    .btn-eye:hover { color: var(--gold); }
+
+    /* ===== ACCORDION MENU ===== */
+    .acc-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      overflow: hidden; margin-bottom: 20px;
+      transition: background .35s, border-color .35s;
+    }
+
+    /* header accordion */
+    .acc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 18px; cursor: pointer; user-select: none;
+      background: var(--surface2);
+      border-left: 4px solid var(--gold);
+      transition: background .25s;
+    }
+    .acc-wrap.open .acc-header { background: var(--gold-dim); }
+    .acc-header:hover { background: var(--gold-dim); }
+    .acc-header-left { display: flex; align-items: center; gap: 10px; }
+    .acc-header-icon { font-size: 18px; line-height: 1; }
+    .acc-header-label {
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      color: var(--gold); letter-spacing: .3px;
+    }
+    .acc-chevron {
+      font-size: 11px; color: var(--gold);
+      transition: transform .32s cubic-bezier(.4,0,.2,1);
+    }
+    .acc-wrap.open .acc-chevron { transform: rotate(180deg); }
+
+    /* body accordion */
+    .acc-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .4s cubic-bezier(.4,0,.2,1);
+    }
+    .acc-wrap.open .acc-body { max-height: 800px; }
+
+    /* grid tombol di dalam accordion */
+    .menu-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; padding: 14px;
+    }
+    .menu-btn {
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 16px 8px 14px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; cursor: pointer; text-decoration: none; color: var(--text);
+      font-family: var(--font); text-align: center;
+      transition: background .2s, border-color .2s, transform .18s, box-shadow .2s;
+      position: relative; overflow: hidden;
+    }
+    .menu-btn::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 12px 12px 0 0;
+      background: var(--btn-accent, var(--gold)); opacity: 0; transition: opacity .2s;
+    }
+    .menu-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--btn-accent, var(--gold)); }
+    .menu-btn:hover::before { opacity: 1; }
+    .menu-btn:active { transform: translateY(0); }
+    .menu-btn.col{ --btn-accent:var(--gold); } .menu-btn.col:hover{ background:var(--gold-dim); }
+    .menu-btn.blue{ --btn-accent:var(--blue); } .menu-btn.blue:hover{ background:var(--blue-dim); }
+    .menu-btn.green{ --btn-accent:var(--green); } .menu-btn.green:hover{ background:var(--green-dim); }
+    .menu-btn.purple{ --btn-accent:var(--purple); } .menu-btn.purple:hover{ background:var(--purple-dim); }
+    .menu-btn.orange{ --btn-accent:#C86A1A; } .menu-btn.orange:hover{ background:rgba(200,106,26,0.12); }
+    .menu-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .menu-btn.col .menu-icon{ background:var(--gold-dim); }
+    .menu-btn.blue .menu-icon{ background:var(--blue-dim); }
+    .menu-btn.green .menu-icon{ background:var(--green-dim); }
+    .menu-btn.purple .menu-icon{ background:var(--purple-dim); }
+    .menu-btn.orange .menu-icon{ background:rgba(200,106,26,0.12); }
+    .menu-label { font-size: 11px; font-weight: 700; line-height: 1.35; font-family: var(--font); }
+
+    /* logout inside accordion — full width */
+    .acc-logout-wrap { padding: 0 14px 14px; }
+    .btn-acc-logout {
+      width: 100%; background: var(--red-dim); border: 1.5px solid rgba(200,64,64,0.3);
+      border-radius: 12px; color: var(--red);
+      padding: 13px 20px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: background .2s, border-color .2s, transform .15s;
+    }
+    .btn-acc-logout:hover { background: rgba(200,64,64,0.2); border-color: var(--red); transform: translateY(-1px); }
+
+
+
+    /* ===== PROGRESS ===== */
+    .progress-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 18px;
+      box-shadow: var(--shadow); margin-bottom: 20px;
+      transition: background .35s, border-color .35s;
+    }
+    .progress-card-title {
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 12px;
+    }
+    .progress-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .progress-row:last-child { margin-bottom: 0; }
+    .progress-top { display: flex; justify-content: space-between; align-items: center; }
+    .progress-name { font-size: 13px; font-weight: 600; color: var(--text); font-family: var(--font); }
+    .progress-pct { font-size: 12px; font-weight: 700; color: var(--gold); font-family: var(--font); }
+    .progress-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-sheet {
+      background: var(--surface); border-radius: 24px 24px 0 0;
+      width: 100%; max-width: 700px;
+      padding: 0 0 env(safe-area-inset-bottom, 16px);
+      transform: translateY(100%); transition: transform .4s cubic-bezier(.32,0,.2,1);
+      max-height: 92vh; overflow-y: auto;
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-handle { width: 38px; height: 4px; border-radius: 99px; background: var(--border); margin: 12px auto 0; }
+    .modal-head {
+      padding: 16px 20px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-head h3 { font-family: var(--font); font-size: 18px; font-weight: 700; color: var(--text); }
+    .modal-close {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: var(--muted); transition: background .2s;
+    }
+    .modal-close:hover { background: var(--border); }
+    .modal-body { padding: 18px 20px 28px; display: flex; flex-direction: column; gap: 13px; }
+
+    /* 2-col form on wider screen */
+    .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    @media(max-width:480px){ .form-2col{ grid-template-columns: 1fr; } }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .5px; font-family: var(--font);
+    }
+    .form-input {
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 11px 14px;
+      font-family: var(--font); font-size: 14px; color: var(--text);
+      outline: none; transition: border-color .2s, background .35s; width: 100%;
+    }
+    .form-input:focus { border-color: var(--gold); background: var(--surface); }
+    textarea.form-input { resize: vertical; min-height: 72px; }
+
+    /* foto upload */
+    .form-photo-row { display: flex; align-items: center; gap: 16px; }
+    .form-photo-prev {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; color: #0A0A0A;
+      flex-shrink: 0; overflow: hidden; border: 3px solid var(--border);
+      font-family: var(--font);
+    }
+    .form-photo-prev img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .btn-photo-upload {
+      flex: 1; background: var(--surface2); border: 1.5px dashed var(--border);
+      border-radius: 10px; padding: 12px; text-align: center;
+      cursor: pointer; font-size: 12px; color: var(--muted); font-weight: 600;
+      transition: border-color .2s, background .2s; font-family: var(--font);
+    }
+    .btn-photo-upload:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+    /* section divider inside modal */
+    .modal-divider {
+      font-family: var(--font); font-size: 11px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .8px;
+      padding: 4px 0 2px; border-bottom: 1px solid var(--border); margin-bottom: 2px;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, var(--gold), #B8930A);
+      border: none; border-radius: 12px; padding: 14px;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      color: #0A0A0A; cursor: pointer; width: 100%;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+      margin-top: 4px;
+    }
+    .btn-save:hover { opacity: .9; transform: translateY(-1px); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--footer-bg);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 20px 24px;
+    }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--footer-text); font-size: 12px; font-family: var(--font);
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ===== RESPONSIVE ===== */
+    @media(min-width:641px){
+      .main-wrap{ max-width: 500px; margin: 0 auto; }
+      .profil-photo{ width: 100%; max-width: 300px; height: 300px; margin: 0 auto; }
+      .profil-photo-wrap{ justify-content: center; }
+    }
+    @media(max-width:640px){
+      .nav-inner{ padding:0 14px; height:56px; }
+      .nav-brand{ font-size:18px; gap:8px; }
+      .nav-brand img{ height:26px; }
+      .admin-info{ display:none; }
+      .main-wrap{ padding:16px 12px 72px; }
+      .profil-photo{ width:80px; height:80px; font-size:30px; }
+      .profil-nama{ font-size:20px; }
+      .menu-grid{ grid-template-columns: repeat(3, 1fr); gap:8px; padding:10px; }
+      .menu-icon{ width:40px; height:40px; font-size:20px; border-radius:10px; }
+      .menu-label{ font-size:10px; }
+    }
+    @media(max-width:380px){
+      .profil-grid{ grid-template-columns:1fr; }
+      .menu-grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img id="nav-logo" src="logo.png" alt="KENZ" style="display:none">
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-nama-usaha">KENZ.</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">S</div>
+        <div>
+          <div class="admin-name" id="nav-siswa-nama">Nama Siswa</div>
+          <div class="admin-role">Siswa Aktif</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap">
+
+  <!-- Skeleton loading -->
+  <div id="profil-skeleton" class="profil-card fade-in" style="padding:24px 20px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+      <div class="skeleton" style="width:90px;height:90px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div class="skeleton" style="height:18px;border-radius:8px;margin-bottom:8px;width:60%;"></div>
+        <div class="skeleton" style="height:13px;border-radius:8px;width:40%;"></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+      <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+      <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+      <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+    </div>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted);font-family:var(--font);">Memuat data siswa…</p>
+  </div>
+
+  <!-- PROFIL CARD (diisi setelah data berhasil dimuat) -->
+  <div id="profil-content" style="display:none;">
+  <div class="profil-card fade-in">
+    <div class="profil-banner"></div>
+    <div class="profil-body">
+
+      <div class="profil-photo-wrap">
+        <div class="profil-photo" id="profil-photo-el">
+          <span id="profil-photo-inisial">S</span>
+        </div>
+        <button class="btn-edit-profil" onclick="openModal()">✏️ Edit Profil</button>
+      </div>
+
+      <div class="profil-nama" id="profil-nama">Nama Siswa</div>
+      <div class="profil-motto" id="profil-motto">"Musik adalah bahasa jiwa."</div>
+      <div class="profil-level"><span>⭐</span><span id="profil-level-label">Basic</span></div>
+
+      <!-- Grid 2 kolom data siswa -->
+      <div class="profil-grid">
+
+        <div class="profil-item">
+          <div class="profil-item-label">ID Siswa</div>
+          <div class="profil-item-value" id="profil-id">KNZ-001</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">Level Class</div>
+          <div class="profil-item-value" id="profil-level-val">Basic</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">Instrumen</div>
+          <div class="profil-item-value" id="profil-instrumen">Gitar Akustik</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">Tempat Lahir</div>
+          <div class="profil-item-value" id="profil-tempat-lahir">Jakarta</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">Tanggal Lahir</div>
+          <div class="profil-item-value" id="profil-tgl-lahir">01 Jan 2005</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">Nama Orang Tua</div>
+          <div class="profil-item-value" id="profil-ortu">—</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">No. Tlp / WA</div>
+          <div class="profil-item-value" id="profil-wa">—</div>
+        </div>
+
+        <div class="profil-item">
+          <div class="profil-item-label">Status</div>
+          <div class="profil-item-value" id="profil-status" style="color:var(--green)">Aktif ✓</div>
+        </div>
+
+        <!-- Alamat — lebar penuh -->
+        <div class="profil-item full">
+          <div class="profil-item-label">Alamat</div>
+          <div class="profil-item-value" id="profil-alamat">—</div>
+        </div>
+
+        <!-- Username — dengan tombol mata -->
+        <div class="profil-item">
+          <div class="profil-item-label">Username</div>
+          <div class="secret-row">
+            <div class="secret-text" id="profil-username-display">••••••••</div>
+            <button class="btn-eye" onclick="toggleSecret('username')" id="eye-username" title="Tampilkan">👁</button>
+          </div>
+        </div>
+
+        <!-- Password — dengan tombol mata -->
+        <div class="profil-item">
+          <div class="profil-item-label">Password</div>
+          <div class="secret-row">
+            <div class="secret-text" id="profil-password-display">••••••••</div>
+            <button class="btn-eye" onclick="toggleSecret('password')" id="eye-password" title="Tampilkan">👁</button>
+          </div>
+        </div>
+
+      </div><!-- /profil-grid -->
+    </div><!-- /profil-body -->
+  </div><!-- /profil-card -->
+  </div><!-- /profil-content -->
+
+  <!-- ACCORDION MENU PEMBELAJARAN -->
+  <div class="acc-wrap open fade-in fi-1" id="acc-menu">
+    <div class="acc-header" onclick="toggleAcc()">
+      <div class="acc-header-left">
+        <span class="acc-header-icon">☰</span>
+        <span class="acc-header-label">MENU PEMBELAJARAN</span>
+      </div>
+      <span class="acc-chevron">▼</span>
+    </div>
+    <div class="acc-body">
+      <div class="menu-grid">
+        <a class="menu-btn col" href="materi.html">
+          <div class="menu-icon">📖</div>
+          <div class="menu-label">Materi Pembelajaran</div>
+        </a>
+        <a class="menu-btn blue" href="video.html">
+          <div class="menu-icon">🎬</div>
+          <div class="menu-label">Video Pembelajaran</div>
+        </a>
+        <a class="menu-btn green" href="perkembangan.html">
+          <div class="menu-icon">📈</div>
+          <div class="menu-label">Perkembangan Belajar</div>
+        </a>
+        <a class="menu-btn purple" href="nilai.html">
+          <div class="menu-icon">🏆</div>
+          <div class="menu-label">Nilai Pembelajaran</div>
+        </a>
+        <a class="menu-btn orange" href="jadwal.html">
+          <div class="menu-icon">📅</div>
+          <div class="menu-label">Jadwal Les</div>
+        </a>
+      </div>
+      <div class="acc-logout-wrap">
+        <button class="btn-acc-logout" onclick="confirmLogout()">🚪 Log Out</button>
+      </div>
+    </div>
+  </div><!-- /acc-menu -->
+
+  <!-- PROGRESS -->
+  <div class="progress-card fade-in fi-2">
+    <div class="progress-card-title">Progress Pembelajaran</div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Teknik Dasar</span>
+        <span class="progress-pct" id="pct-1">80%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="fill-1" style="width:0%"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Teori Musik</span>
+        <span class="progress-pct" id="pct-2">60%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="fill-2" style="width:0%"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-top">
+        <span class="progress-name">Repertoar Lagu</span>
+        <span class="progress-pct" id="pct-3">45%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="fill-3" style="width:0%"></div></div>
+    </div>
+  </div>
+
+
+</div><!-- /main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span>🎸 KENZ Guitar Lesson</span>
+    <span>Portal Siswa &copy; <span id="footer-year">2025</span></span>
+  </div>
+</footer>
+
+<!-- ===== MODAL EDIT PROFIL ===== -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <h3>Edit Profil Siswa</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- FOTO -->
+      <div class="modal-divider">Foto Profil</div>
+      <div class="form-group">
+        <div class="form-photo-row">
+          <div class="form-photo-prev" id="modal-photo-prev">
+            <span id="modal-photo-inisial">S</span>
+          </div>
+          <label class="btn-photo-upload">
+            📷 Ganti Foto
+            <input type="file" accept="image/*" style="display:none" onchange="handlePhotoChange(this)">
+          </label>
+        </div>
+      </div>
+
+      <!-- DATA PRIBADI -->
+      <div class="modal-divider">Data Pribadi</div>
+      <div class="form-2col">
+        <div class="form-group">
+          <label class="form-label">Nama Siswa</label>
+          <input class="form-input" type="text" id="edit-nama" placeholder="Nama lengkap">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Level Class</label>
+          <select class="form-input" id="edit-level">
+            <option>Basic</option>
+            <option>Intermediate</option>
+            <option>Performer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Instrumen</label>
+          <select class="form-input" id="edit-instrumen">
+            <option>Gitar Akustik</option>
+            <option>Gitar Elektrik</option>
+            <option>Gitar Bass</option>
+            <option>Gitar Klasik</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tempat Lahir</label>
+          <input class="form-input" type="text" id="edit-tempat-lahir" placeholder="Kota kelahiran">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tanggal Lahir</label>
+          <input class="form-input" type="date" id="edit-tgl-lahir">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nama Orang Tua</label>
+          <input class="form-input" type="text" id="edit-ortu" placeholder="Nama ayah/ibu">
+        </div>
+        <div class="form-group">
+          <label class="form-label">No. Tlp / WA</label>
+          <input class="form-input" type="tel" id="edit-wa" placeholder="08xxxxxxxxxx">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Alamat Lengkap</label>
+        <textarea class="form-input" id="edit-alamat" placeholder="Jl. ..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Motto Bermusik</label>
+        <input class="form-input" type="text" id="edit-motto" placeholder="Motto / semboyan musikmu">
+      </div>
+
+      <!-- AKUN -->
+      <div class="modal-divider">Akun Login</div>
+      <div class="form-2col">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input class="form-input" type="text" id="edit-username" placeholder="Username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="edit-password" placeholder="Password baru" autocomplete="new-password">
+        </div>
+      </div>
+
+      <button class="btn-save" onclick="simpanProfil()">💾 Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ===== ACCORDION ===== */
+  function toggleAcc() {
+    document.getElementById('acc-menu').classList.toggle('open');
+  }
+
+  /* ===== THEME ===== */
+  const html = document.documentElement;
+  const themeBtn = document.getElementById('theme-toggle');
+  const savedTheme = localStorage.getItem('kenz-theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+  themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  themeBtn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('kenz-theme', next);
+    themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+
+  /* ===== LOGO ===== */
+  const logoImg = document.getElementById('nav-logo');
+  const logoFb  = document.getElementById('nav-logo-fallback');
+  logoImg.onload  = () => { logoImg.style.display = 'block'; logoFb.style.display = 'none'; };
+  logoImg.onerror = () => { logoImg.style.display = 'none';  logoFb.style.display = 'inline'; };
+
+  /* ===== FOOTER YEAR ===== */
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  /* ===== SUPABASE CONFIG ===== */
+  const SUPA_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+
+  /* ===== DATA PROFIL (diisi dari Supabase) ===== */
+  let profil = {
+    id         : '',
+    nama       : '',
+    level      : '',
+    instrumen  : '',
+    tempatLahir: '',
+    tglLahir   : '',
+    alamat     : '',
+    ortu       : '',
+    wa         : '',
+    motto      : '',
+    username   : '',
+    password   : '',
+    photo      : null,
+    status     : '',
+  };
+
+  /* format tanggal ke "DD Mmm YYYY" */
+  function formatTgl(val) {
+    if (!val) return '—';
+    const d = new Date(val);
+    if (isNaN(d)) return val;
+    return d.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  /* ===== LOADING STATE ===== */
+  function setLoading(on) {
+    const skeleton = document.getElementById('profil-skeleton');
+    const card     = document.getElementById('profil-content');
+    if (skeleton) skeleton.style.display = on ? 'block' : 'none';
+    if (card)     card.style.display     = on ? 'none'  : 'block';
+  }
+
+  /* ===== FETCH DATA DARI SUPABASE ===== */
+  async function loadProfilFromSupabase() {
+    /* ambil data login yang disimpan saat login berhasil */
+    const loginData = JSON.parse(localStorage.getItem('kenz-login') || 'null');
+    if (!loginData || !loginData.username) {
+      /* belum login → redirect ke halaman login */
+      alert('Sesi habis atau belum login. Silakan login kembali.');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/datasiswa?username=eq.${encodeURIComponent(loginData.username)}&select=*`,
+        {
+          headers: {
+            'apikey'       : SUPA_KEY,
+            'Authorization': `Bearer ${SUPA_KEY}`,
+            'Content-Type' : 'application/json',
+          }
+        }
+      );
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Supabase error:', errorText);
+        throw new Error(`HTTP ${res.status}: ${errorText}`);
+      }
+      const rows = await res.json();
+
+      if (!rows || rows.length === 0) {
+        alert('Data siswa tidak ditemukan. Hubungi admin.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const row = rows[0];
+      /* mapping kolom tabel → objek profil */
+      profil = {
+        id         : row.id_siswa   || row.id        || '—',
+        nama       : row.nama_siswa || row.nama       || '—',
+        level      : row.level      || 'Basic',
+        instrumen  : row.instrumen  || '—',
+        tempatLahir: row.tempat_lahir|| '—',
+        tglLahir   : row.tgl_lahir  || '',
+        alamat     : row.alamat     || '—',
+        ortu       : row.nama_ortu  || row.ortu      || '—',
+        wa         : row.no_wa      || row.wa         || '—',
+        motto      : row.motto      || '',
+        username   : row.username   || loginData.username,
+        password   : row.password   || '',
+        photo      : row.photo_url  || row.photo      || null,
+        status     : row.status     || 'Aktif',
+      };
+
+      renderProfil();
+    } catch (err) {
+      console.error('Gagal memuat profil:', err);
+      document.getElementById('profil-nama').textContent = 'Gagal memuat data';
+      alert('Gagal mengambil data dari server. Periksa koneksi internet.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function renderProfil() {
+    const inisial = profil.nama.charAt(0).toUpperCase();
+    document.getElementById('profil-nama').textContent          = profil.nama;
+    document.getElementById('profil-motto').textContent         = profil.motto || '';
+    document.getElementById('profil-level-label').textContent   = profil.level;
+    document.getElementById('profil-level-val').textContent     = profil.level;
+    document.getElementById('profil-id').textContent            = profil.id;
+    document.getElementById('profil-instrumen').textContent     = profil.instrumen;
+    document.getElementById('profil-tempat-lahir').textContent  = profil.tempatLahir || '—';
+    document.getElementById('profil-tgl-lahir').textContent     = formatTgl(profil.tglLahir);
+    document.getElementById('profil-alamat').textContent        = profil.alamat || '—';
+    document.getElementById('profil-ortu').textContent          = profil.ortu || '—';
+    document.getElementById('profil-wa').textContent            = profil.wa || '—';
+    document.getElementById('profil-status').textContent        = profil.status === 'Aktif' ? 'Aktif ✓' : profil.status;
+    document.getElementById('nav-avatar').textContent           = inisial;
+    document.getElementById('nav-siswa-nama').textContent       = profil.nama;
+    document.getElementById('profil-photo-inisial').textContent = inisial;
+
+    /* reset secret display */
+    document.getElementById('profil-username-display').textContent = '••••••••';
+    document.getElementById('profil-password-display').textContent = '••••••••';
+    secretVisible.username = false;
+    secretVisible.password = false;
+    document.getElementById('eye-username').textContent = '👁';
+    document.getElementById('eye-password').textContent = '👁';
+
+    if (profil.photo) {
+      document.getElementById('profil-photo-el').innerHTML = `<img src="${profil.photo}" alt="foto">`;
+    } else {
+      document.getElementById('profil-photo-el').innerHTML = `<span>${inisial}</span>`;
+    }
+  }
+  /* profil dirender setelah data Supabase berhasil di-fetch */
+  loadProfilFromSupabase();
+
+  /* ===== TOGGLE USERNAME / PASSWORD ===== */
+  const secretVisible = { username: false, password: false };
+  function toggleSecret(field) {
+    secretVisible[field] = !secretVisible[field];
+    const dispEl = document.getElementById(`profil-${field}-display`);
+    const eyeBtn = document.getElementById(`eye-${field}`);
+    dispEl.textContent  = secretVisible[field] ? profil[field] : '••••••••';
+    eyeBtn.textContent  = secretVisible[field] ? '🙈' : '👁';
+    /* auto-sembunyi setelah 5 detik */
+    if (secretVisible[field]) {
+      setTimeout(() => {
+        if (secretVisible[field]) {
+          dispEl.textContent = '••••••••';
+          eyeBtn.textContent = '👁';
+          secretVisible[field] = false;
+        }
+      }, 5000);
+    }
+  }
+
+  /* ===== PROGRESS BARS ===== */
+  setTimeout(() => {
+    [{ id:'fill-1', pct:80 }, { id:'fill-2', pct:60 }, { id:'fill-3', pct:45 }]
+      .forEach(f => { const el = document.getElementById(f.id); if(el) el.style.width = f.pct + '%'; });
+  }, 400);
+
+  /* ===== MODAL ===== */
+  function openModal() {
+    document.getElementById('edit-nama').value         = profil.nama;
+    document.getElementById('edit-level').value        = profil.level;
+    document.getElementById('edit-instrumen').value    = profil.instrumen;
+    document.getElementById('edit-tempat-lahir').value = profil.tempatLahir;
+    document.getElementById('edit-tgl-lahir').value    = profil.tglLahir;
+    document.getElementById('edit-alamat').value       = profil.alamat;
+    document.getElementById('edit-ortu').value         = profil.ortu;
+    document.getElementById('edit-wa').value           = profil.wa;
+    document.getElementById('edit-motto').value        = profil.motto.replace(/"/g,'');
+    document.getElementById('edit-username').value     = profil.username;
+    document.getElementById('edit-password').value     = '';
+
+    const prevEl = document.getElementById('modal-photo-prev');
+    if (profil.photo) {
+      prevEl.innerHTML = `<img src="${profil.photo}" alt="foto">`;
+    } else {
+      prevEl.innerHTML = `<span id="modal-photo-inisial">${profil.nama.charAt(0).toUpperCase()}</span>`;
+    }
+
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+
+  function handlePhotoChange(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      profil.photo = e.target.result;
+      document.getElementById('modal-photo-prev').innerHTML = `<img src="${e.target.result}" alt="foto">`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function simpanProfil() {
+    const nama = document.getElementById('edit-nama').value.trim();
+    if (!nama) { alert('Nama tidak boleh kosong!'); return; }
+
+    profil.nama        = nama;
+    profil.level       = document.getElementById('edit-level').value;
+    profil.instrumen   = document.getElementById('edit-instrumen').value;
+    profil.tempatLahir = document.getElementById('edit-tempat-lahir').value.trim();
+    profil.tglLahir    = document.getElementById('edit-tgl-lahir').value;
+    profil.alamat      = document.getElementById('edit-alamat').value.trim();
+    profil.ortu        = document.getElementById('edit-ortu').value.trim();
+    profil.wa          = document.getElementById('edit-wa').value.trim();
+    const mottoRaw     = document.getElementById('edit-motto').value.trim();
+    profil.motto       = mottoRaw ? `"${mottoRaw}"` : '';
+    profil.username    = document.getElementById('edit-username').value.trim();
+    const newPass      = document.getElementById('edit-password').value;
+    if (newPass) profil.password = newPass;
+
+    /* ===== SIMPAN KE SUPABASE ===== */
+    const payload = {
+      nama_siswa  : profil.nama,
+      level       : profil.level,
+      instrumen   : profil.instrumen,
+      tempat_lahir: profil.tempatLahir,
+      tgl_lahir   : profil.tglLahir   || null,
+      alamat      : profil.alamat,
+      nama_ortu   : profil.ortu,
+      no_wa       : profil.wa,
+      motto       : profil.motto,
+      username    : profil.username,
+    };
+    if (newPass) payload.password = newPass;
+    if (profil.photo && profil.photo.startsWith('data:')) {
+      payload.photo_url = profil.photo;
+    }
+
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/datasiswa?username=eq.${encodeURIComponent(profil.username)}`,
+        {
+          method : 'PATCH',
+          headers: {
+            'apikey'       : SUPA_KEY,
+            'Authorization': `Bearer ${SUPA_KEY}`,
+            'Content-Type' : 'application/json',
+            'Prefer'       : 'return=minimal',
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    } catch (err) {
+      console.error('Gagal menyimpan ke Supabase:', err);
+      alert('Perubahan disimpan lokal, tapi gagal disimpan ke server. Periksa koneksi.');
+    }
+
+    renderProfil();
+    closeModal();
+    const btn = document.querySelector('.btn-edit-profil');
+    btn.textContent = '✅ Tersimpan!';
+    setTimeout(() => { btn.innerHTML = '✏️ Edit Profil'; }, 2000);
+  }
+
+  /* ===== LOGOUT ===== */
+  function confirmLogout() {
+    if (confirm('Yakin ingin keluar dari portal siswa?')) {
+      localStorage.removeItem('kenz-login');
+      window.location.href = 'index.html';
+    }
+  }
+</script>
+</body>
+</html>
