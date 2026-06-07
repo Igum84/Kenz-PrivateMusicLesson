@@ -1747,14 +1747,14 @@
     async function simpanKeSupabase(id, payload, isDelete) {
       try {
         if (isDelete) {
-          await fetch(`${REST_URL}/datasiswa?id=eq.${id}`, {
+          await fetch(`${REST_URL}/${TABLE_NAME}?id=eq.${id}`, {
             method: 'DELETE',
             headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
           });
           return;
         }
 
-        await fetch(`${REST_URL}/datasiswa`, {
+        await fetch(`${REST_URL}/${TABLE_NAME}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1771,21 +1771,52 @@
     }
 
     /* ===== LOAD DATA SISWA DARI SUPABASE ===== */
+    // Daftar kandidat nama tabel yang dicoba secara berurutan
+    const TABLE_CANDIDATES = ['siswa', 'datasiswa', 'data_siswa', 'students'];
+    let TABLE_NAME = 'siswa'; // default
+
     async function loadSiswa() {
-      try {
-        const res = await fetch(`${REST_URL}/datasiswa?order=created_at.asc`, {
-          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-        });
-        if (res.ok) {
-          const rows = await res.json();
-          students = Array.isArray(rows) ? rows : [];
-          updateStats();
-          filterTable();
-          return;
+      // Coba tiap kandidat nama tabel sampai ada yang berhasil (status 200)
+      for (const tbl of TABLE_CANDIDATES) {
+        try {
+          // Coba dengan select=* tanpa order dulu untuk cek tabel ada
+          const probe = await fetch(`${REST_URL}/${tbl}?limit=1`, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          });
+
+          if (!probe.ok) continue; // tabel tidak ada, coba berikutnya
+
+          TABLE_NAME = tbl; // tabel ditemukan
+
+          // Cek apakah kolom created_at tersedia dari header atau respons
+          const sample = await probe.json();
+          const hasCreatedAt = Array.isArray(sample) && sample.length > 0 && 'created_at' in sample[0];
+
+          // Fetch semua data, pakai order hanya jika created_at ada
+          const url = hasCreatedAt
+            ? `${REST_URL}/${TABLE_NAME}?select=*&order=created_at.asc`
+            : `${REST_URL}/${TABLE_NAME}?select=*`;
+
+          const res = await fetch(url, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          });
+
+          if (res.ok) {
+            const rows = await res.json();
+            students = Array.isArray(rows) ? rows : [];
+            console.info(`[Siswa] Tabel "${TABLE_NAME}" ditemukan, ${students.length} data dimuat.`);
+            updateStats();
+            filterTable();
+            return;
+          }
+        } catch (err) {
+          console.warn(`[Siswa] Gagal coba tabel "${tbl}":`, err.message);
         }
-      } catch (err) {
-        console.warn('Load siswa warning:', err.message);
       }
+
+      // Semua kandidat gagal — tampilkan warning, tetap render tabel kosong
+      console.error('[Siswa] Tidak ada tabel siswa yang ditemukan di Supabase. Kandidat dicoba:', TABLE_CANDIDATES.join(', '));
+      showToast('⚠️ Gagal memuat data siswa. Periksa nama tabel di Supabase.', 'error');
       updateStats();
       filterTable();
     }
