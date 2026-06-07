@@ -612,6 +612,10 @@
           <div class="menu-icon">📅</div>
           <div class="menu-label">Jadwal Les</div>
         </a>
+        <a class="menu-btn col" href="testimoni.html">
+          <div class="menu-icon">💬</div>
+          <div class="menu-label">Testimonial</div>
+        </a>
       </div>
       <div class="acc-logout-wrap">
         <button class="btn-acc-logout" onclick="confirmLogout()">🚪 Log Out</button>
@@ -883,34 +887,47 @@
 
   function renderProfil() {
     const inisial = profil.nama.charAt(0).toUpperCase();
-    document.getElementById('profil-nama').textContent          = profil.nama;
-    document.getElementById('profil-motto').textContent         = profil.motto || '';
-    document.getElementById('profil-level-label').textContent   = profil.level;
-    document.getElementById('profil-level-val').textContent     = profil.level;
-    document.getElementById('profil-id').textContent            = profil.id;
-    document.getElementById('profil-instrumen').textContent     = profil.instrumen;
-    document.getElementById('profil-tempat-lahir').textContent  = profil.tempatLahir || '—';
-    document.getElementById('profil-tgl-lahir').textContent     = formatTgl(profil.tglLahir);
-    document.getElementById('profil-alamat').textContent        = profil.alamat || '—';
-    document.getElementById('profil-ortu').textContent          = profil.ortu || '—';
-    document.getElementById('profil-wa').textContent            = profil.wa || '—';
-    document.getElementById('profil-status').textContent        = profil.status === 'Aktif' ? 'Aktif ✓' : profil.status;
-    document.getElementById('nav-avatar').textContent           = inisial;
-    document.getElementById('nav-siswa-nama').textContent       = profil.nama;
-    document.getElementById('profil-photo-inisial').textContent = inisial;
+    
+    const setIfExist = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+    
+    setIfExist('profil-nama', profil.nama);
+    setIfExist('profil-motto', profil.motto || '');
+    setIfExist('profil-level-label', profil.level);
+    setIfExist('profil-level-val', profil.level);
+    setIfExist('profil-id', profil.id);
+    setIfExist('profil-instrumen', profil.instrumen);
+    setIfExist('profil-tempat-lahir', profil.tempatLahir || '—');
+    setIfExist('profil-tgl-lahir', formatTgl(profil.tglLahir));
+    setIfExist('profil-alamat', profil.alamat || '—');
+    setIfExist('profil-ortu', profil.ortu || '—');
+    setIfExist('profil-wa', profil.wa || '—');
+    setIfExist('profil-status', profil.status === 'Aktif' ? 'Aktif ✓' : profil.status);
+    setIfExist('nav-avatar', inisial);
+    setIfExist('nav-siswa-nama', profil.nama);
+    setIfExist('profil-photo-inisial', inisial);
 
     /* reset secret display */
-    document.getElementById('profil-username-display').textContent = '••••••••';
-    document.getElementById('profil-password-display').textContent = '••••••••';
+    const usernameDisplay = document.getElementById('profil-username-display');
+    if (usernameDisplay) usernameDisplay.textContent = '••••••••';
+    const passwordDisplay = document.getElementById('profil-password-display');
+    if (passwordDisplay) passwordDisplay.textContent = '••••••••';
     secretVisible.username = false;
     secretVisible.password = false;
-    document.getElementById('eye-username').textContent = '👁';
-    document.getElementById('eye-password').textContent = '👁';
+    const eyeUsername = document.getElementById('eye-username');
+    if (eyeUsername) eyeUsername.textContent = '👁';
+    const eyePassword = document.getElementById('eye-password');
+    if (eyePassword) eyePassword.textContent = '👁';
 
-    if (profil.photo) {
-      document.getElementById('profil-photo-el').innerHTML = `<img src="${profil.photo}" alt="foto">`;
-    } else {
-      document.getElementById('profil-photo-el').innerHTML = `<span>${inisial}</span>`;
+    const photoEl = document.getElementById('profil-photo-el');
+    if (photoEl) {
+      if (profil.photo) {
+        photoEl.innerHTML = `<img src="${profil.photo}" alt="foto">`;
+      } else {
+        photoEl.innerHTML = `<span>${inisial}</span>`;
+      }
     }
   }
   /* profil dirender setelah data Supabase berhasil di-fetch */
@@ -1007,25 +1024,26 @@
 
     /* ===== SIMPAN KE SUPABASE ===== */
     const payload = {
-      nama_siswa  : profil.nama,
-      level       : profil.level,
-      instrumen   : profil.instrumen,
+      id:           profil.id,
+      nama_siswa:   profil.nama,
+      level:        profil.level,
+      instrumen:    profil.instrumen,
       tempat_lahir: profil.tempatLahir,
-      tgl_lahir   : profil.tglLahir   || null,
-      alamat      : profil.alamat,
-      nama_ortu   : profil.ortu,
-      no_wa       : profil.wa,
-      motto       : profil.motto,
-      username    : profil.username,
+      tanggal_lahir: profil.tglLahir || null,
+      alamat:       profil.alamat,
+      nama_ortu:    profil.ortu,
+      tlp:          profil.wa,
+      motto:        profil.motto,
+      username:     profil.username,
     };
     if (newPass) payload.password = newPass;
     if (profil.photo && profil.photo.startsWith('data:')) {
-      payload.photo_url = profil.photo;
+      payload.photo = profil.photo;
     }
 
     try {
       const res = await fetch(
-        `${SUPA_URL}/rest/v1/datasiswa?username=eq.${encodeURIComponent(profil.username)}`,
+        `${SUPA_URL}/rest/v1/datasiswa?id=eq.${encodeURIComponent(profil.id)}`,
         {
           method : 'PATCH',
           headers: {
