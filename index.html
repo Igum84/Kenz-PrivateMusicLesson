@@ -1226,8 +1226,7 @@
       </div>
     </div>
     <div class="testi-scroll" id="testi-scroll">
-      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Alhamdulillah, les selama 2 bulan septria lah bise memainkan chord gitar dengan lagu. Rekomended pokok e Kenz Private Guitar Lesson.</p><div class="testi-author"><div class="testi-avatar"><img src="testi1.jpg" alt="Bunda Yuni"></div><div><div class="testi-name">Bunda Yuni</div><div class="testi-role">Orang Tua Murid · 2 bulan</div></div></div></div>
-      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-quote">Mantap. materi mudah di pelajarin, jam les fleksible. makasih coach</p><div class="testi-author"><div class="testi-avatar"><img src="testi2.jpg" alt="Deri"></div><div><div class="testi-name">Deri</div><div class="testi-role">Simpang Teritip</div></div></div></div>
+      <!-- Testimonial items will be loaded from Supabase -->
     </div>
   </div>
 </section>
@@ -2704,6 +2703,55 @@
 
   // Load gallery on page load
   loadGalleryFromSupabase();
+
+  /* ---- LOAD TESTIMONIALS FROM SUPABASE ---- */
+  async function loadTestimonialsFromSupabase() {
+    try {
+      const res = await fetch(`${SUPABASE_URL_GALLERY}/rest/v1/testimoni`, { headers: headersGallery });
+      const data = await res.json();
+      const testimonials = Array.isArray(data) ? data : [];
+      
+      // Filter only 4 or 5 star ratings
+      const filteredTestimonials = testimonials.filter(t => {
+        const rating = parseInt(t.rating) || 0;
+        return rating >= 4;
+      });
+      
+      renderTestimonials(filteredTestimonials);
+    } catch (err) {
+      console.error('Gagal memuat testimoni:', err);
+    }
+  }
+
+  function renderTestimonials(testimonials) {
+    const testiScroll = document.getElementById('testi-scroll');
+    if (!testiScroll) return;
+    
+    if (!testimonials || testimonials.length === 0) {
+      testiScroll.innerHTML = '<p style="color:var(--muted);">Belum ada testimoni.</p>';
+      return;
+    }
+
+    testiScroll.innerHTML = testimonials.map(t => {
+      const stars = '⭐'.repeat(parseInt(t.rating) || 0);
+      return `
+        <div class="testi-card">
+          <div class="testi-stars">${stars}</div>
+          <p class="testi-quote">"${t.testimoni}"</p>
+          <div class="testi-author">
+            <div class="testi-avatar">${t.nama_siswa.charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="testi-name">${t.nama_siswa}</div>
+              <div class="testi-role">${t.keterangan || 'Siswa'}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Load testimonials on page load
+  loadTestimonialsFromSupabase();
 </script>
 <!-- LEAFLET MAP SCRIPT -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
