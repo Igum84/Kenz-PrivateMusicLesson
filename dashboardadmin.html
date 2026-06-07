@@ -2,334 +2,427 @@
 <html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Admin Dashboard – KENZ Guitar Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --gold: #D4AF37;
-      --text: #1A1A1A;
-      --muted: #666;
-      --bg: #FFFFFF;
-      --surface: #F5F5F5;
-      --border: #E0E0E0;
-      --footer-bg: #1A1208;
-      --footer-text: #B8AA96;
+      --gold2: #F0C84A;
+      --gold-dim: rgba(212,175,55,0.12);
+      --gold-border: rgba(212,175,55,0.3);
+      --text: #0F0D08;
+      --muted: #6B6459;
+      --bg: #F7F4EE;
+      --surface: #FFFFFF;
+      --surface2: #F0EDE5;
+      --border: #E2DDD4;
+      --nav-bg: rgba(247,244,238,0.92);
+      --footer-bg: #0F0D08;
+      --footer-text: #5A5249;
+      --green: #2D8A5F;
+      --green-dim: rgba(45,138,95,0.12);
+      --blue: #2D5FA8;
+      --blue-dim: rgba(45,95,168,0.12);
+      --purple: #7A3EA6;
+      --purple-dim: rgba(122,62,166,0.12);
+      --red: #C84040;
+      --red-dim: rgba(200,64,64,0.12);
+      --radius: 16px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
     }
-
     [data-theme="dark"] {
-      --text: #FFFFFF;
-      --muted: #AAAAAA;
-      --bg: #0A0A0A;
-      --surface: #1A1A1A;
-      --border: #333333;
-      --footer-bg: #0A0A0A;
-      --footer-text: #555555;
+      --text: #F0EDE5;
+      --muted: #9A9080;
+      --bg: #0C0A06;
+      --surface: #181510;
+      --surface2: #201C14;
+      --border: #2A2518;
+      --nav-bg: rgba(12,10,6,0.92);
+      --footer-bg: #080604;
+      --footer-text: #3A3228;
+      --gold-dim: rgba(212,175,55,0.10);
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'DM Sans', sans-serif;
       background: var(--bg);
       color: var(--text);
-      transition: background .3s, color .3s;
+      transition: background .35s, color .35s;
+      min-height: 100vh;
     }
 
+    /* ============ NAVBAR ============ */
     nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 32px;
-      background: var(--bg);
+      position: sticky; top: 0; z-index: 200;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      transition: background .35s, border-color .35s;
     }
-
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
     .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: flex; align-items: center; gap: 10px;
       text-decoration: none;
-      font-size: 24px;
-      font-weight: 700;
+      font-family: 'Georgia', 'Times New Roman', serif; font-size: 22px; font-weight: 700;
       color: var(--gold);
     }
-
-    .nav-brand img {
-      height: 32px;
-      width: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
+    .nav-brand img { height: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
 
     .theme-toggle {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 8px;
-      transition: background .2s;
-    }
-
-    .theme-toggle:hover {
-      background: var(--surface);
-    }
-
-    .admin-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 12px;
-      background: var(--surface);
-      border-radius: 8px;
-    }
-
-    .admin-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), #7A5020);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #0A0A0A;
-      font-weight: 600;
-    }
-
-    .admin-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .admin-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .admin-role {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* MAIN CONTENT */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 40px 32px;
-    }
-
-    .dashboard-header {
-      margin-bottom: 50px;
-    }
-
-    .dashboard-title {
-      font-size: 42px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 12px;
-      letter-spacing: -1px;
-    }
-
-    .dashboard-subtitle {
-      font-size: 16px;
-      color: var(--muted);
-    }
-
-    /* MENU GRID */
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 24px;
-      margin-bottom: 60px;
-    }
-
-    .menu-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      padding: 32px 24px;
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all .3s;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .menu-btn:hover {
-      border-color: var(--gold);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.15);
-    }
-
-    .menu-btn.logout {
-      border-color: #FF6B6B;
-    }
-
-    .menu-btn.logout:hover {
-      border-color: #FF6B6B;
-      box-shadow: 0 8px 24px rgba(255, 107, 107, 0.15);
-    }
-
-    .menu-icon {
-      font-size: 48px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 10px;
+      font-size: 17px; cursor: pointer;
+      transition: background .2s, border-color .2s;
       line-height: 1;
     }
+    .theme-toggle:hover { border-color: var(--gold); }
 
-    .menu-label {
-      font-size: 16px;
-      font-weight: 600;
-      text-align: center;
+    .admin-info {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 14px 7px 7px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 50px;
+      transition: background .35s, border-color .35s;
+    }
+    .admin-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A0A0A; font-weight: 700; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .admin-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .admin-role { font-size: 11px; color: var(--muted); }
+
+    /* ============ MAIN WRAP ============ */
+    .main-wrap {
+      max-width: 1400px; margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    /* ============ PAGE HEADER ============ */
+    .page-header {
+      margin-bottom: 20px;
+    }
+    .page-header h1 {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 700; line-height: 1.15;
       color: var(--text);
     }
-
-    .menu-btn.logout .menu-label {
-      color: #FF6B6B;
+    .page-header h1 span { color: var(--gold); }
+    .page-header p {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 14px; font-style: italic;
+      color: var(--muted); margin-top: 5px;
     }
 
-    /* CONTENT AREA */
-    .content-area {
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 40px;
-      min-height: 400px;
-      display: none;
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: border-color .3s, box-shadow .3s, background .35s;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .stat-card.gold::before { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+    .stat-card.green::before { background: linear-gradient(90deg, var(--green), #4BB87A); }
+    .stat-card.blue::before { background: linear-gradient(90deg, var(--blue), #5080CC); }
+    .stat-card.purple::before { background: linear-gradient(90deg, var(--purple), #A060D0); }
+
+    .stat-card:hover { border-color: var(--gold); box-shadow: var(--shadow-lg); }
+    .stat-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 12px;
+    }
+    .stat-card.gold .stat-icon { background: var(--gold-dim); }
+    .stat-card.green .stat-icon { background: var(--green-dim); }
+    .stat-card.blue .stat-icon { background: var(--blue-dim); }
+    .stat-card.purple .stat-icon { background: var(--purple-dim); }
+    .stat-value {
+      font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800;
+      line-height: 1; color: var(--text); margin-bottom: 4px;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .stat-sub { font-size: 11px; color: var(--muted); margin-top: 8px; opacity: .75; }
+
+    /* ============ TWO-COL LAYOUT ============ */
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: start;
     }
 
-    .content-area.active {
-      display: block;
+    /* ============ SECTION CARD ============ */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: background .35s, border-color .35s;
+      margin-bottom: 20px;
     }
-
-    .content-title {
-      font-size: 32px;
-      font-weight: 800;
-      margin-bottom: 24px;
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-head h2 {
+      font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
       color: var(--text);
     }
-
-    .content-subtitle {
-      font-size: 16px;
-      color: var(--muted);
-      margin-bottom: 32px;
-      line-height: 1.6;
+    .section-head .badge {
+      font-size: 11px; padding: 3px 10px;
+      background: var(--gold-dim); color: var(--gold);
+      border-radius: 50px; font-weight: 600; border: 1px solid var(--gold-border);
     }
 
-    .placeholder-content {
-      padding: 40px;
-      background: var(--bg);
+    /* ============ LEVEL BARS ============ */
+    .level-list { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .level-row { display: flex; flex-direction: column; gap: 6px; }
+    .level-top { display: flex; justify-content: space-between; align-items: center; }
+    .level-name { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .level-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .level-count { font-size: 13px; font-weight: 700; color: var(--text); }
+    .level-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .level-fill { height: 100%; border-radius: 99px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+
+    /* ============ CHART ============ */
+    .chart-wrap { padding: 20px 22px; }
+    .chart-canvas-wrap { position: relative; height: 200px; }
+    canvas { width: 100% !important; }
+
+    /* ============ PAYMENT LIST ============ */
+    .payment-list { padding: 8px 0; }
+    .payment-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 22px;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .payment-item:last-child { border-bottom: none; }
+    .payment-item:hover { background: var(--surface2); }
+    .payment-ava {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: var(--gold);
+      flex-shrink: 0;
+    }
+    .payment-info { flex: 1; min-width: 0; }
+    .payment-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .payment-date { font-size: 11px; color: var(--muted); }
+    .payment-amount { font-size: 13px; font-weight: 700; color: var(--green); flex-shrink: 0; }
+    .payment-status {
+      font-size: 10px; font-weight: 600; padding: 2px 8px;
+      border-radius: 99px; flex-shrink: 0;
+    }
+    .payment-status.lunas { background: var(--green-dim); color: var(--green); }
+    .payment-status.pending { background: rgba(212,175,55,0.15); color: #B08C1A; }
+
+    /* ============ ACCORDION MENU ============ */
+    .acc-menu { border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
+    .acc-group { border-bottom: 1px solid var(--border); }
+    .acc-group:last-child { border-bottom: none; }
+
+    /* TAB HEADER tertutup */
+    .acc-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 18px;
+      cursor: pointer; user-select: none;
+      background: var(--surface2);
+      border-left: 3px solid transparent;
+      transition: background .25s, border-color .25s;
+    }
+    .acc-head:hover { background: var(--bg); }
+
+    /* TAB HEADER terbuka */
+    .acc-group.open > .acc-head {
+      background: var(--gold-dim);
+      border-left: 3px solid var(--gold);
+    }
+    .acc-group.open > .acc-head .acc-head-label { color: var(--gold); }
+    .acc-group.open > .acc-head .acc-chevron { color: var(--gold); }
+
+    .acc-group.logout-group > .acc-head {
+      background: var(--red-dim);
+      border-left: 3px solid var(--red);
+    }
+    .acc-group.logout-group > .acc-head .acc-head-label { color: var(--red); }
+
+    .acc-head-left { display: flex; align-items: center; gap: 10px; }
+    .acc-head-icon { font-size: 17px; line-height: 1; }
+    .acc-head-label { font-size: 13px; font-weight: 700; color: var(--text); transition: color .25s; }
+    .acc-chevron {
+      font-size: 11px; color: var(--muted);
+      transition: transform .32s cubic-bezier(.4,0,.2,1), color .25s;
+    }
+    .acc-group.open .acc-chevron { transform: rotate(180deg); }
+
+    .acc-body {
+      max-height: 0; overflow: hidden;
+      background: var(--surface);
+      transition: max-height .38s cubic-bezier(.4,0,.2,1);
+    }
+    .acc-group.open .acc-body { max-height: 900px; }
+
+    /* GRID TOMBOL KOTAK */
+    .acc-items {
+      padding: 14px 14px 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .acc-item {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 7px; padding: 14px 6px 12px;
       border-radius: 12px;
-      border: 2px dashed var(--border);
-      text-align: center;
-      color: var(--muted);
+      cursor: pointer; text-decoration: none;
+      border: 1.5px solid var(--border);
+      background: var(--surface2);
+      width: 100%; text-align: center;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+      line-height: 1.3;
+      transition: background .2s, border-color .2s, color .2s, transform .15s, box-shadow .2s;
+    }
+    .acc-item:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212,175,55,0.15);
+    }
+    .acc-item-icon { font-size: 22px; line-height: 1; }
+
+    .acc-item.logout-btn {
+      grid-column: 1 / -1;
+      flex-direction: row; gap: 8px;
+      padding: 12px 16px; justify-content: center;
+      background: var(--red-dim); border-color: rgba(200,64,64,0.3);
+      color: var(--red); font-size: 12px;
+    }
+    .acc-item.logout-btn .acc-item-icon { font-size: 17px; }
+    .acc-item.logout-btn:hover {
+      background: rgba(200,64,64,0.22); border-color: var(--red);
+      color: var(--red); box-shadow: 0 4px 12px rgba(200,64,64,0.15);
     }
 
-    /* FOOTER */
+    /* ============ FOOTER ============ */
     footer {
       background: var(--footer-bg);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 32px;
-      margin-top: 80px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 24px;
+      margin-top: 0;
+    }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--footer-text); font-size: 13px;
     }
 
-    .footer-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--footer-text);
-      font-size: 14px;
+    /* ============ SKELETON LOADER ============ */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      nav {
-        padding: 12px 16px;
-      }
+    @media (max-width: 640px) {
+      .nav-inner { padding: 0 14px; height: 56px; }
+      .nav-brand { font-size: 18px; gap: 8px; }
+      .nav-brand img { height: 26px; }
+      .admin-info { display: none; }
 
-      .nav-brand {
-        font-size: 20px;
-      }
+      .main-wrap { padding: 16px 12px 60px; }
+      .page-header { margin-bottom: 18px; }
+      .page-header h1 { font-size: 24px; }
 
-      .nav-right {
-        gap: 12px;
-      }
-
-      .admin-info {
-        display: none;
-      }
-
-      .container {
-        padding: 24px 16px;
-      }
-
-      .dashboard-title {
-        font-size: 28px;
-      }
-
-      .menu-grid {
+      .stats-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        gap: 10px; margin-bottom: 16px;
       }
+      .stat-card { padding: 14px 14px; }
+      .stat-value { font-size: 26px; }
+      .stat-icon { width: 34px; height: 34px; font-size: 17px; margin-bottom: 8px; }
+      .stat-label { font-size: 11px; }
 
-      .menu-btn {
-        padding: 24px 16px;
-        gap: 12px;
-      }
+      .section-head { padding: 14px 16px; }
+      .section-head h2 { font-size: 14px; }
+      .level-list { padding: 14px 16px; }
+      .chart-wrap { padding: 14px 16px; }
+      .chart-canvas-wrap { height: 160px; }
+      .payment-item { padding: 10px 16px; }
 
-      .menu-icon {
-        font-size: 36px;
-      }
+      .acc-head { padding: 12px 14px; }
+      .acc-head-label { font-size: 12px; }
+      .acc-items { padding: 10px 10px 12px; gap: 8px; grid-template-columns: repeat(3, 1fr); }
+      .acc-item { padding: 12px 4px 10px; border-radius: 10px; font-size: 10px; gap: 5px; }
+      .acc-item-icon { font-size: 20px; }
+      .acc-item.logout-btn { font-size: 11px; padding: 10px 14px; }
 
-      .menu-label {
-        font-size: 14px;
-      }
-
-      .content-area {
-        padding: 24px;
-      }
-
-      .content-title {
-        font-size: 24px;
-      }
-
-      .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 16px;
-      }
+      .footer-inner { flex-direction: column; gap: 10px; text-align: center; font-size: 12px; }
     }
 
-    @media (max-width: 480px) {
-      .menu-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .dashboard-title {
-        font-size: 24px;
-      }
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-value { font-size: 22px; }
     }
+
+    /* animate in */
+    .fade-in { animation: fadeIn .5s ease both; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+    .fade-in-1 { animation-delay:.05s }
+    .fade-in-2 { animation-delay:.10s }
+    .fade-in-3 { animation-delay:.15s }
+    .fade-in-4 { animation-delay:.20s }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <img id="nav-logo" src="logo.png" alt="KENZ" style="display:none;">
+      <img id="nav-logo" src="logo.png" alt="KENZ" style="display:none">
       <span id="nav-logo-fallback">🎸</span>
       <span id="nav-nama-usaha">KENZ.</span>
     </a>
@@ -337,267 +430,439 @@
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
       <div class="admin-info">
         <div class="admin-avatar" id="nav-avatar">K</div>
-        <div class="admin-details">
+        <div>
           <div class="admin-name" id="nav-owner">Admin Kenz</div>
           <div class="admin-role">Administrator</div>
         </div>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- MAIN CONTENT -->
-  <div class="container">
-    <div class="dashboard-header">
-      <h1 class="dashboard-title">Admin Dashboard</h1>
-      <p class="dashboard-subtitle">Kelola semua data dan konfigurasi untuk KENZ Private Guitar Lesson</p>
-    </div>
+<!-- MAIN -->
+<div class="main-wrap">
 
-    <!-- MENU BUTTONS -->
-    <div class="menu-grid">
-      <button class="menu-btn" data-menu="profil" onclick="window.location.href='identitas.html'">
-        <div class="menu-icon">👤</div>
-        <div class="menu-label">Profil</div>
-      </button>
+  <!-- HEADER -->
+  <div class="page-header fade-in">
+    <h1>Admin <span>Dashboard</span></h1>
+    <p>Kelola semua data dan konfigurasi KENZ Private Guitar Lesson</p>
+  </div>
 
-      <button class="menu-btn" data-menu="siswa" onclick="window.location.href='datasiswa.html'">
-        <div class="menu-icon">👨‍🎓</div>
-        <div class="menu-label">Siswa</div>
-      </button>
-
-      <button class="menu-btn" data-menu="guru" onclick="showMenu('guru')">
-        <div class="menu-icon">👨‍🏫</div>
-        <div class="menu-label">Guru</div>
-      </button>
-
-      <button class="menu-btn" data-menu="nilai" onclick="showMenu('nilai')">
-        <div class="menu-icon">📊</div>
-        <div class="menu-label">Nilai</div>
-      </button>
-
-      <button class="menu-btn" data-menu="kurikulum" onclick="showMenu('kurikulum')">
-        <div class="menu-icon">📚</div>
-        <div class="menu-label">Kurikulum</div>
-      </button>
-
-      <button class="menu-btn" data-menu="video" onclick="showMenu('video')">
-        <div class="menu-icon">🎥</div>
-        <div class="menu-label">Video Pembelajaran</div>
-      </button>
-
-      <button class="menu-btn" data-menu="sertifikat" onclick="showMenu('sertifikat')">
-        <div class="menu-icon">🏆</div>
-        <div class="menu-label">Sertifikat</div>
-      </button>
-
-      <button class="menu-btn" data-menu="backup" onclick="showMenu('backup')">
-        <div class="menu-icon">💾</div>
-        <div class="menu-label">Backup Data</div>
-      </button>
-
-      <button class="menu-btn" data-menu="restore" onclick="showMenu('restore')">
-        <div class="menu-icon">♻️</div>
-        <div class="menu-label">Restore Data</div>
-      </button>
-
-      <button class="menu-btn" data-menu="pendaftar" onclick="window.location.href='pendaftarbaru.html'">
-        <div class="menu-icon">📋</div>
-        <div class="menu-label">Pendaftar Baru</div>
-      </button>
-
-      <button class="menu-btn" data-menu="pembayaran" onclick="window.location.href='PembayaranSPP.html'">
-        <div class="menu-icon">💳</div>
-        <div class="menu-label">Pembayaran Les Siswa</div>
-      </button>
-
-      <button class="menu-btn" data-menu="pengaturan" onclick="window.location.href='pengaturan.html'">
-        <div class="menu-icon">⚙️</div>
-        <div class="menu-label">Pengaturan</div>
-      </button>
-
-      <button class="menu-btn logout" data-menu="logout" onclick="logout()">
-        <div class="menu-icon">🚪</div>
-        <div class="menu-label">Log Out</div>
-      </button>
-    </div>
-
-    <!-- CONTENT AREAS -->
-    <div id="profil" class="content-area active">
-      <h2 class="content-title">Profil</h2>
-      <p class="content-subtitle">Kelola profil admin dan informasi dasar KENZ Private Guitar Lesson</p>
-      <div class="placeholder-content">
-        <p>📝 Konten Profil - Form edit data profil admin dan informasi sekolah</p>
-      </div>
-    </div>
-
-    <div id="siswa" class="content-area">
-      <h2 class="content-title">Data Siswa</h2>
-      <p class="content-subtitle">Lihat, tambah, edit, dan hapus data semua siswa</p>
-      <div class="placeholder-content">
-        <p>👥 Data Siswa - Tabel daftar siswa dengan opsi CRUD</p>
-      </div>
-    </div>
-
-    <div id="guru" class="content-area">
-      <h2 class="content-title">Data Guru</h2>
-      <p class="content-subtitle">Kelola data guru dan instruktur KENZ</p>
-      <div class="placeholder-content">
-        <p>👨‍🏫 Data Guru - Tabel daftar guru dengan opsi CRUD</p>
-      </div>
-    </div>
-
-    <div id="nilai" class="content-area">
-      <h2 class="content-title">Nilai & Progres Siswa</h2>
-      <p class="content-subtitle">Pantau perkembangan dan nilai semua siswa</p>
-      <div class="placeholder-content">
-        <p>📊 Nilai - Tabel nilai siswa dengan filter dan export</p>
-      </div>
-    </div>
-
-    <div id="kurikulum" class="content-area">
-      <h2 class="content-title">Kurikulum</h2>
-      <p class="content-subtitle">Kelola kurikulum pembelajaran untuk setiap level kelas</p>
-      <div class="placeholder-content">
-        <p>📚 Kurikulum - Form input kurikulum untuk Basic, Intermediate, Performer</p>
-      </div>
-    </div>
-
-    <div id="video" class="content-area">
-      <h2 class="content-title">Video Pembelajaran</h2>
-      <p class="content-subtitle">Upload dan kelola video pembelajaran untuk siswa</p>
-      <div class="placeholder-content">
-        <p>🎥 Video - Uploader video dan gallery media pembelajaran</p>
-      </div>
-    </div>
-
-    <div id="sertifikat" class="content-area">
-      <h2 class="content-title">Sertifikat</h2>
-      <p class="content-subtitle">Generate dan kelola sertifikat untuk siswa yang lulus</p>
-      <div class="placeholder-content">
-        <p>🏆 Sertifikat - Template sertifikat dan daftar sertifikat yang sudah diterbitkan</p>
-      </div>
-    </div>
-
-    <div id="backup" class="content-area">
-      <h2 class="content-title">Backup Data</h2>
-      <p class="content-subtitle">Buat backup data untuk keamanan dan pencegahan kehilangan data</p>
-      <div class="placeholder-content">
-        <p>💾 Backup - Tombol backup data dan riwayat backup sebelumnya</p>
-      </div>
-    </div>
-
-    <div id="restore" class="content-area">
-      <h2 class="content-title">Restore Data</h2>
-      <p class="content-subtitle">Pulihkan data dari backup yang sudah dibuat sebelumnya</p>
-      <div class="placeholder-content">
-        <p>♻️ Restore - Pilih backup file untuk di-restore</p>
+  <!-- ACCORDION MENU — tepat di bawah header -->
+  <div class="section-card fade-in" style="margin-bottom:24px;">
+    <div class="acc-menu" id="acc-menu">
+      <div class="acc-group open">
+        <div class="acc-head" onclick="toggleAcc(this.parentElement)">
+          <div class="acc-head-left">
+            <span class="acc-head-icon">☰</span>
+            <span class="acc-head-label">MENU</span>
+          </div>
+          <span class="acc-chevron">▼</span>
+        </div>
+        <div class="acc-body">
+          <div class="acc-items">
+            <a class="acc-item" href="identitas.html">
+              <span class="acc-item-icon">👤</span>Profil Studio
+            </a>
+            <a class="acc-item" href="datasiswa.html">
+              <span class="acc-item-icon">👨‍🎓</span>Data Siswa
+            </a>
+            <button class="acc-item" onclick="showMenu('guru')">
+              <span class="acc-item-icon">👨‍🏫</span>Data Guru
+            </button>
+            <button class="acc-item" onclick="showMenu('nilai')">
+              <span class="acc-item-icon">📊</span>Nilai & Progres
+            </button>
+            <button class="acc-item" onclick="showMenu('kurikulum')">
+              <span class="acc-item-icon">📖</span>Kurikulum
+            </button>
+            <button class="acc-item" onclick="showMenu('video')">
+              <span class="acc-item-icon">🎥</span>Video Belajar
+            </button>
+            <button class="acc-item" onclick="showMenu('sertifikat')">
+              <span class="acc-item-icon">🏆</span>Sertifikat
+            </button>
+            <a class="acc-item" href="pendaftarbaru.html">
+              <span class="acc-item-icon">📋</span>Pendaftar Baru
+            </a>
+            <a class="acc-item" href="PembayaranSPP.html">
+              <span class="acc-item-icon">💰</span>Pembayaran Les
+            </a>
+            <button class="acc-item" onclick="showMenu('backup')">
+              <span class="acc-item-icon">💾</span>Backup Data
+            </button>
+            <button class="acc-item" onclick="showMenu('restore')">
+              <span class="acc-item-icon">♻️</span>Restore Data
+            </button>
+            <a class="acc-item" href="pengaturan.html">
+              <span class="acc-item-icon">🔧</span>Pengaturan
+            </a>
+            <button class="acc-item logout-btn" onclick="logout()">
+              <span class="acc-item-icon">🚪</span>Log Out
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-content">
-      <p>&copy; 2025 KENZ Private Guitar Lesson. All rights reserved.</p>
-      <p>Admin Dashboard v1.0</p>
+  <!-- STATS CARDS -->
+  <div class="stats-grid">
+    <div class="stat-card gold fade-in fade-in-1">
+      <div class="stat-icon">🎸</div>
+      <div class="stat-value" id="stat-total">—</div>
+      <div class="stat-label">Total Siswa Aktif</div>
+      <div class="stat-sub" id="stat-total-sub">Memuat data…</div>
     </div>
-  </footer>
+    <div class="stat-card green fade-in fade-in-2">
+      <div class="stat-icon">📗</div>
+      <div class="stat-value" id="stat-basic">—</div>
+      <div class="stat-label">Basic</div>
+      <div class="stat-sub">Level pemula</div>
+    </div>
+    <div class="stat-card blue fade-in fade-in-3">
+      <div class="stat-icon">📘</div>
+      <div class="stat-value" id="stat-inter">—</div>
+      <div class="stat-label">Intermediate</div>
+      <div class="stat-sub">Level menengah</div>
+    </div>
+    <div class="stat-card purple fade-in fade-in-4">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-value" id="stat-perf">—</div>
+      <div class="stat-label">Performer</div>
+      <div class="stat-sub">Level mahir</div>
+    </div>
+  </div>
 
-  <!-- SCRIPTS -->
-  <script>
-    /* SUPABASE CONFIG */
-    const SUPABASE_URL  = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+  <!-- BODY: CHART + MENU -->
+  <div class="dashboard-body">
 
-    /* LOAD NAVBAR DATA FROM SUPABASE */
-    async function loadNavbar() {
-      try {
-        const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/identitas?select=logo,nama_usaha,owner&limit=1`,
-          {
-            headers: {
-              'apikey': SUPABASE_ANON,
-              'Authorization': `Bearer ${SUPABASE_ANON}`,
-            }
-          }
-        );
-        const rows = await res.json();
-        if (!rows || rows.length === 0) return;
+    <!-- LEFT: CHARTS & PAYMENTS -->
+    <div class="left-col">
 
-        const { logo, nama_usaha, owner } = rows[0];
+      <!-- LEVEL BREAKDOWN -->
+      <div class="section-card fade-in">
+        <div class="section-head">
+          <h2>Distribusi Level Siswa</h2>
+          <span class="badge" id="badge-total-level">— siswa</span>
+        </div>
+        <div class="level-list" id="level-bars">
+          <div class="level-row">
+            <div class="level-top">
+              <span class="level-name"><span class="level-dot" style="background:#2D8A5F"></span>Basic</span>
+              <span class="level-count" id="lc-basic">—</span>
+            </div>
+            <div class="level-bar"><div class="level-fill" id="lf-basic" style="width:0%;background:#2D8A5F"></div></div>
+          </div>
+          <div class="level-row">
+            <div class="level-top">
+              <span class="level-name"><span class="level-dot" style="background:#2D5FA8"></span>Intermediate</span>
+              <span class="level-count" id="lc-inter">—</span>
+            </div>
+            <div class="level-bar"><div class="level-fill" id="lf-inter" style="width:0%;background:#2D5FA8"></div></div>
+          </div>
+          <div class="level-row">
+            <div class="level-top">
+              <span class="level-name"><span class="level-dot" style="background:#7A3EA6"></span>Performer</span>
+              <span class="level-count" id="lc-perf">—</span>
+            </div>
+            <div class="level-bar"><div class="level-fill" id="lf-perf" style="width:0%;background:#7A3EA6"></div></div>
+          </div>
+        </div>
+      </div>
 
-        if (logo) {
-          const img = document.getElementById('nav-logo');
-          img.src = logo;
-          img.style.display = 'block';
-          document.getElementById('nav-logo-fallback').style.display = 'none';
-        }
-        if (nama_usaha) {
-          document.getElementById('nav-nama-usaha').textContent = nama_usaha;
-        }
-        if (owner) {
-          document.getElementById('nav-owner').textContent = owner;
-          document.getElementById('nav-avatar').textContent = owner.charAt(0).toUpperCase();
-        }
-      } catch (err) {
-        console.warn('Gagal load navbar:', err.message);
+      <!-- GRAFIK BULANAN -->
+      <div class="section-card fade-in">
+        <div class="section-head">
+          <h2>Grafik Pembayaran (6 Bulan)</h2>
+          <span class="badge" id="badge-total-payment">Memuat…</span>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-canvas-wrap">
+            <canvas id="payChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- PEMBAYARAN TERBARU -->
+      <div class="section-card fade-in">
+        <div class="section-head">
+          <h2>Pembayaran Terbaru</h2>
+          <span class="badge">SPP Siswa</span>
+        </div>
+        <div class="payment-list" id="payment-list">
+          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;">Memuat data pembayaran…</div>
+        </div>
+      </div>
+
+    </div><!-- end left-col -->
+
+  </div><!-- end dashboard-body -->
+</div><!-- end main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <p>© 2025 KENZ Private Guitar Lesson. All rights reserved.</p>
+    <p>Admin Dashboard v2.0</p>
+  </div>
+</footer>
+
+<script>
+  /* ===== CONFIG ===== */
+  const SUPABASE_URL  = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+
+  const headers = {
+    'apikey': SUPABASE_ANON,
+    'Authorization': `Bearer ${SUPABASE_ANON}`
+  };
+
+  /* ===== THEME ===== */
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+  function applyTheme(t) {
+    html.setAttribute('data-theme', t);
+    themeToggle.textContent = t === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('kenz-theme', t);
+  }
+  applyTheme(localStorage.getItem('kenz-theme') || 'light');
+  themeToggle.addEventListener('click', () => {
+    applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ===== NAVBAR ===== */
+  async function loadNavbar() {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/identitas?select=logo,nama_usaha,owner&limit=1`, { headers });
+      const rows = await r.json();
+      if (!rows?.length) return;
+      const { logo, nama_usaha, owner } = rows[0];
+      if (logo) {
+        const img = document.getElementById('nav-logo');
+        img.src = logo; img.style.display = 'block';
+        document.getElementById('nav-logo-fallback').style.display = 'none';
       }
+      if (nama_usaha) document.getElementById('nav-nama-usaha').textContent = nama_usaha;
+      if (owner) {
+        document.getElementById('nav-owner').textContent = owner;
+        document.getElementById('nav-avatar').textContent = owner.charAt(0).toUpperCase();
+      }
+    } catch(e) { console.warn('Navbar:', e.message); }
+  }
+  loadNavbar();
+
+  /* ===== ACCORDION ===== */
+  function toggleAcc(group) {
+    group.classList.toggle('open');
+  }
+
+  /* ===== MENU CONTENT ===== */
+  function showMenu(id) { console.log('Menu:', id); }
+
+  /* ===== LOGOUT ===== */
+  function logout() {
+    if (confirm('Apakah Anda yakin ingin logout?')) window.location.href = 'index.html';
+  }
+
+  /* ===== LOAD STUDENTS ===== */
+  async function loadStudents() {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/siswa?select=level,status&limit=1000`, { headers });
+      const rows = await r.json();
+      if (!Array.isArray(rows)) throw new Error('Data siswa tidak valid');
+
+      const active = rows.filter(s => (s.status || '').toLowerCase() !== 'nonaktif');
+      const basic  = active.filter(s => (s.level || '').toLowerCase().includes('basic')).length;
+      const inter  = active.filter(s => (s.level || '').toLowerCase().includes('intermediate')).length;
+      const perf   = active.filter(s => (s.level || '').toLowerCase().includes('performer')).length;
+      const total  = active.length;
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-basic').textContent = basic;
+      document.getElementById('stat-inter').textContent = inter;
+      document.getElementById('stat-perf').textContent = perf;
+      document.getElementById('stat-total-sub').textContent = `${rows.length} terdaftar`;
+      document.getElementById('badge-total-level').textContent = `${total} siswa`;
+      document.getElementById('lc-basic').textContent = basic;
+      document.getElementById('lc-inter').textContent = inter;
+      document.getElementById('lc-perf').textContent = perf;
+
+      const max = Math.max(basic, inter, perf, 1);
+      setTimeout(() => {
+        document.getElementById('lf-basic').style.width = (basic/max*100)+'%';
+        document.getElementById('lf-inter').style.width = (inter/max*100)+'%';
+        document.getElementById('lf-perf').style.width  = (perf/max*100)+'%';
+      }, 200);
+
+    } catch(e) {
+      console.warn('Siswa:', e.message);
+      ['stat-total','stat-basic','stat-inter','stat-perf'].forEach(id => document.getElementById(id).textContent = '?');
+      // Demo fallback
+      loadStudentsFallback();
+    }
+  }
+
+  function loadStudentsFallback() {
+    const demo = { total: 24, basic: 10, inter: 9, perf: 5 };
+    document.getElementById('stat-total').textContent = demo.total;
+    document.getElementById('stat-basic').textContent = demo.basic;
+    document.getElementById('stat-inter').textContent = demo.inter;
+    document.getElementById('stat-perf').textContent  = demo.perf;
+    document.getElementById('stat-total-sub').textContent = 'Demo data';
+    document.getElementById('badge-total-level').textContent = `${demo.total} siswa`;
+    document.getElementById('lc-basic').textContent = demo.basic;
+    document.getElementById('lc-inter').textContent = demo.inter;
+    document.getElementById('lc-perf').textContent  = demo.perf;
+    setTimeout(() => {
+      document.getElementById('lf-basic').style.width = (demo.basic/demo.total*100)+'%';
+      document.getElementById('lf-inter').style.width = (demo.inter/demo.total*100)+'%';
+      document.getElementById('lf-perf').style.width  = (demo.perf/demo.total*100)+'%';
+    }, 300);
+  }
+
+  /* ===== LOAD PAYMENTS ===== */
+  async function loadPayments() {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/pembayaran?select=nama_siswa,tanggal,jumlah,status&order=tanggal.desc&limit=5`, { headers });
+      const rows = await r.json();
+      if (!Array.isArray(rows) || rows.length === 0) throw new Error('kosong');
+      renderPayments(rows);
+      const total = rows.reduce((a,b) => a + (parseFloat(b.jumlah)||0), 0);
+      document.getElementById('badge-total-payment').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    } catch(e) {
+      console.warn('Pembayaran:', e.message);
+      renderPaymentsFallback();
+    }
+  }
+
+  function renderPayments(rows) {
+    const el = document.getElementById('payment-list');
+    el.innerHTML = rows.map(p => {
+      const init = (p.nama_siswa||'?').charAt(0).toUpperCase();
+      const statusClass = (p.status||'').toLowerCase().includes('lunas') ? 'lunas' : 'pending';
+      const statusLabel = statusClass === 'lunas' ? 'Lunas' : 'Pending';
+      const amount = parseFloat(p.jumlah||0).toLocaleString('id-ID');
+      const tgl = p.tanggal ? new Date(p.tanggal).toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'}) : '-';
+      return `<div class="payment-item">
+        <div class="payment-ava">${init}</div>
+        <div class="payment-info">
+          <div class="payment-name">${p.nama_siswa||'-'}</div>
+          <div class="payment-date">${tgl}</div>
+        </div>
+        <span class="payment-amount">Rp ${amount}</span>
+        <span class="payment-status ${statusClass}">${statusLabel}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderPaymentsFallback() {
+    const demo = [
+      { nama_siswa:'Rian Satria', tanggal:'2025-06-01', jumlah:250000, status:'lunas' },
+      { nama_siswa:'Siska Amelia', tanggal:'2025-05-28', jumlah:250000, status:'lunas' },
+      { nama_siswa:'Dimas W.', tanggal:'2025-05-25', jumlah:250000, status:'pending' },
+      { nama_siswa:'Fajar N.', tanggal:'2025-05-20', jumlah:250000, status:'lunas' },
+      { nama_siswa:'Maya Sari', tanggal:'2025-05-15', jumlah:300000, status:'lunas' },
+    ];
+    renderPayments(demo);
+    document.getElementById('badge-total-payment').textContent = 'Demo data';
+  }
+
+  /* ===== CHART ===== */
+  function drawChart(labels, data, isDark) {
+    const canvas = document.getElementById('payChart');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.offsetWidth, H = canvas.offsetHeight;
+    canvas.width = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    const padL = 52, padR = 16, padT = 16, padB = 36;
+    const cW = W - padL - padR, cH = H - padT - padB;
+    const maxVal = Math.max(...data, 1);
+    const goldColor = '#D4AF37';
+    const textColor = isDark ? '#9A9080' : '#6B6459';
+    const borderColor = isDark ? '#2A2518' : '#E2DDD4';
+
+    ctx.clearRect(0, 0, W, H);
+
+    // grid lines
+    for (let i = 0; i <= 4; i++) {
+      const y = padT + (cH / 4) * i;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + cW, y);
+      ctx.strokeStyle = borderColor; ctx.lineWidth = 1; ctx.stroke();
+      const val = Math.round(maxVal - (maxVal / 4) * i);
+      ctx.fillStyle = textColor; ctx.font = '10px DM Sans'; ctx.textAlign = 'right';
+      ctx.fillText('Rp'+val.toLocaleString('id-ID'), padL - 6, y + 4);
     }
 
-    loadNavbar();
+    const barW = (cW / labels.length) * 0.5;
+    const gap  = cW / labels.length;
 
-    /* THEME TOGGLE */
-    const html = document.documentElement;
-    const themeToggle = document.getElementById('theme-toggle');
+    // bars
+    labels.forEach((lbl, i) => {
+      const x = padL + gap * i + gap / 2 - barW / 2;
+      const bH = (data[i] / maxVal) * cH;
+      const y  = padT + cH - bH;
 
-    function getTheme() {
-      return html.getAttribute('data-theme') || 'light';
-    }
+      // gradient
+      const grad = ctx.createLinearGradient(0, y, 0, padT + cH);
+      grad.addColorStop(0, goldColor);
+      grad.addColorStop(1, 'rgba(212,175,55,0.15)');
+      ctx.fillStyle = grad;
+      const r = Math.min(6, barW / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + barW - r, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+      ctx.lineTo(x + barW, padT + cH);
+      ctx.lineTo(x, padT + cH);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      ctx.fill();
 
-    function applyTheme(theme) {
-      html.setAttribute('data-theme', theme);
-      themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('kenz-theme', theme);
-    }
+      // label
+      ctx.fillStyle = textColor; ctx.font = '11px DM Sans'; ctx.textAlign = 'center';
+      ctx.fillText(lbl, x + barW / 2, H - padB + 16);
+    });
+  }
 
-    function toggleTheme() {
-      applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
-    }
+  async function loadChart() {
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/pembayaran?select=tanggal,jumlah&order=tanggal.asc&limit=200`, { headers });
+      const rows = await r.json();
+      if (!Array.isArray(rows) || rows.length === 0) throw new Error('kosong');
 
-    const savedTheme = localStorage.getItem('kenz-theme') || 'light';
-    applyTheme(savedTheme);
-
-    themeToggle.addEventListener('click', toggleTheme);
-
-    /* MENU NAVIGATION */
-    function showMenu(menuId) {
-      // Hide all content areas
-      document.querySelectorAll('.content-area').forEach(area => {
-        area.classList.remove('active');
+      const months = {};
+      rows.forEach(p => {
+        if (!p.tanggal) return;
+        const d = new Date(p.tanggal);
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        months[key] = (months[key]||0) + (parseFloat(p.jumlah)||0);
       });
-
-      // Show selected content area
-      const selectedArea = document.getElementById(menuId);
-      if (selectedArea) {
-        selectedArea.classList.add('active');
-      }
-
-      // Update active button
-      document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.style.borderColor = '';
-      });
-      const activeBtn = document.querySelector(`[data-menu="${menuId}"]`);
-      if (activeBtn) {
-        activeBtn.style.borderColor = 'var(--gold)';
-      }
+      const keys = Object.keys(months).sort().slice(-6);
+      const MONTH_ID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+      const labels = keys.map(k => MONTH_ID[parseInt(k.split('-')[1])-1]);
+      const data   = keys.map(k => months[k]);
+      drawChart(labels, data, isDark);
+    } catch(e) {
+      console.warn('Chart:', e.message);
+      const MONTH_ID = ['Jan','Feb','Mar','Apr','Mei','Jun'];
+      drawChart(MONTH_ID, [1500000,2250000,1800000,3000000,2700000,3250000], isDark);
     }
+  }
 
-    /* LOGOUT */
-    function logout() {
-      if (confirm('Apakah Anda yakin ingin logout?')) {
-        // Redirect to login atau index
-        window.location.href = 'index.html';
-      }
-    }
-  </script>
+  /* redraw chart on theme change */
+  const observer = new MutationObserver(() => loadChart());
+  observer.observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* ===== INIT ===== */
+  loadStudents();
+  loadPayments();
+  window.addEventListener('load', loadChart);
+  window.addEventListener('resize', loadChart);
+</script>
 </body>
 </html>
