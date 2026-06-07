@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Galeri Siswa – KENZ Guitar Lesson</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --gold2: #F0C84A;
+      --gold-dim: rgba(212,175,55,0.12);
+      --gold-border: rgba(212,175,55,0.3);
+      --text: #0F0D08;
+      --muted: #6B6459;
+      --bg: #F7F4EE;
+      --surface: #FFFFFF;
+      --surface2: #F0EDE5;
+      --border: #E2DDD4;
+      --nav-bg: rgba(247,244,238,0.92);
+      --green: #2D8A5F;
+      --green-dim: rgba(45,138,95,0.12);
+      --red: #C84040;
+      --red-dim: rgba(200,64,64,0.12);
+      --radius: 16px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+    }
+    [data-theme="dark"] {
+      --text: #F0EDE5;
+      --muted: #9A9080;
+      --bg: #0C0A06;
+      --surface: #181510;
+      --surface2: #201C14;
+      --border: #2A2518;
+      --nav-bg: rgba(12,10,6,0.92);
+      --gold-dim: rgba(212,175,55,0.10);
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .35s, color .35s;
+      min-height: 100vh;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background .35s, border-color .35s;
+    }
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-family: 'Georgia', 'Times New Roman', serif; font-size: 22px; font-weight: 700;
+      color: var(--gold);
+    }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+
+    .theme-toggle {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 10px;
+      font-size: 17px; cursor: pointer;
+      transition: background .2s, border-color .2s;
+      line-height: 1;
+    }
+    .theme-toggle:hover { border-color: var(--gold); }
+
+    .btn-back {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 16px;
+      font-size: 14px; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-back:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* MAIN WRAP */
+    .main-wrap {
+      max-width: 1400px; margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight: 700; line-height: 1.15;
+      color: var(--text);
+    }
+    .page-header h1 span { color: var(--gold); }
+    .page-header p {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 14px; font-style: italic;
+      color: var(--muted); margin-top: 5px;
+    }
+
+    /* SECTION CARD */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: background .35s, border-color .35s;
+      margin-bottom: 20px;
+    }
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-head h2 {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+      color: var(--text);
+    }
+    .section-body { padding: 22px; }
+
+    /* TABS */
+    .gallery-tabs {
+      display: flex; gap: 12px; margin-bottom: 20px;
+    }
+    .gallery-tab {
+      background: var(--surface2); border: 2px solid var(--border);
+      border-radius: 50px; padding: 10px 24px;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: all .3s;
+    }
+    .gallery-tab:hover { border-color: var(--gold); color: var(--gold); }
+    .gallery-tab.active {
+      background: var(--gold); border-color: var(--gold);
+      color: #0A0A0A;
+    }
+
+    /* GALLERY GRID */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
+    .gallery-item img, .gallery-item iframe {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .gallery-item iframe { border: none; }
+    .gallery-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.7);
+      opacity: 0; transition: opacity .3s;
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; padding: 16px;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-btn {
+      background: var(--gold); border: none;
+      border-radius: 8px; padding: 8px 16px;
+      font-size: 13px; font-weight: 600; color: #0A0A0A;
+      cursor: pointer; transition: all .2s;
+    }
+    .gallery-btn:hover { transform: scale(1.05); }
+    .gallery-btn.delete { background: var(--red); color: #fff; }
+
+    /* ADD BUTTON */
+    .btn-add {
+      background: var(--gold); border: none;
+      border-radius: 10px; padding: 10px 20px;
+      font-size: 14px; font-weight: 600; color: #0A0A0A;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-add:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); width: 100%; max-width: 500px;
+      padding: 24px;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-header h3 {
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700;
+      color: var(--text);
+    }
+    .modal-close {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--muted);
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--muted); margin-bottom: 6px; text-transform: uppercase;
+    }
+    .form-input {
+      width: 100%; padding: 10px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 14px; color: var(--text);
+      outline: none; transition: border-color .2s;
+    }
+    .form-input:focus { border-color: var(--gold); }
+    .btn-submit {
+      width: 100%; background: var(--gold); border: none;
+      border-radius: 8px; padding: 12px; font-size: 15px; font-weight: 600;
+      color: #0A0A0A; cursor: pointer; transition: all .2s;
+    }
+    .btn-submit:hover { transform: translateY(-2px); }
+
+    @media (max-width: 640px) {
+      .nav-inner { padding: 0 14px; height: 56px; }
+      .nav-brand { font-size: 18px; gap: 8px; }
+      .main-wrap { padding: 16px 12px 60px; }
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="dashboardadmin.html" class="nav-brand">
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-nama-usaha">KENZ.</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle">☀️</button>
+      <a href="dashboardadmin.html" class="btn-back">← Kembali</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <div class="page-header">
+    <h1>GALERI <span>SISWA</span></h1>
+    <p>Kelola foto dan video galeri siswa</p>
+  </div>
+
+  <!-- GALLERY SECTION -->
+  <div class="section-card">
+    <div class="section-head">
+      <h2>Konten Galeri</h2>
+      <button class="btn-add" id="btn-add">+ Tambah</button>
+    </div>
+    <div class="section-body">
+      <!-- Tabs -->
+      <div class="gallery-tabs">
+        <button class="gallery-tab active" data-type="photo">📷 Foto</button>
+        <button class="gallery-tab" data-type="video">🎬 Video</button>
+      </div>
+
+      <!-- Photo Gallery -->
+      <div class="gallery-content" id="content-photo">
+        <div class="gallery-grid" id="photo-grid">
+          <!-- Photo items will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Video Gallery -->
+      <div class="gallery-content" id="content-video" style="display:none;">
+        <div class="gallery-grid" id="video-grid">
+          <!-- Video items will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title">Tambah Foto</h3>
+      <button class="modal-close" id="modal-close">×</button>
+    </div>
+    <form id="add-form">
+      <input type="hidden" id="item-type" value="photo">
+      <div class="form-group">
+        <label class="form-label">ID</label>
+        <input type="text" class="form-input" id="item-id" placeholder="ID konten" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Judul</label>
+        <input type="text" class="form-input" id="item-title" placeholder="Judul konten" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deskripsi</label>
+        <input type="text" class="form-input" id="item-desc" placeholder="Deskripsi singkat">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="file-label">Upload Foto (Maks 2MB)</label>
+        <input type="file" class="form-input" id="item-file" accept="image/*" required>
+        <small id="file-hint" style="color: var(--muted); font-size: 11px; margin-top: 4px; display: block;"></small>
+      </div>
+      <button type="submit" class="btn-submit">Simpan</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+  const headers = {
+    'apikey': SUPABASE_ANON,
+    'Authorization': `Bearer ${SUPABASE_ANON}`,
+    'Content-Type': 'application/json'
+  };
+
+  let currentType = 'photo';
+  let galleryData = [];
+
+  // Theme Toggle
+  const html = document.documentElement;
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle.addEventListener('click', () => {
+    applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+  function applyTheme(theme) {
+    html.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('kenz-theme', theme);
+  }
+  applyTheme(localStorage.getItem('kenz-theme') || 'light');
+
+  // Tab Switching
+  document.querySelectorAll('.gallery-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentType = tab.dataset.type;
+      document.getElementById('content-photo').style.display = currentType === 'photo' ? 'block' : 'none';
+      document.getElementById('content-video').style.display = currentType === 'video' ? 'block' : 'none';
+      document.getElementById('modal-title').textContent = currentType === 'photo' ? 'Tambah Foto' : 'Tambah Video';
+      document.getElementById('item-type').value = currentType;
+      
+      // Update file input based on type
+      const fileInput = document.getElementById('item-file');
+      const fileLabel = document.getElementById('file-label');
+      const fileHint = document.getElementById('file-hint');
+      
+      if (currentType === 'photo') {
+        fileInput.accept = 'image/*';
+        fileLabel.textContent = 'Upload Foto (Maks 2MB)';
+        fileHint.textContent = 'Format: JPG, PNG, GIF. Maksimal 2MB.';
+      } else {
+        fileInput.accept = 'video/*';
+        fileLabel.textContent = 'Upload Video (Maks 10MB)';
+        fileHint.textContent = 'Format: MP4, WebM. Maksimal 10MB.';
+      }
+      
+      loadGallery();
+    });
+  });
+
+  // Modal
+  const modal = document.getElementById('add-modal');
+  document.getElementById('btn-add').addEventListener('click', () => modal.classList.add('open'));
+  document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('open'); });
+
+  // Form Submit
+  document.getElementById('add-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('item-id').value;
+    const judul = document.getElementById('item-title').value;
+    const deskripsi = document.getElementById('item-desc').value;
+    const type = document.getElementById('item-type').value;
+    const fileInput = document.getElementById('item-file');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      alert('Silakan pilih file!');
+      return;
+    }
+
+    // File size validation
+    const maxSize = type === 'photo' ? 2 * 1024 * 1024 : 10 * 1024 * 1024; // 2MB for photo, 10MB for video
+    if (file.size > maxSize) {
+      alert(`File terlalu besar! Maksimal ${type === 'photo' ? '2MB' : '10MB'}.`);
+      return;
+    }
+
+    // Upload file to Supabase Storage
+    const fileName = `${type}_${Date.now()}_${file.name}`;
+    const filePath = `${type}/${fileName}`;
+
+    try {
+      // Upload to Supabase Storage
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/aset/${filePath}`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+        },
+        body: formData
+      });
+
+      if (!uploadRes.ok) {
+        const errorText = await uploadRes.text();
+        throw new Error(`Gagal upload file: ${errorText}`);
+      }
+
+      // Construct public URL
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/aset/${filePath}`;
+
+      // Save to appropriate table
+      const tableName = type === 'photo' ? 'galeriphoto' : 'galerivideo';
+      const columnName = type === 'photo' ? 'photo' : 'video';
+
+      const payload = {
+        id: id,
+        judul: judul,
+        deskripsi: deskripsi,
+        [columnName]: publicUrl
+      };
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${tableName}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Gagal menyimpan: ${errorText}`);
+      }
+
+      modal.classList.remove('open');
+      document.getElementById('add-form').reset();
+      loadGallery();
+      alert('Berhasil ditambahkan!');
+    } catch (err) {
+      alert('Gagal: ' + err.message);
+    }
+  });
+
+  // Load Gallery
+  async function loadGallery() {
+    try {
+      const tableName = currentType === 'photo' ? 'galeriphoto' : 'galerivideo';
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${tableName}`, { headers });
+      const data = await res.json();
+      galleryData = data;
+      renderGallery();
+    } catch (err) {
+      console.error('Gagal memuat galeri:', err);
+    }
+  }
+
+  // Render Gallery
+  function renderGallery() {
+    const gridId = currentType === 'photo' ? 'photo-grid' : 'video-grid';
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+
+    galleryData.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'gallery-item';
+      
+      if (currentType === 'photo') {
+        div.innerHTML = `
+          <img src="${item.photo}" alt="${item.judul}">
+          <div class="gallery-overlay">
+            <button class="gallery-btn delete" onclick="deleteItem(${index})">Hapus</button>
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <video controls style="width:100%;height:100%;object-fit:cover;">
+            <source src="${item.video}" type="video/mp4">
+            Browser Anda tidak mendukung video.
+          </video>
+          <div class="gallery-overlay">
+            <button class="gallery-btn delete" onclick="deleteItem(${index})">Hapus</button>
+          </div>
+        `;
+      }
+      
+      grid.appendChild(div);
+    });
+  }
+
+  // Delete Item
+  async function deleteItem(index) {
+    if (!confirm('Yakin ingin menghapus item ini?')) return;
+    
+    const item = galleryData[index];
+    const tableName = currentType === 'photo' ? 'galeriphoto' : 'galerivideo';
+    
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${tableName}?id=eq.${item.id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!res.ok) throw new Error('Gagal menghapus');
+      loadGallery();
+      alert('Berhasil dihapus!');
+    } catch (err) {
+      alert('Gagal menghapus: ' + err.message);
+    }
+  }
+
+  // Initial Load
+  loadGallery();
+</script>
+</body>
+</html>
