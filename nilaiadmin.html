@@ -756,6 +756,9 @@
             <option value="">-- Pilih Siswa --</option>
           </select>
         </div>
+        <div style="margin-bottom: 16px;">
+          <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
+        </div>
         <div class="student-identity-card" id="identity-card-basic">
           <div class="identity-header">
             <div class="identity-photo" id="identity-photo-basic">S</div>
@@ -835,7 +838,6 @@
             </div>
           </div>
           <div style="margin-top: 20px; text-align: right;">
-            <a href="dashboardadmin.html" class="btn-dashboard" style="margin-right: 12px;">🏠 Dashboard</a>
             <button class="btn-save-grade" id="btn-save-all-basic" onclick="saveAllGrades('basic')">Simpan Nilai</button>
           </div>
         </div>
@@ -848,6 +850,9 @@
           <select class="form-select" id="student-select-intermediate">
             <option value="">-- Pilih Siswa --</option>
           </select>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
         </div>
         <div class="student-identity-card" id="identity-card-intermediate">
           <div class="identity-header">
@@ -928,7 +933,6 @@
             </div>
           </div>
           <div style="margin-top: 20px; text-align: right;">
-            <a href="dashboardadmin.html" class="btn-dashboard" style="margin-right: 12px;">🏠 Dashboard</a>
             <button class="btn-save-grade" id="btn-save-all-intermediate" onclick="saveAllGrades('intermediate')">Simpan Nilai</button>
           </div>
         </div>
@@ -941,6 +945,9 @@
           <select class="form-select" id="student-select-performer">
             <option value="">-- Pilih Siswa --</option>
           </select>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
         </div>
         <div class="student-identity-card" id="identity-card-performer">
           <div class="identity-header">
@@ -1021,7 +1028,6 @@
             </div>
           </div>
           <div style="margin-top: 20px; text-align: right;">
-            <a href="dashboardadmin.html" class="btn-dashboard" style="margin-right: 12px;">🏠 Dashboard</a>
             <button class="btn-save-grade" id="btn-save-all-performer" onclick="saveAllGrades('performer')">Simpan Nilai</button>
           </div>
         </div>
@@ -1279,6 +1285,50 @@
         { min: 80,  max: 90,  text: "Siswa mampu menerapkan teknik fingering dengan cukup baik pada permainan melodi. Pergerakan jari sudah lebih teratur sehingga menghasilkan permainan yang cukup lancar dan tepat." },
         { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap teknik fingering. Perpindahan jari dilakukan secara efisien, akurat, dan mendukung kelancaran permainan melodi." },
         { min: 96,  max: 100, text: "Siswa mampu menerapkan teknik fingering secara optimal dengan koordinasi, kecepatan, dan ketepatan yang sangat baik. Permainan melodi terdengar bersih, lancar, dan menunjukkan penguasaan teknik yang sangat tinggi." }
+      ],
+
+      // ===== INTERMEDIATE =====
+      "Pengenalan dan Penguasaan Barre Chord": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan dalam membentuk barre chord dengan posisi jari yang tepat. Bunyi yang dihasilkan belum merata dan perpindahan antar barre chord masih sangat terbatas." },
+        { min: 61,  max: 79,  text: "Siswa mampu memainkan beberapa bentuk barre chord dasar dengan tingkat ketepatan yang cukup, meskipun masih terdapat nada yang kurang bersih dan perpindahan akor belum konsisten." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan berbagai bentuk barre chord dengan bunyi yang cukup bersih serta melakukan perpindahan akor dengan lancar pada tempo sedang." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap teknik barre chord. Posisi jari tepat, bunyi akor bersih, dan perpindahan antar akor dilakukan dengan lancar dan konsisten." },
+        { min: 96,  max: 100, text: "Siswa menguasai barre chord secara menyeluruh, mampu memainkan berbagai variasi barre chord dengan sangat bersih, stabil, dan menerapkannya secara efektif dalam berbagai lagu." }
+      ],
+      "Variasi Strumming Pattern dan Ritme": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan mengikuti variasi pola strumming dan menjaga kestabilan ritme. Tempo permainan belum konsisten dan memerlukan bimbingan lebih lanjut." },
+        { min: 61,  max: 79,  text: "Siswa mampu memainkan beberapa variasi strumming dengan tingkat ketepatan yang cukup, namun masih perlu meningkatkan konsistensi tempo dan aksen ritmis." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan berbagai pola strumming dan ritme dengan cukup baik. Tempo permainan relatif stabil dan dapat diterapkan dalam iringan lagu sederhana." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap variasi strumming dan ritme. Penggunaan aksen serta dinamika permainan sudah terdengar jelas dan musikal." },
+        { min: 96,  max: 100, text: "Siswa mampu memainkan berbagai pola strumming dengan sangat akurat, ritmis, dan ekspresif. Penguasaan tempo, aksen, dan dinamika menunjukkan kemampuan yang melampaui target pembelajaran." }
+      ],
+      "Teknik Fingerstyle Dasar dan Arpeggio": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan dalam koordinasi jari tangan kanan dan belum mampu memainkan pola fingerstyle atau arpeggio dengan baik." },
+        { min: 61,  max: 79,  text: "Siswa mampu memainkan pola fingerstyle dan arpeggio dasar dengan tingkat ketepatan yang cukup, namun kelancaran dan konsistensi permainan masih perlu ditingkatkan." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan berbagai pola fingerstyle dasar dan arpeggio dengan cukup lancar serta menghasilkan bunyi yang relatif bersih dan seimbang." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap teknik fingerstyle dan arpeggio. Koordinasi jari, ketepatan ritme, dan kualitas bunyi sudah sangat baik." },
+        { min: 96,  max: 100, text: "Siswa mampu memainkan pola fingerstyle dan arpeggio dengan sangat lancar, presisi tinggi, serta menampilkan dinamika dan ekspresi musikal yang matang." }
+      ],
+      "Pengenalan Scale Pentatonik dan Improvisasi Dasar": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan memahami pola scale pentatonik dan belum mampu menggunakannya dalam permainan melodi maupun improvisasi sederhana." },
+        { min: 61,  max: 79,  text: "Siswa memahami pola dasar scale pentatonik dan mampu memainkan beberapa bentuk scale, namun penerapan dalam improvisasi masih terbatas." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan scale pentatonik dengan baik dan mulai menerapkannya dalam improvisasi sederhana sesuai progresi akor yang digunakan." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap pola scale pentatonik dan mampu melakukan improvisasi dengan lancar, terarah, dan musikal." },
+        { min: 96,  max: 100, text: "Siswa menguasai scale pentatonik secara menyeluruh serta mampu berimprovisasi dengan kreatif, percaya diri, dan sesuai konteks musikal yang dimainkan." }
+      ],
+      "Teknik Melodi Intermediate": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan memainkan materi melodi tingkat menengah. Ketepatan nada, ritme, dan koordinasi jari belum berkembang dengan baik." },
+        { min: 61,  max: 79,  text: "Siswa mampu memainkan sebagian besar materi melodi dengan tingkat ketepatan yang cukup, namun masih memerlukan peningkatan pada kelancaran dan kontrol teknik." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan melodi tingkat menengah dengan cukup lancar, menjaga ketepatan nada dan ritme dalam sebagian besar permainan." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap teknik melodi intermediate. Permainan terdengar bersih, stabil, dan menunjukkan kontrol teknik yang baik." },
+        { min: 96,  max: 100, text: "Siswa mampu memainkan materi melodi intermediate dengan sangat lancar, presisi tinggi, dan ekspresi musikal yang kuat, melampaui target pembelajaran yang ditetapkan." }
+      ],
+      "Chord Progression dan Aplikasi Lagu": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan memahami hubungan antar akor dalam progresi lagu serta belum mampu menerapkannya secara tepat dalam permainan." },
+        { min: 61,  max: 79,  text: "Siswa memahami konsep dasar chord progression dan mampu menerapkannya pada lagu sederhana, meskipun perpindahan akor dan ritme masih perlu ditingkatkan." },
+        { min: 80,  max: 90,  text: "Siswa mampu memahami dan memainkan berbagai progresi akor dengan baik serta menerapkannya dalam lagu dengan tingkat kelancaran yang cukup." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap chord progression. Mampu menerapkan progresi akor secara tepat dan mendukung struktur lagu dengan baik." },
+        { min: 96,  max: 100, text: "Siswa menguasai konsep dan penerapan chord progression secara menyeluruh, mampu mengaplikasikannya dalam berbagai lagu dengan lancar, musikal, dan kreatif." }
       ]
     };
 
@@ -1440,6 +1490,7 @@
           tr.dataset.idNilai = idNilai;
           tr.dataset.isExisting = isExisting ? '1' : '0';
           tr.dataset.materi = item.materi;
+          tr.dataset.studentId = studentId;
           tr.innerHTML = `
             <td class="grades-no" id="cell-idnilai-${level}-${item.id}" style="font-size:11px;">${idNilai}</td>
             <td class="grades-no" style="font-size:11px;">${studentId}</td>
@@ -1496,8 +1547,8 @@
         return;
       }
 
-      // Get student ID from the first row
-      const studentId = rows[0].dataset.idNilai ? rows[0].dataset.idNilai.split('-')[0] : '';
+      // Get student ID from the first row's dataset
+      const studentId = rows[0].dataset.studentId || '';
       if (!studentId) {
         showToast('⚠️ ID Siswa tidak ditemukan', 'error');
         return;
