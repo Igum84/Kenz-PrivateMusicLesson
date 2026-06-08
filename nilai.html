@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Nilai Pembelajaran – KENZ Guitar Lesson</title>
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --gold2: #F0C84A;
+      --gold-dim: rgba(212,175,55,0.12);
+      --gold-border: rgba(212,175,55,0.3);
+      --text: #0F0D08;
+      --muted: #6B6459;
+      --bg: #F7F4EE;
+      --surface: #FFFFFF;
+      --surface2: #F0EDE5;
+      --border: #E2DDD4;
+      --footer-bg: #0F0D08;
+      --footer-text: #5A5249;
+      --green: #2D8A5F;
+      --green-dim: rgba(45,138,95,0.12);
+      --blue: #2D5FA8;
+      --blue-dim: rgba(45,95,168,0.12);
+      --purple: #7A3EA6;
+      --purple-dim: rgba(122,62,166,0.12);
+      --red: #C84040;
+      --red-dim: rgba(200,64,64,0.12);
+      --radius: 16px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+      --font: 'Times New Roman', Times, Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --text: #F0EDE5;
+      --muted: #9A9080;
+      --bg: #0C0A06;
+      --surface: #181510;
+      --surface2: #201C14;
+      --border: #2A2518;
+      --footer-bg: #080604;
+      --footer-text: #3A3228;
+      --gold-dim: rgba(212,175,55,0.10);
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      transition: background .35s, color .35s;
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR (identik materi.html) ===== */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: #0F0D08;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,175,55,0.18);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.45);
+    }
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-family: var(--font); font-size: 22px; font-weight: 700;
+      color: var(--gold);
+    }
+    .nav-brand img { height: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .nav-back {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 10px; padding: 7px 14px;
+      color: #F0EDE5; font-size: 13px; font-weight: 600;
+      text-decoration: none; font-family: var(--font);
+      transition: background .2s, border-color .2s;
+    }
+    .nav-back:hover { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .theme-toggle {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; padding: 8px 10px;
+      font-size: 17px; cursor: pointer;
+      transition: background .2s, border-color .2s; line-height: 1;
+    }
+    .theme-toggle:hover { border-color: var(--gold); background: rgba(212,175,55,0.12); }
+    .admin-info {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 14px 7px 7px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 50px;
+    }
+    .admin-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A0A0A; font-weight: 700; font-size: 14px; flex-shrink: 0;
+      overflow: hidden;
+    }
+    .admin-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .admin-name { font-size: 13px; font-weight: 600; color: #F0EDE5; font-family: var(--font); }
+    .admin-role { font-size: 11px; color: #9A9080; font-family: var(--font); }
+
+    /* ===== MAIN ===== */
+    .main-wrap { padding: 24px 10px 80px; }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in { animation: fadeIn .5s ease both; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+    .fi-1{animation-delay:.05s} .fi-2{animation-delay:.10s} .fi-3{animation-delay:.15s}
+
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ===== IDENTITAS CARD (identik materi.html) ===== */
+    .identitas-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: background .35s, border-color .35s;
+    }
+    .identitas-banner {
+      height: 6px;
+      background: linear-gradient(90deg, #1a1200, #7A5020, var(--gold), #7A5020, #1a1200);
+    }
+    .identitas-body {
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .identitas-photo {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 800; color: #0A0A0A;
+      flex-shrink: 0; overflow: hidden;
+      border: 3px solid var(--gold-border);
+      box-shadow: 0 2px 12px rgba(212,175,55,0.25);
+    }
+    .identitas-photo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .identitas-info { flex: 1; min-width: 0; }
+    .identitas-nama {
+      font-family: var(--font); font-size: 17px; font-weight: 700;
+      color: var(--text); line-height: 1.2; margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .identitas-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .identitas-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      color: var(--gold); border-radius: 99px;
+      padding: 2px 10px; font-size: 11px; font-weight: 700;
+      font-family: var(--font);
+    }
+    .identitas-sep { color: var(--border); font-size: 12px; }
+    .identitas-instrumen { font-size: 12px; color: var(--muted); font-family: var(--font); }
+    .identitas-right { text-align: right; flex-shrink: 0; }
+    .identitas-id { font-size: 11px; color: var(--muted); font-family: var(--font); margin-bottom: 2px; }
+    .identitas-id span { font-weight: 700; color: var(--gold); }
+
+    /* ===== RINGKASAN NILAI ===== */
+    .summary-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 20px;
+    }
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 16px 14px; text-align: center;
+      transition: background .35s, border-color .35s;
+      position: relative; overflow: hidden;
+    }
+    .summary-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .summary-card.gold::before  { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+    .summary-card.green::before { background: var(--green); }
+    .summary-card.blue::before  { background: var(--blue); }
+    .summary-card-icon  { font-size: 24px; margin-bottom: 6px; }
+    .summary-card-value {
+      font-family: var(--font); font-size: 28px; font-weight: 700;
+      color: var(--text); line-height: 1; margin-bottom: 4px;
+    }
+    .summary-card.gold  .summary-card-value { color: var(--gold); }
+    .summary-card.green .summary-card-value { color: var(--green); }
+    .summary-card.blue  .summary-card-value { color: var(--blue); }
+    .summary-card-label {
+      font-family: var(--font); font-size: 10px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: .6px;
+    }
+
+    /* ===== NILAI CARD ===== */
+    .nilai-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      overflow: hidden; transition: background .35s, border-color .35s;
+    }
+    .nilai-card-header {
+      padding: 14px 20px; background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nilai-card-header-icon { font-size: 18px; }
+    .nilai-card-title {
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      color: var(--gold); letter-spacing: .3px;
+    }
+    .nilai-count {
+      margin-left: auto;
+      background: var(--gold-dim); border: 1px solid var(--gold-border);
+      color: var(--gold); border-radius: 99px;
+      padding: 2px 10px; font-size: 11px; font-weight: 700;
+      font-family: var(--font); display: none;
+    }
+
+    /* ===== TABEL NILAI ===== */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-family: var(--font); }
+    thead tr { background: var(--surface2); border-bottom: 2px solid var(--border); }
+    thead th {
+      padding: 11px 16px; font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .7px; text-align: left; white-space: nowrap;
+    }
+    thead th.center { text-align: center; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: 13px 16px; font-size: 13px; color: var(--text); vertical-align: middle; }
+    tbody td.center { text-align: center; }
+    .td-no { font-size: 11px; color: var(--muted); font-weight: 700; width: 36px; text-align: center; }
+    .td-materi { font-weight: 700; }
+    .td-deskripsi {
+      font-size: 12px; color: var(--muted); font-style: italic;
+      line-height: 1.5; max-width: 220px;
+    }
+
+    /* Badge nilai angka */
+    .badge-nilai {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 46px; padding: 4px 12px;
+      border-radius: 8px; font-size: 14px; font-weight: 700;
+      font-family: var(--font);
+    }
+    .badge-nilai.A { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(45,138,95,0.3); }
+    .badge-nilai.B { background: var(--blue-dim);   color: var(--blue);   border: 1px solid rgba(45,95,168,0.3); }
+    .badge-nilai.C { background: var(--gold-dim);   color: #A07A10;       border: 1px solid var(--gold-border); }
+    .badge-nilai.D { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(200,64,64,0.3); }
+    .badge-nilai.empty { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); font-size:12px; }
+
+    /* Badge predikat */
+    .badge-predikat {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 99px;
+      font-size: 11px; font-weight: 700; font-family: var(--font);
+    }
+    .badge-predikat.sangat-baik  { background: var(--green-dim); color: var(--green); border: 1px solid rgba(45,138,95,0.3); }
+    .badge-predikat.baik         { background: var(--blue-dim);  color: var(--blue);  border: 1px solid rgba(45,95,168,0.3); }
+    .badge-predikat.cukup        { background: var(--gold-dim);  color: #A07A10;      border: 1px solid var(--gold-border); }
+    .badge-predikat.perlu-latihan{ background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(200,64,64,0.3); }
+
+    /* ===== SKELETON ===== */
+    .nilai-skeleton { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* ===== EMPTY & ERROR STATE ===== */
+    .state-box {
+      padding: 48px 20px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .state-icon { font-size: 42px; opacity: .35; }
+    .state-text { font-family: var(--font); font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--footer-bg);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 20px 24px; z-index: 100;
+    }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--footer-text); font-size: 12px; font-family: var(--font);
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:640px){
+      .nav-inner { padding: 0 14px; height: 56px; }
+      .nav-brand  { font-size: 18px; gap: 8px; }
+      .nav-brand img { height: 26px; }
+      .admin-info { display: none; }
+      .main-wrap  { padding: 16px 12px 72px; }
+      .identitas-right { display: none; }
+      .summary-row { gap: 8px; }
+      .summary-card { padding: 12px 8px; }
+      .summary-card-value { font-size: 22px; }
+
+      /* Sembunyikan kolom deskripsi sebagai kolom tersendiri di mobile */
+      .col-deskripsi { display: none; }
+      .td-deskripsi-col { display: none; }
+
+      /* Tampilkan deskripsi di bawah nama materi sebagai sub-teks */
+      .td-deskripsi-inline {
+        display: block;
+        font-size: 11px; color: var(--muted); font-style: italic;
+        margin-top: 4px; line-height: 1.45;
+      }
+    }
+    @media(min-width:641px){
+      .main-wrap { padding: 24px 10px 80px; }
+      /* Di desktop, sembunyikan versi inline (sudah ada kolom terpisah) */
+      .td-deskripsi-inline { display: none; }
+    }
+    @media(min-width:641px){
+      .main-wrap { padding: 24px 10px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <div class="nav-inner">
+    <a href="adminsiswa.html" class="nav-brand">
+      <img id="nav-logo" src="logo.png" alt="KENZ" style="display:none">
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-nama-usaha">KENZ.</span>
+    </a>
+    <div class="nav-right">
+      <a href="adminsiswa.html" class="nav-back">← Portal Siswa</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">S</div>
+        <div>
+          <div class="admin-name" id="nav-siswa-nama">Nama Siswa</div>
+          <div class="admin-role">Siswa Aktif</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap">
+
+  <!-- SKELETON IDENTITAS -->
+  <div id="identitas-skeleton" class="identitas-card fade-in" style="padding:16px 20px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="skeleton" style="width:58px;height:58px;border-radius:50%;flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div class="skeleton" style="height:16px;border-radius:6px;margin-bottom:8px;width:50%;"></div>
+        <div class="skeleton" style="height:12px;border-radius:6px;width:35%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDENTITAS SISWA CARD -->
+  <div id="identitas-card" class="identitas-card fade-in fi-1" style="display:none;">
+    <div class="identitas-banner"></div>
+    <div class="identitas-body">
+      <div class="identitas-photo" id="id-photo-el">S</div>
+      <div class="identitas-info">
+        <div class="identitas-nama" id="id-nama">—</div>
+        <div class="identitas-meta">
+          <div class="identitas-badge">⭐ <span id="id-level">Basic</span></div>
+          <span class="identitas-sep">·</span>
+          <span class="identitas-instrumen" id="id-instrumen">—</span>
+        </div>
+      </div>
+      <div class="identitas-right">
+        <div class="identitas-id">ID Siswa: <span id="id-siswa">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RINGKASAN NILAI -->
+  <div class="summary-row fade-in fi-2" id="summary-row" style="display:none;">
+    <div class="summary-card gold">
+      <div class="summary-card-icon">🏆</div>
+      <div class="summary-card-value" id="sum-rata">—</div>
+      <div class="summary-card-label">Rata-rata</div>
+    </div>
+    <div class="summary-card green">
+      <div class="summary-card-icon">✅</div>
+      <div class="summary-card-value" id="sum-total">—</div>
+      <div class="summary-card-label">Total Penilaian</div>
+    </div>
+    <div class="summary-card blue">
+      <div class="summary-card-icon">🎖</div>
+      <div class="summary-card-value" id="sum-predikat">—</div>
+      <div class="summary-card-label">Predikat</div>
+    </div>
+  </div>
+
+  <!-- NILAI CARD -->
+  <div class="nilai-card fade-in fi-3">
+    <div class="nilai-card-header">
+      <span class="nilai-card-header-icon">🏆</span>
+      <span class="nilai-card-title">NILAI PEMBELAJARAN</span>
+      <span class="nilai-count" id="nilai-count"></span>
+    </div>
+
+    <!-- SKELETON -->
+    <div id="nilai-skeleton" class="nilai-skeleton">
+      <div style="display:flex;gap:8px;padding:4px 0 12px;border-bottom:1px solid var(--border);">
+        <div class="skeleton" style="height:36px;width:70px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:36px;width:90px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:36px;width:60px;border-radius:8px;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px;">
+        <div class="skeleton" style="height:44px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:44px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:44px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:44px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:44px;border-radius:8px;"></div>
+      </div>
+    </div>
+
+    <!-- KONTEN TABEL (diisi JS) -->
+    <div id="nilai-content" style="display:none;">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="center">No</th>
+              <th>Materi / Kompetensi</th>
+              <th class="center">Nilai</th>
+              <th class="center">Predikat</th>
+              <th class="col-deskripsi">Deskripsi Progress</th>
+            </tr>
+          </thead>
+          <tbody id="nilai-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="nilai-empty" style="display:none;">
+      <div class="state-box">
+        <div class="state-icon">📋</div>
+        <div class="state-text">Nilai belum tersedia.<br>Instruktur belum menginput nilai untuk kamu.</div>
+      </div>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="nilai-error" style="display:none;">
+      <div class="state-box">
+        <div class="state-icon">⚠️</div>
+        <div class="state-text" id="error-msg-text">Gagal memuat nilai. Periksa koneksi internet.</div>
+      </div>
+    </div>
+
+  </div><!-- /nilai-card -->
+
+</div><!-- /main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span>🎸 KENZ Guitar Lesson</span>
+    <span>Nilai Pembelajaran &copy; <span id="footer-year">2025</span></span>
+  </div>
+</footer>
+
+<script>
+  /* ===== THEME ===== */
+  const html     = document.documentElement;
+  const themeBtn = document.getElementById('theme-toggle');
+  const saved    = localStorage.getItem('kenz-theme') || 'light';
+  html.setAttribute('data-theme', saved);
+  themeBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  themeBtn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('kenz-theme', next);
+    themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+
+  /* ===== LOGO ===== */
+  const logoImg = document.getElementById('nav-logo');
+  const logoFb  = document.getElementById('nav-logo-fallback');
+  logoImg.onload  = () => { logoImg.style.display = 'block'; logoFb.style.display = 'none'; };
+  logoImg.onerror = () => { logoImg.style.display = 'none';  logoFb.style.display = 'inline'; };
+
+  /* ===== FOOTER YEAR ===== */
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  /* ===== SUPABASE CONFIG ===== */
+  const SUPA_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+  const HEADERS  = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
+
+  /* ===== HELPERS ===== */
+  function setEl(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  function getPredikat(n) {
+    if (n >= 90) return { label: 'A', text: 'Sangat Baik',   cls: 'sangat-baik' };
+    if (n >= 75) return { label: 'B', text: 'Baik',          cls: 'baik' };
+    if (n >= 60) return { label: 'C', text: 'Cukup',         cls: 'cukup' };
+    return              { label: 'D', text: 'Perlu Latihan', cls: 'perlu-latihan' };
+  }
+
+  function nilaiClass(n) {
+    if (n >= 90) return 'A';
+    if (n >= 75) return 'B';
+    if (n >= 60) return 'C';
+    return 'D';
+  }
+
+  /* ===== IDENTITAS SISWA ===== */
+  let loginData = null;
+
+  function renderIdentitas(data) {
+    const inisial = (data.nama || 'S').charAt(0).toUpperCase();
+
+    // Navbar avatar
+    const navAvatar = document.getElementById('nav-avatar');
+    if (data.photo) {
+      navAvatar.innerHTML = `<img src="${data.photo}" alt="${inisial}">`;
+    } else {
+      navAvatar.textContent = inisial;
+    }
+    setEl('nav-siswa-nama', data.nama || '—');
+
+    // Card identitas
+    const photoEl = document.getElementById('id-photo-el');
+    if (data.photo) {
+      photoEl.innerHTML = `<img src="${data.photo}" alt="${inisial}">`;
+    } else {
+      photoEl.textContent = inisial;
+    }
+    setEl('id-nama',      data.nama      || '—');
+    setEl('id-level',     data.level     || '—');
+    setEl('id-instrumen', data.instrumen || '—');
+    setEl('id-siswa',     data.id        || '—');
+
+    document.getElementById('identitas-skeleton').style.display = 'none';
+    document.getElementById('identitas-card').style.display     = 'block';
+  }
+
+  /* ===== LOAD NILAI ===== */
+  function showState(state) {
+    document.getElementById('nilai-skeleton').style.display = 'none';
+    document.getElementById('nilai-content').style.display  = state === 'content' ? 'block' : 'none';
+    document.getElementById('nilai-empty').style.display    = state === 'empty'   ? 'block' : 'none';
+    document.getElementById('nilai-error').style.display    = state === 'error'   ? 'block' : 'none';
+  }
+
+  async function loadNilai(siswaId) {
+    try {
+      /*
+       * Tabel: nilaisiswa
+       * Kolom: id_nilai, id_siswa, materi, nilai, deskripsi
+       * Filter: id_siswa = siswaId
+       */
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/nilaisiswa?id_siswa=eq.${encodeURIComponent(siswaId)}&select=id_nilai,materi,nilai,deskripsi&order=id_nilai.asc`,
+        { headers: HEADERS }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = await res.json();
+
+      // Tampilkan hanya baris yang memiliki nilai (tidak null/kosong)
+      const valid = (rows || []).filter(r => r.nilai !== null && r.nilai !== undefined && r.nilai !== '');
+
+      if (valid.length === 0) {
+        showState('empty');
+        return;
+      }
+
+      // Hitung ringkasan
+      const angkas = valid.map(r => Number(r.nilai));
+      const total  = valid.length;
+      const rata   = (angkas.reduce((a, b) => a + b, 0) / angkas.length).toFixed(1);
+      const pred   = getPredikat(parseFloat(rata));
+
+      setEl('sum-total',    total);
+      setEl('sum-rata',     rata);
+      setEl('sum-predikat', pred.label);
+      document.getElementById('summary-row').style.display = 'grid';
+
+      // Update badge count
+      const countEl = document.getElementById('nilai-count');
+      countEl.textContent = `${total} Nilai`;
+      countEl.style.display = 'inline-flex';
+
+      // Render tabel
+      const tbody = document.getElementById('nilai-tbody');
+      tbody.innerHTML = '';
+      valid.forEach((r, i) => {
+        const n       = Number(r.nilai);
+        const cls     = nilaiClass(n);
+        const p       = getPredikat(n);
+        const desk    = r.deskripsi ? r.deskripsi : '';
+        const tr      = document.createElement('tr');
+        tr.innerHTML  = `
+          <td class="td-no">${i + 1}</td>
+          <td class="td-materi">${r.materi || '—'}${desk ? `<span class="td-deskripsi-inline">${desk}</span>` : ''}</td>
+          <td class="center">
+            <span class="badge-nilai ${cls}">${n}</span>
+          </td>
+          <td class="center">
+            <span class="badge-predikat ${p.cls}">${p.text}</span>
+          </td>
+          <td class="td-deskripsi td-deskripsi-col">${desk || '—'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      showState('content');
+
+    } catch (err) {
+      console.error('[Nilai]', err);
+      setEl('error-msg-text', `Gagal memuat nilai: ${err.message}`);
+      showState('error');
+    }
+  }
+
+  /* ===== INIT ===== */
+  async function init() {
+    loginData = JSON.parse(localStorage.getItem('kenz-login') || 'null');
+    if (!loginData || !loginData.username) {
+      alert('Sesi habis atau belum login. Silakan login kembali.');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/datasiswa?username=eq.${encodeURIComponent(loginData.username)}&select=id,nama_siswa,level,instrumen,photo&limit=1`,
+        { headers: HEADERS }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = await res.json();
+
+      if (!rows || rows.length === 0) {
+        alert('Data siswa tidak ditemukan. Hubungi admin.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const row   = rows[0];
+      const siswa = {
+        id        : row.id         || loginData.id        || '—',
+        nama      : row.nama_siswa || loginData.nama      || '—',
+        level     : row.level      || loginData.level     || 'Basic',
+        instrumen : row.instrumen  || loginData.instrumen || '—',
+        photo     : row.photo      || loginData.photo     || null,
+      };
+
+      renderIdentitas(siswa);
+      await loadNilai(siswa.id);
+
+    } catch (err) {
+      console.error('[Init]', err);
+      // Fallback ke localStorage
+      const fallback = {
+        id        : loginData.id        || '—',
+        nama      : loginData.nama      || loginData.nama_siswa || '—',
+        level     : loginData.level     || 'Basic',
+        instrumen : loginData.instrumen || '—',
+        photo     : loginData.photo     || null,
+      };
+      renderIdentitas(fallback);
+      await loadNilai(fallback.id);
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>

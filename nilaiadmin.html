@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Input Nilai – KENZ Guitar Lesson</title>
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --text: #1A1A1A;
+      --muted: #666;
+      --bg: #FFFFFF;
+      --surface: #F5F5F5;
+      --border: #E0E0E0;
+      --footer-bg: #1A1208;
+      --footer-text: #B8AA96;
+      --input-bg: #FFFFFF;
+      --input-border: #D0D0D0;
+      --input-focus: #D4AF37;
+      --label: #444;
+      --section-bg: #FAFAFA;
+    }
+
+    [data-theme="dark"] {
+      --text: #FFFFFF;
+      --muted: #AAAAAA;
+      --bg: #0A0A0A;
+      --surface: #1A1A1A;
+      --border: #333333;
+      --footer-bg: #0A0A0A;
+      --footer-text: #555555;
+      --input-bg: #141414;
+      --input-border: #333333;
+      --input-focus: #D4AF37;
+      --label: #CCCCCC;
+      --section-bg: #111111;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .3s, color .3s;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s;
+    }
+
+    .theme-toggle:hover { background: var(--surface); }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 8px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+
+    .admin-details { display: flex; flex-direction: column; }
+    .admin-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .admin-role { font-size: 12px; color: var(--muted); }
+
+    .btn-dashboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(212,175,55,0.25);
+    }
+
+    .btn-dashboard:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    }
+
+    /* ===== MAIN ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .page-title span { color: var(--gold); }
+
+    .page-subtitle { font-size: 14px; color: var(--muted); }
+
+    /* ===== TAB CONTAINER ===== */
+    .tab-container {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 18px 24px;
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+      border-bottom: 3px solid transparent;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(212,175,55,0.05);
+    }
+
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+      background: var(--bg);
+    }
+
+    .tab-content {
+      padding: 32px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .tab-placeholder-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .tab-placeholder-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .tab-placeholder-desc {
+      font-size: 14px;
+    }
+
+    /* ===== FORM GROUP ===== */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--label);
+      margin-bottom: 8px;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      font-family: inherit;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+    }
+
+    .form-select:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ===== STUDENT IDENTITY CARD ===== */
+    .student-identity-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+      animation: fadeIn .3s ease;
+    }
+
+    .student-identity-card.show {
+      display: block;
+    }
+
+    .identity-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .identity-photo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #0A0A0A;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 3px solid var(--gold-border);
+    }
+
+    .identity-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .identity-info {
+      flex: 1;
+    }
+
+    .identity-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .identity-level {
+      display: inline-block;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-border);
+      color: var(--gold);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .identity-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .identity-details-full {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .identity-item-full {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .identity-item-full.span-2 {
+      grid-column: span 2;
+    }
+
+    .identity-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .identity-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .identity-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== GRADES TABLE ===== */
+    .grades-section {
+      margin-top: 24px;
+    }
+
+    .grades-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grades-section-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .grades-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .grades-table thead {
+      background: var(--surface2);
+    }
+
+    .grades-table th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .grades-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .grades-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .grades-table tr:hover {
+      background: rgba(212,175,55,0.04);
+    }
+
+    .grades-no {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--muted);
+      width: 50px;
+    }
+
+    .grades-materi {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .grades-input {
+      width: 80px;
+      padding: 8px 10px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .grades-input:focus {
+      border-color: var(--gold);
+    }
+
+    .grades-textarea {
+      width: 100%;
+      min-width: 200px;
+      padding: 8px 10px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      resize: vertical;
+      min-height: 40px;
+      font-family: inherit;
+    }
+
+    .grades-textarea:focus {
+      border-color: var(--gold);
+    }
+
+    .grades-action {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-update-grade {
+      background: linear-gradient(135deg, #3A8FD4, #1A5FA0) !important;
+      color: #fff !important;
+    }
+
+    .btn-save-grade {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-save-grade:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(212,175,55,0.25);
+    }
+
+    .grades-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ===== GRADES SUMMARY ===== */
+    .grades-summary {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .summary-item {
+      flex: 1;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .summary-item-desc {
+      flex: 2;
+    }
+
+    .summary-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+    }
+
+    .summary-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-avg {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .summary-formula {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 2px;
+    }
+
+    .summary-desc {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .summary-desc.desc-kurang    { color: #E74C3C; }
+    .summary-desc.desc-cukup     { color: #E67E22; }
+    .summary-desc.desc-baik      { color: #27AE60; }
+    .summary-desc.desc-amatbaik  { color: #2980B9; }
+    .summary-desc.desc-luarbiasa { color: var(--gold); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      nav {
+        padding: 12px 5px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .nav-brand {
+        font-size: 20px;
+        gap: 10px;
+        justify-content: flex-start;
+      }
+
+      .nav-brand img { height: 28px; }
+
+      .nav-right {
+        gap: 8px;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .admin-info {
+        padding: 6px 8px;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .admin-name { font-size: 13px; }
+      .admin-role { font-size: 11px; }
+
+      .btn-dashboard {
+        padding: 7px 12px;
+        font-size: 12px;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .theme-toggle {
+        padding: 6px;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .container {
+        padding: 16px 5px 60px;
+      }
+
+      .page-title { font-size: 22px; }
+      .page-subtitle { font-size: 12px; }
+
+      .tab-header {
+        flex-direction: column;
+      }
+
+      .tab-btn {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        border-left: 3px solid transparent;
+      }
+
+      .tab-btn.active {
+        border-bottom-color: var(--border);
+        border-left-color: var(--gold);
+      }
+
+      .tab-content {
+        padding: 20px;
+      }
+
+      /* Horizontal scrollbar for table on mobile */
+      .grades-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+      .grades-table {
+        min-width: 700px;
+        border: none;
+        border-radius: 0;
+      }
+      .grades-summary {
+        flex-direction: column;
+        gap: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        min-width: 700px;
+      }
+      .summary-divider {
+        width: 100%;
+        height: 1px;
+        align-self: auto;
+      }
+      .summary-item { padding: 16px 18px; }
+      .summary-avg { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="dashboardadmin.html" class="nav-brand">
+      <img id="nav-logo" src="" alt="Logo" style="display:none;height:36px;width:36px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);" />
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-brand-name">KENZ</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">A</div>
+        <div class="admin-details">
+          <span class="admin-name" id="nav-owner">Admin</span>
+          <span class="admin-role">Input Nilai</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Input <span>Nilai</span></h1>
+        <p class="page-subtitle">Kelola nilai dan progress belajar siswa berdasarkan level</p>
+      </div>
+    </div>
+
+    <!-- TAB CONTAINER -->
+    <div class="tab-container">
+      <div class="tab-header">
+        <button class="tab-btn active" data-tab="basic">Basic</button>
+        <button class="tab-btn" data-tab="intermediate">Intermediate</button>
+        <button class="tab-btn" data-tab="performer">Performer</button>
+      </div>
+
+      <!-- TAB CONTENT: BASIC -->
+      <div class="tab-content active" id="tab-basic">
+        <div class="form-group">
+          <label class="form-label">Pilih Siswa</label>
+          <select class="form-select" id="student-select-basic">
+            <option value="">-- Pilih Siswa --</option>
+          </select>
+        </div>
+        <div class="student-identity-card" id="identity-card-basic">
+          <div class="identity-header">
+            <div class="identity-photo" id="identity-photo-basic">S</div>
+            <div class="identity-info">
+              <div class="identity-name" id="identity-name-basic">—</div>
+              <span class="identity-level" id="identity-level-basic">Basic</span>
+            </div>
+          </div>
+          <div class="identity-details-full">
+            <div class="identity-item-full">
+              <span class="identity-label">ID Siswa</span>
+              <span class="identity-value" id="identity-id-basic">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Username</span>
+              <span class="identity-value" id="identity-username-basic">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Instrumen</span>
+              <span class="identity-value" id="identity-instrumen-basic">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Tempat Lahir</span>
+              <span class="identity-value" id="identity-tempat-lahir-basic">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Tanggal Lahir</span>
+              <span class="identity-value" id="identity-tgl-lahir-basic">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">No. Telepon</span>
+              <span class="identity-value" id="identity-phone-basic">—</span>
+            </div>
+            <div class="identity-item-full span-2">
+              <span class="identity-label">Alamat</span>
+              <span class="identity-value" id="identity-alamat-basic">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Ortu/Wali</span>
+              <span class="identity-value" id="identity-ortu-basic">—</span>
+            </div>
+            <div class="identity-item-full span-2">
+              <span class="identity-label">Motto</span>
+              <span class="identity-value" id="identity-motto-basic" style="font-style:italic;">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="grades-section" id="grades-section-basic" style="display:none;">
+          <div class="grades-section-title">Input Nilai & Progress</div>
+          <div class="grades-content-wrapper">
+            <div class="grades-table-wrapper">
+              <table class="grades-table">
+                <thead>
+                  <tr>
+                    <th>ID Nilai</th>
+                    <th>ID Siswa</th>
+                    <th>Materi</th>
+                    <th>Nilai</th>
+                    <th>Deskripsi Progress</th>
+                  </tr>
+                </thead>
+                <tbody id="grades-tbody-basic">
+                </tbody>
+              </table>
+            </div>
+            <div class="grades-summary" id="grades-summary-basic">
+              <div class="summary-item">
+                <div class="summary-label">Rata-Rata Nilai</div>
+                <div class="summary-avg" id="summary-avg-basic">—</div>
+                <div class="summary-formula" id="summary-formula-basic"></div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item summary-item-desc">
+                <div class="summary-label">Deskripsi Akhir</div>
+                <div class="summary-desc" id="summary-desc-basic">—</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 20px; text-align: right;">
+            <a href="dashboardadmin.html" class="btn-dashboard" style="margin-right: 12px;">🏠 Dashboard</a>
+            <button class="btn-save-grade" id="btn-save-all-basic" onclick="saveAllGrades('basic')">Simpan Nilai</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT: INTERMEDIATE -->
+      <div class="tab-content" id="tab-intermediate">
+        <div class="form-group">
+          <label class="form-label">Pilih Siswa</label>
+          <select class="form-select" id="student-select-intermediate">
+            <option value="">-- Pilih Siswa --</option>
+          </select>
+        </div>
+        <div class="student-identity-card" id="identity-card-intermediate">
+          <div class="identity-header">
+            <div class="identity-photo" id="identity-photo-intermediate">S</div>
+            <div class="identity-info">
+              <div class="identity-name" id="identity-name-intermediate">—</div>
+              <span class="identity-level" id="identity-level-intermediate">Intermediate</span>
+            </div>
+          </div>
+          <div class="identity-details-full">
+            <div class="identity-item-full">
+              <span class="identity-label">ID Siswa</span>
+              <span class="identity-value" id="identity-id-intermediate">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Username</span>
+              <span class="identity-value" id="identity-username-intermediate">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Instrumen</span>
+              <span class="identity-value" id="identity-instrumen-intermediate">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Tempat Lahir</span>
+              <span class="identity-value" id="identity-tempat-lahir-intermediate">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Tanggal Lahir</span>
+              <span class="identity-value" id="identity-tgl-lahir-intermediate">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">No. Telepon</span>
+              <span class="identity-value" id="identity-phone-intermediate">—</span>
+            </div>
+            <div class="identity-item-full span-2">
+              <span class="identity-label">Alamat</span>
+              <span class="identity-value" id="identity-alamat-intermediate">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Ortu/Wali</span>
+              <span class="identity-value" id="identity-ortu-intermediate">—</span>
+            </div>
+            <div class="identity-item-full span-2">
+              <span class="identity-label">Motto</span>
+              <span class="identity-value" id="identity-motto-intermediate" style="font-style:italic;">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="grades-section" id="grades-section-intermediate" style="display:none;">
+          <div class="grades-section-title">Input Nilai & Progress</div>
+          <div class="grades-content-wrapper">
+            <div class="grades-table-wrapper">
+              <table class="grades-table">
+                <thead>
+                  <tr>
+                    <th>ID Nilai</th>
+                    <th>ID Siswa</th>
+                    <th>Materi</th>
+                    <th>Nilai</th>
+                    <th>Deskripsi Progress</th>
+                  </tr>
+                </thead>
+                <tbody id="grades-tbody-intermediate">
+                </tbody>
+              </table>
+            </div>
+            <div class="grades-summary" id="grades-summary-intermediate">
+              <div class="summary-item">
+                <div class="summary-label">Rata-Rata Nilai</div>
+                <div class="summary-avg" id="summary-avg-intermediate">—</div>
+                <div class="summary-formula" id="summary-formula-intermediate"></div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item summary-item-desc">
+                <div class="summary-label">Deskripsi Akhir</div>
+                <div class="summary-desc" id="summary-desc-intermediate">—</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 20px; text-align: right;">
+            <a href="dashboardadmin.html" class="btn-dashboard" style="margin-right: 12px;">🏠 Dashboard</a>
+            <button class="btn-save-grade" id="btn-save-all-intermediate" onclick="saveAllGrades('intermediate')">Simpan Nilai</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT: PERFORMER -->
+      <div class="tab-content" id="tab-performer">
+        <div class="form-group">
+          <label class="form-label">Pilih Siswa</label>
+          <select class="form-select" id="student-select-performer">
+            <option value="">-- Pilih Siswa --</option>
+          </select>
+        </div>
+        <div class="student-identity-card" id="identity-card-performer">
+          <div class="identity-header">
+            <div class="identity-photo" id="identity-photo-performer">S</div>
+            <div class="identity-info">
+              <div class="identity-name" id="identity-name-performer">—</div>
+              <span class="identity-level" id="identity-level-performer">Performer</span>
+            </div>
+          </div>
+          <div class="identity-details-full">
+            <div class="identity-item-full">
+              <span class="identity-label">ID Siswa</span>
+              <span class="identity-value" id="identity-id-performer">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Username</span>
+              <span class="identity-value" id="identity-username-performer">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Instrumen</span>
+              <span class="identity-value" id="identity-instrumen-performer">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Tempat Lahir</span>
+              <span class="identity-value" id="identity-tempat-lahir-performer">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Tanggal Lahir</span>
+              <span class="identity-value" id="identity-tgl-lahir-performer">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">No. Telepon</span>
+              <span class="identity-value" id="identity-phone-performer">—</span>
+            </div>
+            <div class="identity-item-full span-2">
+              <span class="identity-label">Alamat</span>
+              <span class="identity-value" id="identity-alamat-performer">—</span>
+            </div>
+            <div class="identity-item-full">
+              <span class="identity-label">Ortu/Wali</span>
+              <span class="identity-value" id="identity-ortu-performer">—</span>
+            </div>
+            <div class="identity-item-full span-2">
+              <span class="identity-label">Motto</span>
+              <span class="identity-value" id="identity-motto-performer" style="font-style:italic;">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="grades-section" id="grades-section-performer" style="display:none;">
+          <div class="grades-section-title">Input Nilai & Progress</div>
+          <div class="grades-content-wrapper">
+            <div class="grades-table-wrapper">
+              <table class="grades-table">
+                <thead>
+                  <tr>
+                    <th>ID Nilai</th>
+                    <th>ID Siswa</th>
+                    <th>Materi</th>
+                    <th>Nilai</th>
+                    <th>Deskripsi Progress</th>
+                  </tr>
+                </thead>
+                <tbody id="grades-tbody-performer">
+                </tbody>
+              </table>
+            </div>
+            <div class="grades-summary" id="grades-summary-performer">
+              <div class="summary-item">
+                <div class="summary-label">Rata-Rata Nilai</div>
+                <div class="summary-avg" id="summary-avg-performer">—</div>
+                <div class="summary-formula" id="summary-formula-performer"></div>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-item summary-item-desc">
+                <div class="summary-label">Deskripsi Akhir</div>
+                <div class="summary-desc" id="summary-desc-performer">—</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 20px; text-align: right;">
+            <a href="dashboardadmin.html" class="btn-dashboard" style="margin-right: 12px;">🏠 Dashboard</a>
+            <button class="btn-save-grade" id="btn-save-all-performer" onclick="saveAllGrades('performer')">Simpan Nilai</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ===== THEME ===== */
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('kenz-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    themeBtn.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('kenz-theme', next);
+      themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+
+    /* ===== LOGO ===== */
+    const logoImg = document.getElementById('nav-logo');
+    const logoFb = document.getElementById('nav-logo-fallback');
+    logoImg.onload = () => { logoImg.style.display = 'block'; logoFb.style.display = 'none'; };
+    logoImg.onerror = () => { logoImg.style.display = 'none'; logoFb.style.display = 'inline'; };
+
+    /* ===== SUPABASE CONFIG ===== */
+    const SUPA_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+    const HEADERS = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
+
+    /* ===== LOAD ADMIN DATA ===== */
+    async function loadAdminData() {
+      const loginData = JSON.parse(localStorage.getItem('kenz-admin-login') || 'null');
+      if (loginData && loginData.username) {
+        document.getElementById('nav-owner').textContent = loginData.nama || loginData.username || 'Admin';
+        const initial = (loginData.nama || loginData.username || 'A').charAt(0).toUpperCase();
+        document.getElementById('nav-avatar').textContent = initial;
+      }
+    }
+
+    /* ===== TAB FUNCTIONALITY ===== */
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabId = btn.dataset.tab;
+
+        // Remove active class from all
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        // Add active class to clicked
+        btn.classList.add('active');
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+
+        // Load students for the selected tab
+        loadStudentsByLevel(tabId);
+      });
+    });
+
+    /* ===== LOAD STUDENT NAMES FROM SUPABASE ===== */
+    async function loadStudentsByLevel(level) {
+      const selectId = `student-select-${level}`;
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      try {
+        const res = await fetch(
+          `${SUPA_URL}/rest/v1/datasiswa?select=nama_siswa,level&order=nama_siswa.asc`,
+          { headers: HEADERS }
+        );
+
+        if (!res.ok) throw new Error('Gagal fetch data siswa');
+
+        const students = await res.json();
+
+        // Filter students by level (case-insensitive)
+        const filteredStudents = students.filter(student => {
+          const studentLevel = (student.level || '').toLowerCase();
+          const targetLevel = level.toLowerCase();
+          return studentLevel.includes(targetLevel);
+        });
+
+        // Clear existing options except the first one
+        select.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+
+        // Populate select with filtered student names
+        filteredStudents.forEach(student => {
+          const option = document.createElement('option');
+          option.value = student.nama_siswa;
+          option.textContent = student.nama_siswa;
+          select.appendChild(option);
+        });
+
+        // If no students found for this level
+        if (filteredStudents.length === 0) {
+          const option = document.createElement('option');
+          option.value = "";
+          option.textContent = "Tidak ada siswa di level ini";
+          option.disabled = true;
+          select.appendChild(option);
+        }
+      } catch (err) {
+        console.error('Gagal memuat data siswa:', err);
+        select.innerHTML = '<option value="">-- Gagal memuat data --</option>';
+      }
+    }
+
+    /* ===== LOAD STUDENT IDENTITY WHEN SELECTED ===== */
+    async function loadStudentIdentity(level, studentName) {
+      const cardId = `identity-card-${level}`;
+      const card = document.getElementById(cardId);
+      const gradesSectionId = `grades-section-${level}`;
+      const gradesSection = document.getElementById(gradesSectionId);
+      
+      // Hide card and grades section if no student selected
+      if (!studentName) {
+        card.classList.remove('show');
+        gradesSection.style.display = 'none';
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `${SUPA_URL}/rest/v1/datasiswa?nama_siswa=eq.${encodeURIComponent(studentName)}&select=*`,
+          { headers: HEADERS }
+        );
+
+        if (!res.ok) throw new Error('Gagal fetch data siswa');
+
+        const students = await res.json();
+        
+        if (!students || students.length === 0) {
+          console.error('Siswa tidak ditemukan');
+          return;
+        }
+
+        const student = students[0];
+        
+        // Update identity card
+        const photoEl = document.getElementById(`identity-photo-${level}`);
+        const nameEl = document.getElementById(`identity-name-${level}`);
+        const levelEl = document.getElementById(`identity-level-${level}`);
+        const idEl = document.getElementById(`identity-id-${level}`);
+        const usernameEl = document.getElementById(`identity-username-${level}`);
+        const instrumenEl = document.getElementById(`identity-instrumen-${level}`);
+        const tempatLahirEl = document.getElementById(`identity-tempat-lahir-${level}`);
+        const tglLahirEl = document.getElementById(`identity-tgl-lahir-${level}`);
+        const phoneEl = document.getElementById(`identity-phone-${level}`);
+        const alamatEl = document.getElementById(`identity-alamat-${level}`);
+        const ortuEl = document.getElementById(`identity-ortu-${level}`);
+        const mottoEl = document.getElementById(`identity-motto-${level}`);
+
+        // Photo
+        if (student.photo) {
+          photoEl.innerHTML = `<img src="${student.photo}" alt="${student.nama_siswa}">`;
+        } else {
+          const initial = (student.nama_siswa || 'S').charAt(0).toUpperCase();
+          photoEl.textContent = initial;
+        }
+
+        // Name
+        nameEl.textContent = student.nama_siswa || '—';
+
+        // Level
+        levelEl.textContent = student.level || '—';
+
+        // ID
+        idEl.textContent = student.id || '—';
+
+        // Username
+        usernameEl.textContent = student.username || '—';
+
+        // Instrumen
+        instrumenEl.textContent = student.instrumen || '—';
+
+        // Tempat Lahir
+        tempatLahirEl.textContent = student.tempat_lahir || '—';
+
+        // Tanggal Lahir
+        if (student.tanggal_lahir) {
+          const tgl = new Date(student.tanggal_lahir);
+          tglLahirEl.textContent = tgl.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        } else {
+          tglLahirEl.textContent = '—';
+        }
+
+        // Phone (using tlp field from datasiswa)
+        phoneEl.textContent = student.tlp || '—';
+
+        // Alamat
+        alamatEl.textContent = student.alamat || '—';
+
+        // Ortu/Wali
+        ortuEl.textContent = student.nama_ortu || '—';
+
+        // Motto
+        mottoEl.textContent = student.motto || '—';
+
+        // Show card
+        card.classList.add('show');
+
+        // Load grades table with curriculum materials
+        loadGradesTable(level, studentName, student.id);
+
+      } catch (err) {
+        console.error('Gagal memuat data identitas siswa:', err);
+      }
+    }
+
+    /* ===== KAMUS DESKRIPSI OTOMATIS PER MATERI ===== */
+    const DESKRIPSI_MATERI = {
+      "Pengenalan Instrumen, Posisi , String dan Stem": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan mengenali bagian-bagian instrumen gitar, memahami fungsi setiap string, serta belum mampu menerapkan posisi bermain dan teknik stem yang benar. Memerlukan pendampingan dan latihan dasar secara berkelanjutan." },
+        { min: 61,  max: 79,  text: "Siswa telah mengenali sebagian besar bagian gitar dan fungsi string, serta mampu menerapkan posisi bermain dan stem dasar meskipun masih terdapat beberapa kesalahan. Pemahaman dan keterampilan dasar sudah mulai berkembang namun memerlukan peningkatan konsistensi." },
+        { min: 80,  max: 90,  text: "Siswa mampu mengenali dan menjelaskan bagian-bagian gitar dengan baik, memahami fungsi string, serta menerapkan posisi bermain dan stem yang benar. Keterampilan dasar telah dikuasai dengan cukup baik dan dapat diterapkan dalam praktik secara mandiri." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik dalam mengenali komponen gitar, memahami fungsi string, serta melakukan stem dengan tepat. Posisi bermain sudah benar, nyaman, dan konsisten selama praktik berlangsung." },
+        { min: 96,  max: 100, text: "Siswa menunjukkan pemahaman dan keterampilan yang sangat unggul dalam mengenali instrumen gitar, posisi bermain, string, dan stem. Mampu menjelaskan serta menerapkan seluruh materi dengan tepat, mandiri, dan konsisten tanpa memerlukan arahan tambahan." }
+      ],
+      "Pengenalan Sistem Akor (Chord) Gitar": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan memahami konsep dasar akor gitar, penempatan jari pada fretboard, serta belum mampu memainkan bentuk akor dasar dengan benar. Membutuhkan latihan dan bimbingan lebih lanjut." },
+        { min: 61,  max: 79,  text: "Siswa telah memahami konsep dasar akor dan mampu memainkan beberapa bentuk akor dasar, namun masih mengalami kendala dalam ketepatan posisi jari dan perpindahan antar akor. Diperlukan latihan untuk meningkatkan kelancaran dan akurasi." },
+        { min: 80,  max: 90,  text: "Siswa mampu memahami dan memainkan berbagai akor dasar dengan posisi jari yang cukup tepat. Perpindahan antar akor dapat dilakukan dengan lancar pada tempo sedang serta menunjukkan pemahaman yang baik terhadap fungsi akor dalam lagu." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap sistem akor gitar. Mampu memainkan berbagai akor dengan teknik yang tepat, menghasilkan bunyi yang bersih, serta melakukan perpindahan akor dengan lancar dan konsisten." },
+        { min: 96,  max: 100, text: "Siswa menunjukkan penguasaan yang sangat tinggi terhadap sistem akor gitar. Mampu memainkan dan mengaplikasikan berbagai akor dengan teknik yang sangat baik, perpindahan yang mulus, serta memahami fungsi dan penggunaan akor dalam berbagai konteks permainan musik." }
+      ],
+      "Pengenalan Sistem Akor (Chord) Gitar P2": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan memainkan variasi akor yang dipelajari pada tingkat lanjutan dasar. Ketepatan posisi jari dan perpindahan antar akor masih kurang baik sehingga permainan belum terdengar optimal." },
+        { min: 61,  max: 79,  text: "Siswa mampu memainkan sebagian besar akor yang dipelajari dan memahami penggunaannya dalam lagu sederhana. Perpindahan akor mulai terbentuk namun masih memerlukan peningkatan kelancaran dan ketepatan." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan berbagai akor dengan cukup baik serta melakukan perpindahan akor secara lancar. Pemahaman terhadap fungsi akor dalam iringan lagu sudah terlihat dan dapat diterapkan dalam praktik." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap variasi akor yang dipelajari. Perpindahan akor dilakukan dengan lancar, tepat, dan konsisten sehingga menghasilkan permainan yang harmonis." },
+        { min: 96,  max: 100, text: "Siswa mampu menguasai seluruh materi akor dengan sangat baik, melakukan perpindahan secara mulus, serta menunjukkan pemahaman mendalam dalam penerapan akor pada berbagai progresi dan lagu." }
+      ],
+      "Pengenalan Sistem Akor (Chord) Gitar p3": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan dalam memainkan bentuk-bentuk akor yang lebih kompleks dan belum mampu menerapkannya secara konsisten dalam permainan gitar." },
+        { min: 61,  max: 79,  text: "Siswa memahami konsep akor lanjutan dan mampu memainkan sebagian bentuk akor dengan cukup baik, namun masih memerlukan latihan untuk meningkatkan ketepatan dan kelancaran perpindahan." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan akor lanjutan dengan teknik yang cukup baik serta menerapkannya dalam permainan lagu dengan tingkat ketepatan yang memadai." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap akor lanjutan, mampu melakukan perpindahan akor dengan lancar, serta memahami penerapannya dalam berbagai progresi lagu." },
+        { min: 96,  max: 100, text: "Siswa menguasai materi akor lanjutan secara menyeluruh, mampu menerapkannya dengan percaya diri dan konsisten, serta menunjukkan kemampuan musikal yang melampaui target pembelajaran." }
+      ],
+      "Strumming Pattern": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan mengikuti pola strumming yang diajarkan. Ketepatan ritme, tempo, dan koordinasi tangan kanan belum berkembang dengan baik sehingga iringan lagu belum stabil." },
+        { min: 61,  max: 79,  text: "Siswa mampu memainkan pola strumming dasar dengan tingkat ketepatan yang cukup, namun masih terdapat ketidakkonsistenan dalam menjaga tempo dan ritme selama bermain." },
+        { min: 80,  max: 90,  text: "Siswa mampu memainkan berbagai pola strumming dengan ritme dan tempo yang cukup stabil. Teknik downstroke dan upstroke dapat diterapkan dengan baik dalam mengiringi lagu." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap berbagai pola strumming. Ritme, tempo, dan dinamika permainan terjaga dengan baik sehingga menghasilkan iringan yang lebih musikal." },
+        { min: 96,  max: 100, text: "Siswa mampu memainkan berbagai pola strumming dengan sangat lancar, akurat, dan ekspresif. Penguasaan ritme serta kontrol dinamika menunjukkan kemampuan yang jauh melampaui target pembelajaran." }
+      ],
+      "Pengenalan Fingering Pada Teknik Melodi Pada Instrumen Gitar": [
+        { min: 50,  max: 60,  text: "Siswa masih mengalami kesulitan dalam memahami dan menerapkan pola fingering pada permainan melodi. Penempatan jari kurang tepat sehingga memengaruhi kelancaran permainan." },
+        { min: 61,  max: 79,  text: "Siswa memahami dasar-dasar fingering dan mampu memainkan melodi sederhana, meskipun masih terdapat kesalahan dalam koordinasi jari dan ketepatan nada." },
+        { min: 80,  max: 90,  text: "Siswa mampu menerapkan teknik fingering dengan cukup baik pada permainan melodi. Pergerakan jari sudah lebih teratur sehingga menghasilkan permainan yang cukup lancar dan tepat." },
+        { min: 91,  max: 95,  text: "Siswa menunjukkan penguasaan yang sangat baik terhadap teknik fingering. Perpindahan jari dilakukan secara efisien, akurat, dan mendukung kelancaran permainan melodi." },
+        { min: 96,  max: 100, text: "Siswa mampu menerapkan teknik fingering secara optimal dengan koordinasi, kecepatan, dan ketepatan yang sangat baik. Permainan melodi terdengar bersih, lancar, dan menunjukkan penguasaan teknik yang sangat tinggi." }
+      ]
+    };
+
+    /* ===== GET AUTO DESCRIPTION FOR A MATERI + NILAI ===== */
+    function getAutoDeskripsi(materi, nilai) {
+      const rules = DESKRIPSI_MATERI[materi];
+      if (!rules || nilai === '' || nilai === null) return null;
+      const n = Number(nilai);
+      const match = rules.find(r => n >= r.min && n <= r.max);
+      return match ? match.text : null;
+    }
+
+    /* ===== GENERATE RANDOM ID NILAI ===== */
+    function generateIdNilai(studentId) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let part1 = '';
+      for (let i = 0; i < 3; i++) part1 += chars.charAt(Math.floor(Math.random() * chars.length));
+      let part2 = '';
+      for (let i = 0; i < 3; i++) part2 += chars.charAt(Math.floor(Math.random() * chars.length));
+      let part3 = '';
+      for (let i = 0; i < 3; i++) part3 += Math.floor(Math.random() * 10);
+      return `${studentId}-${part1}-${part2}-${part3}`;
+    }
+
+    /* ===== UPDATE SUMMARY (Rata-rata & Deskripsi Akhir) ===== */
+    function getDescripsi(avg) {
+      if (avg === null) return { text: '—', cls: '' };
+      if (avg < 51)  return { text: 'Kurang',     cls: 'desc-kurang' };
+      if (avg <= 75) return { text: 'Cukup',      cls: 'desc-cukup' };
+      if (avg <= 85) return { text: 'Baik',        cls: 'desc-baik' };
+      if (avg <= 95) return { text: 'Amat Baik',  cls: 'desc-amatbaik' };
+      return           { text: 'Luar Biasa',       cls: 'desc-luarbiasa' };
+    }
+
+    function updateSummary(level) {
+      const tbody = document.getElementById(`grades-tbody-${level}`);
+      if (!tbody) return;
+
+      const inputs = tbody.querySelectorAll('input[type="number"].grades-input');
+      const allValues = [];
+      inputs.forEach(inp => {
+        const v = inp.value.trim();
+        if (v !== '') allValues.push(Number(v));
+      });
+
+      const avgEl      = document.getElementById(`summary-avg-${level}`);
+      const formulaEl  = document.getElementById(`summary-formula-${level}`);
+      const descEl     = document.getElementById(`summary-desc-${level}`);
+      if (!avgEl) return;
+
+      if (allValues.length === 0) {
+        avgEl.textContent     = '—';
+        formulaEl.textContent = '';
+        descEl.textContent    = '—';
+        descEl.className      = 'summary-desc';
+        return;
+      }
+
+      const total = allValues.reduce((a, b) => a + b, 0);
+      const totalRows = inputs.length;
+      // Rata-rata = jumlah semua nilai (termasuk materi yang belum diisi / 0) dibagi jumlah materi
+      const sumAll = Array.from(inputs).reduce((a, inp) => {
+        const v = inp.value.trim();
+        return a + (v !== '' ? Number(v) : 0);
+      }, 0);
+      const avg = sumAll / totalRows;
+      const avgRounded = Math.round(avg * 10) / 10;
+
+      avgEl.textContent = avgRounded % 1 === 0 ? avgRounded.toFixed(0) : avgRounded.toFixed(1);
+
+      // Formula hint: (v1 + v2 + … + vN) : N
+      const valStr = Array.from(inputs).map(inp => inp.value.trim() || '0').join(' + ');
+      formulaEl.textContent = `(${valStr}) ÷ ${totalRows} = ${avgRounded}`;
+
+      const { text, cls } = getDescripsi(avgRounded);
+      descEl.textContent = text;
+      descEl.className   = 'summary-desc ' + cls;
+    }
+
+    /* ===== SHOW TOAST NOTIFICATION ===== */
+    function showToast(msg, type = 'success') {
+      let toast = document.getElementById('kenz-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'kenz-toast';
+        toast.style.cssText = `
+          position:fixed;bottom:28px;right:28px;z-index:9999;
+          padding:14px 22px;border-radius:12px;font-size:14px;font-weight:600;
+          box-shadow:0 4px 20px rgba(0,0,0,0.18);transition:opacity .3s;opacity:0;
+          max-width:320px;line-height:1.4;pointer-events:none;
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.background = type === 'success' ? 'linear-gradient(135deg,#D4AF37,#9A7020)' : '#C0392B';
+      toast.style.color = type === 'success' ? '#0A0A0A' : '#fff';
+      toast.style.opacity = '1';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+    }
+
+    /* ===== LOAD GRADES TABLE WITH SUPABASE nilaisiswa ===== */
+    async function loadGradesTable(level, studentName, studentId) {
+      const tbodyId = `grades-tbody-${level}`;
+      const tbody = document.getElementById(tbodyId);
+      const gradesSectionId = `grades-section-${level}`;
+      const gradesSection = document.getElementById(gradesSectionId);
+
+      if (!tbody || !gradesSection) return;
+
+      // Show loading state
+      gradesSection.style.display = 'block';
+      tbody.innerHTML = `<tr><td colspan="6" class="grades-empty" style="color:var(--gold)">⏳ Memuat data nilai...</td></tr>`;
+
+      try {
+        // Fetch kurikulum filtered by level
+        const [kurikulumRes, nilaiRes] = await Promise.all([
+          fetch(`${SUPA_URL}/rest/v1/kurikulum?select=id,level,materi,deskripsi&order=id.asc`, { headers: HEADERS }),
+          fetch(`${SUPA_URL}/rest/v1/nilaisiswa?id_siswa=eq.${encodeURIComponent(studentId)}&select=*`, { headers: HEADERS })
+        ]);
+
+        if (!kurikulumRes.ok) throw new Error('Gagal fetch data kurikulum');
+        if (!nilaiRes.ok) throw new Error('Gagal fetch data nilaisiswa');
+
+        const kurikulumData = await kurikulumRes.json();
+        const nilaiData = await nilaiRes.json(); // existing records for this student
+
+        // Build a map: materi -> existing nilai record
+        const nilaiMap = {};
+        nilaiData.forEach(n => { nilaiMap[n.materi] = n; });
+
+        // Filter kurikulum by level
+        const filteredKurikulum = kurikulumData.filter(item => {
+          const itemLevel = (item.level || '').toLowerCase();
+          return itemLevel.includes(level.toLowerCase());
+        });
+
+        tbody.innerHTML = '';
+
+        if (filteredKurikulum.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="grades-empty">Tidak ada materi untuk level ini</td></tr>';
+          return;
+        }
+
+        filteredKurikulum.forEach(item => {
+          const existing = nilaiMap[item.materi] || null;
+          const isExisting = !!existing;
+
+          // Use existing ID Nilai or generate new one
+          const idNilai = isExisting ? existing.id_nilai : generateIdNilai(studentId);
+          const nilaiVal = isExisting ? (existing.nilai ?? '') : '';
+          const deskripsiVal = isExisting ? (existing.deskripsi || '') : '';
+          const statusBadge = isExisting
+            ? `<span style="font-size:10px;background:rgba(212,175,55,0.15);color:var(--gold);border:1px solid var(--gold);border-radius:50px;padding:2px 8px;font-weight:700;">✓ Tersimpan</span>`
+            : `<span style="font-size:10px;background:rgba(150,150,150,0.1);color:var(--muted);border:1px solid var(--border);border-radius:50px;padding:2px 8px;">Baru</span>`;
+
+          const tr = document.createElement('tr');
+          tr.id = `row-${level}-${item.id}`;
+          tr.dataset.idNilai = idNilai;
+          tr.dataset.isExisting = isExisting ? '1' : '0';
+          tr.dataset.materi = item.materi;
+          tr.innerHTML = `
+            <td class="grades-no" id="cell-idnilai-${level}-${item.id}" style="font-size:11px;">${idNilai}</td>
+            <td class="grades-no" style="font-size:11px;">${studentId}</td>
+            <td class="grades-materi">
+              ${item.materi || '—'}
+              <br/>${statusBadge}
+            </td>
+            <td>
+              <input type="number" class="grades-input" id="nilai-${level}-${item.id}" data-materi="${item.materi}" data-level="${level}" data-kurid="${item.id}" min="0" max="100" placeholder="0-100" value="${nilaiVal}" />
+            </td>
+            <td>
+              <textarea class="grades-textarea" id="progress-${level}-${item.id}" placeholder="Deskripsi progress...">${deskripsiVal}</textarea>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Initial summary + live update on input change
+        updateSummary(level);
+        tbody.addEventListener('input', e => {
+          if (e.target.classList.contains('grades-input')) {
+            updateSummary(level);
+            // Auto-fill deskripsi progress
+            const materi  = e.target.dataset.materi;
+            const kurid   = e.target.dataset.kurid;
+            const lvl     = e.target.dataset.level;
+            const nilai   = e.target.value.trim();
+            const textarea = document.getElementById(`progress-${lvl}-${kurid}`);
+            if (textarea) {
+              const autoDes = getAutoDeskripsi(materi, nilai);
+              if (autoDes !== null) {
+                textarea.value = autoDes;
+                textarea.style.borderColor = 'var(--gold)';
+                setTimeout(() => { textarea.style.borderColor = ''; }, 1200);
+              }
+            }
+          }
+        });
+
+      } catch (err) {
+        console.error('Gagal memuat data nilai:', err);
+        tbody.innerHTML = '<tr><td colspan="6" class="grades-empty">❌ Gagal memuat data</td></tr>';
+      }
+    }
+
+    /* ===== SAVE / UPDATE ALL GRADES TO nilaisiswa ===== */
+    async function saveAllGrades(level) {
+      const tbody = document.getElementById(`grades-tbody-${level}`);
+      const btn = document.getElementById(`btn-save-all-${level}`);
+      const rows = tbody.querySelectorAll('tr');
+
+      if (!rows || rows.length === 0) {
+        showToast('⚠️ Tidak ada data untuk disimpan', 'error');
+        return;
+      }
+
+      // Get student ID from the first row
+      const studentId = rows[0].dataset.idNilai ? rows[0].dataset.idNilai.split('-')[0] : '';
+      if (!studentId) {
+        showToast('⚠️ ID Siswa tidak ditemukan', 'error');
+        return;
+      }
+
+      // Disable button while saving
+      btn.disabled = true;
+      btn.textContent = '⏳ Menyimpan...';
+
+      const savePromises = [];
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of rows) {
+        const idNilai = row.dataset.idNilai;
+        const isExisting = row.dataset.isExisting === '1';
+        const materi = row.dataset.materi;
+        const kurikulumId = row.id.replace(`row-${level}-`, '');
+
+        const nilaiInput = document.getElementById(`nilai-${level}-${kurikulumId}`);
+        const progressInput = document.getElementById(`progress-${level}-${kurikulumId}`);
+
+        const nilaiRaw = nilaiInput.value.trim();
+        const progress = progressInput.value.trim();
+
+        // Skip if both are empty
+        if (nilaiRaw === '' && progress === '') {
+          continue;
+        }
+
+        // Validate nilai
+        if (nilaiRaw !== '' && (isNaN(nilaiRaw) || Number(nilaiRaw) < 0 || Number(nilaiRaw) > 100)) {
+          errorCount++;
+          continue;
+        }
+
+        const payload = {
+          id_nilai: idNilai,
+          id_siswa: studentId,
+          materi: materi,
+          nilai: nilaiRaw !== '' ? Number(nilaiRaw) : null,
+          deskripsi: progress || null
+        };
+
+        const savePromise = (async () => {
+          try {
+            let res;
+            if (isExisting) {
+              // UPDATE existing record
+              res = await fetch(
+                `${SUPA_URL}/rest/v1/nilaisiswa?id_nilai=eq.${encodeURIComponent(idNilai)}`,
+                {
+                  method: 'PATCH',
+                  headers: { ...HEADERS, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ nilai: payload.nilai, deskripsi: payload.deskripsi })
+                }
+              );
+            } else {
+              // INSERT new record
+              res = await fetch(
+                `${SUPA_URL}/rest/v1/nilaisiswa`,
+                {
+                  method: 'POST',
+                  headers: { ...HEADERS, 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload)
+                }
+              );
+            }
+
+            if (!res.ok) {
+              throw new Error('Gagal menyimpan');
+            }
+
+            // Update UI: mark row as existing
+            row.dataset.isExisting = '1';
+
+            // Update ID Nilai cell
+            document.getElementById(`cell-idnilai-${level}-${kurikulumId}`).textContent = idNilai;
+
+            // Update status badge
+            const badgeEl = row.querySelector('.grades-materi span');
+            if (badgeEl) {
+              badgeEl.style.background = 'rgba(212,175,55,0.15)';
+              badgeEl.style.color = 'var(--gold)';
+              badgeEl.style.border = '1px solid var(--gold)';
+              badgeEl.textContent = '✓ Tersimpan';
+            }
+
+            successCount++;
+          } catch (err) {
+            console.error('Gagal menyimpan nilai:', err);
+            errorCount++;
+          }
+        })();
+
+        savePromises.push(savePromise);
+      }
+
+      // Wait for all saves to complete
+      await Promise.all(savePromises);
+
+      // Re-enable button
+      btn.disabled = false;
+      btn.textContent = 'Simpan Nilai';
+
+      // Show result
+      if (successCount > 0 && errorCount === 0) {
+        showToast(`✅ ${successCount} data berhasil disimpan!`);
+      } else if (successCount > 0) {
+        showToast(`✅ ${successCount} data berhasil disimpan, ${errorCount} gagal`);
+      } else {
+        showToast('❌ Gagal menyimpan data', 'error');
+      }
+
+      // Reload grades table to show updated data
+      const studentName = document.getElementById(`student-select-${level}`).value;
+      if (studentName) {
+        loadGradesTable(level, studentName, studentId);
+      }
+    }
+
+    /* ===== ADD EVENT LISTENERS TO DROPDOWNS ===== */
+    function setupDropdownListeners() {
+      const levels = ['basic', 'intermediate', 'performer'];
+      
+      levels.forEach(level => {
+        const select = document.getElementById(`student-select-${level}`);
+        if (select) {
+          select.addEventListener('change', (e) => {
+            const studentName = e.target.value;
+            loadStudentIdentity(level, studentName);
+          });
+        }
+      });
+    }
+
+    /* ===== INIT ===== */
+    loadAdminData();
+    setupDropdownListeners();
+    // Load students for the default active tab (Basic)
+    loadStudentsByLevel('basic');
+  </script>
+</body>
+</html>
