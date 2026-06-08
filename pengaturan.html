@@ -504,6 +504,67 @@
     .btn-save:hover { background: var(--gold2); transform: translateY(-1px); }
     .btn-save:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
+    /* ── TANDA TANGAN ── */
+    .ttd-upload-box {
+      border: 2px dashed var(--gold-border);
+      border-radius: 16px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: var(--input-bg);
+      position: relative;
+      overflow: hidden;
+    }
+    .ttd-upload-box:hover { border-color: var(--gold); background: var(--gold-bg); }
+    .ttd-upload-box.has-image { border-style: solid; border-color: var(--gold); padding: 12px; }
+    .ttd-upload-box input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .ttd-upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .ttd-upload-label { font-size: 13px; font-weight: 600; color: var(--muted); }
+    .ttd-upload-hint  { font-size: 11px; color: var(--muted); margin-top: 4px; opacity: .7; }
+    .ttd-preview-img  {
+      max-height: 120px; max-width: 100%;
+      object-fit: contain; border-radius: 8px;
+      display: block; margin: 0 auto;
+    }
+    .ttd-table-wrap {
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .ttd-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .ttd-table th {
+      text-align: left; padding: 11px 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .ttd-table td {
+      padding: 12px 16px; font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle; color: var(--text);
+    }
+    .ttd-table tr:last-child td { border-bottom: none; }
+    .ttd-table tbody tr:hover td { background: var(--gold-bg); cursor: pointer; }
+    .ttd-table tbody tr.selected td { background: var(--gold-bg); }
+    .ttd-table tbody tr.selected td:first-child { border-left: 3px solid var(--gold); }
+    .ttd-thumb {
+      width: 80px; height: 40px; object-fit: contain;
+      border-radius: 6px; border: 1px solid var(--border);
+      background: white; padding: 2px;
+    }
+    .ttd-empty {
+      text-align: center; padding: 36px 16px;
+      color: var(--muted); font-size: 14px;
+    }
+    .ttd-empty .ico { font-size: 32px; display: block; margin-bottom: 8px; }
+
     /* ── TOAST ── */
     #toast {
       position: fixed; bottom: 32px; right: 32px; z-index: 9999;
@@ -588,6 +649,10 @@
       <button class="tab-btn" onclick="switchTab('jadwal', this)">
         <span class="tab-icon">🗓️</span>
         Jadwal Les
+      </button>
+      <button class="tab-btn" onclick="switchTab('ttd', this)">
+        <span class="tab-icon">✍️</span>
+        Tanda Tangan
       </button>
     </div>
 
@@ -798,6 +863,90 @@
         <button class="btn-save" id="save-jadwal" onclick="saveTab('jadwal')">
           💾 Simpan Jadwal
         </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         TAB 4 — TANDA TANGAN
+    ═══════════════════════════════════════ -->
+    <div id="panel-ttd" class="tab-panel">
+      <div class="section-heading">
+        <div class="section-icon">✍️</div>
+        <div>
+          <h2>TANDA TANGAN</h2>
+          <p>Kelola tanda tangan yang akan tampil otomatis di transkrip nilai PDF</p>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="payment-form-box">
+        <div class="payment-form-label">
+          ✏️ Form Tanda Tangan &nbsp;<span id="ttd-mode-badge" class="mode-badge add">+ Tambah Baru</span>
+        </div>
+        <div class="form-row triple">
+          <div class="form-group">
+            <label>ID Tanda Tangan <span class="required">*</span></label>
+            <input type="text" id="ttd-id" placeholder="Contoh: TTD-001" maxlength="30" />
+            <span class="input-hint">Kode unik tanda tangan</span>
+          </div>
+          <div class="form-group">
+            <label>Nama Pemilik TTD <span class="required">*</span></label>
+            <input type="text" id="ttd-nama" placeholder="Contoh: Kenzha Fauzi" />
+          </div>
+          <div class="form-group"><!-- spacer --></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group">
+            <label>Upload Gambar Tanda Tangan <span class="required">*</span></label>
+            <div class="ttd-upload-box" id="ttd-upload-box" onclick="document.getElementById('ttd-file').click()">
+              <input type="file" id="ttd-file" accept="image/*" style="display:none;" onchange="ttd_previewFile(this)" />
+              <div id="ttd-upload-placeholder">
+                <div class="ttd-upload-icon">🖋️</div>
+                <div class="ttd-upload-label">Klik untuk pilih gambar tanda tangan</div>
+                <div class="ttd-upload-hint">PNG transparan disarankan · Maks. 2MB</div>
+              </div>
+              <img id="ttd-preview-img" class="ttd-preview-img" style="display:none;" alt="Preview TTD" />
+            </div>
+            <span class="input-hint" id="ttd-file-name">Belum ada file dipilih</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:4px;flex-wrap:wrap;">
+          <button class="btn-tambah" id="btn-ttd-tambah" onclick="ttd_simpan()">➕ Simpan TTD</button>
+          <button class="btn-update" id="btn-ttd-update" onclick="ttd_update()" style="display:none;">💾 Update TTD</button>
+          <button class="btn-reset" id="btn-ttd-batal" onclick="ttd_resetForm()" style="display:none;">Batal</button>
+          <div id="ttd-upload-progress" style="display:none;font-size:12px;color:var(--gold);font-weight:600;">⏳ Mengupload...</div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="payment-toolbar">
+        <span style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">
+          ✍️ Daftar Tanda Tangan &nbsp;<span id="ttd-count" style="color:var(--gold);">0 data</span>
+        </span>
+        <button class="btn-reset" style="padding:8px 16px;font-size:12px;" onclick="ttd_loadAll()">🔄 Refresh</button>
+      </div>
+
+      <div class="ttd-table-wrap">
+        <table class="ttd-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nama Pemilik TTD</th>
+              <th>Preview</th>
+              <th class="action-cell">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="ttd-tbody">
+            <tr id="ttd-empty-row">
+              <td colspan="4">
+                <div class="ttd-empty">
+                  <span class="ico">✍️</span>
+                  Belum ada tanda tangan. Tambahkan di atas.
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -1405,6 +1554,289 @@
     if (val) { btn.classList.add('on'); label.textContent = 'Aktif'; }
     else     { btn.classList.remove('on'); label.textContent = 'Nonaktif'; }
   }
+
+  /* ══════════════════════════════════════
+     TANDA TANGAN — CRUD + UPLOAD BUCKET
+  ══════════════════════════════════════ */
+  const TTD_BUCKET = 'aset';
+  let ttdList      = [];
+  let ttdEditId    = null;
+  let ttdFileObj   = null; // File object yang dipilih
+
+  // Preview file sebelum upload
+  function ttd_previewFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Ukuran file maks. 2MB!', 'error');
+      input.value = '';
+      return;
+    }
+    ttdFileObj = file;
+    document.getElementById('ttd-file-name').textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById('ttd-preview-img');
+      const placeholder = document.getElementById('ttd-upload-placeholder');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      document.getElementById('ttd-upload-box').classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Upload file ke bucket Supabase Storage
+  async function ttd_uploadFile(file, fileName) {
+    const res = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/${TTD_BUCKET}/ttd/${fileName}`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey':        SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type':  file.type,
+          'x-upsert':      'true',
+        },
+        body: file,
+      }
+    );
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error('Upload gagal: ' + err);
+    }
+    // Return public URL
+    return `${SUPABASE_URL}/storage/v1/object/public/${TTD_BUCKET}/ttd/${fileName}`;
+  }
+
+  // Simpan TTD baru
+  async function ttd_simpan() {
+    const id   = document.getElementById('ttd-id').value.trim();
+    const nama = document.getElementById('ttd-nama').value.trim();
+    if (!id)        { showToast('ID Tanda Tangan wajib diisi!', 'error'); return; }
+    if (!nama)      { showToast('Nama Pemilik TTD wajib diisi!', 'error'); return; }
+    if (!ttdFileObj){ showToast('Pilih gambar tanda tangan terlebih dahulu!', 'error'); return; }
+
+    const btn = document.getElementById('btn-ttd-tambah');
+    btn.disabled = true;
+    document.getElementById('ttd-upload-progress').style.display = 'inline-flex';
+    showToast('Mengupload tanda tangan…', 'loading');
+
+    try {
+      // Nama file: id_timestamp.ext
+      const ext      = ttdFileObj.name.split('.').pop();
+      const fileName = `${id}_${Date.now()}.${ext}`;
+      const fileUrl  = await ttd_uploadFile(ttdFileObj, fileName);
+
+      // Simpan ke tabel tandatangan
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/tandatangan`, {
+        method: 'POST',
+        headers: {
+          'apikey':        SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type':  'application/json',
+          'Prefer':        'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify({ id, nama_ttd: nama, file_ttd: fileUrl }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText);
+      }
+
+      showToast('Tanda tangan berhasil disimpan!', 'success');
+      ttd_resetForm();
+      await ttd_loadAll();
+
+    } catch(err) {
+      console.error('[TTD Save]', err);
+      showToast('Gagal menyimpan: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      document.getElementById('ttd-upload-progress').style.display = 'none';
+    }
+  }
+
+  // Update TTD yang sedang diedit (hanya nama; file opsional re-upload)
+  async function ttd_update() {
+    if (!ttdEditId) return;
+    const nama = document.getElementById('ttd-nama').value.trim();
+    if (!nama) { showToast('Nama Pemilik TTD wajib diisi!', 'error'); return; }
+
+    const btn = document.getElementById('btn-ttd-update');
+    btn.disabled = true;
+    document.getElementById('ttd-upload-progress').style.display = 'inline-flex';
+    showToast('Menyimpan perubahan…', 'loading');
+
+    try {
+      let fileUrl = ttdList.find(t => t.id === ttdEditId)?.file_ttd || '';
+
+      // Jika ada file baru dipilih, upload ulang
+      if (ttdFileObj) {
+        const ext      = ttdFileObj.name.split('.').pop();
+        const fileName = `${ttdEditId}_${Date.now()}.${ext}`;
+        fileUrl        = await ttd_uploadFile(ttdFileObj, fileName);
+      }
+
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/tandatangan?id=eq.${encodeURIComponent(ttdEditId)}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'apikey':        SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Content-Type':  'application/json',
+            'Prefer':        'return=minimal',
+          },
+          body: JSON.stringify({ nama_ttd: nama, file_ttd: fileUrl }),
+        }
+      );
+
+      if (!res.ok) throw new Error(await res.text());
+      showToast('Tanda tangan berhasil diupdate!', 'success');
+      ttd_resetForm();
+      await ttd_loadAll();
+
+    } catch(err) {
+      console.error('[TTD Update]', err);
+      showToast('Gagal update: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      document.getElementById('ttd-upload-progress').style.display = 'none';
+    }
+  }
+
+  // Hapus TTD
+  async function ttd_hapus(id) {
+    if (!confirm(`Hapus tanda tangan "${id}"?`)) return;
+    showToast('Menghapus…', 'loading');
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/tandatangan?id=eq.${encodeURIComponent(id)}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'apikey':        SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Prefer':        'return=minimal',
+          },
+        }
+      );
+      if (!res.ok) throw new Error(await res.text());
+      showToast('Tanda tangan dihapus!', 'success');
+      await ttd_loadAll();
+    } catch(err) {
+      showToast('Gagal hapus: ' + err.message, 'error');
+    }
+  }
+
+  // Edit — isi form dengan data yang ada
+  function ttd_edit(id) {
+    const item = ttdList.find(t => t.id === id);
+    if (!item) return;
+    ttdEditId = id;
+    ttdFileObj = null;
+
+    document.getElementById('ttd-id').value   = item.id;
+    document.getElementById('ttd-id').readOnly = true;
+    document.getElementById('ttd-nama').value  = item.nama_ttd;
+    document.getElementById('ttd-file-name').textContent = 'File lama dipakai (upload baru opsional)';
+
+    // Tampilkan preview file lama
+    if (item.file_ttd) {
+      const img = document.getElementById('ttd-preview-img');
+      const placeholder = document.getElementById('ttd-upload-placeholder');
+      img.src = item.file_ttd;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      document.getElementById('ttd-upload-box').classList.add('has-image');
+    }
+
+    document.getElementById('btn-ttd-tambah').style.display = 'none';
+    document.getElementById('btn-ttd-update').style.display = 'flex';
+    document.getElementById('btn-ttd-batal').style.display  = 'inline-flex';
+    document.getElementById('ttd-mode-badge').textContent   = '✏️ Mode Edit';
+    document.getElementById('ttd-mode-badge').className     = 'mode-badge edit';
+
+    // Highlight baris
+    document.querySelectorAll('#ttd-tbody tr').forEach(r => r.classList.remove('selected'));
+    const row = document.querySelector(`#ttd-tbody tr[data-id="${id}"]`);
+    if (row) row.classList.add('selected');
+
+    window.scrollTo({ top: document.getElementById('panel-ttd').offsetTop - 80, behavior: 'smooth' });
+  }
+
+  // Reset form
+  function ttd_resetForm() {
+    ttdEditId  = null;
+    ttdFileObj = null;
+    document.getElementById('ttd-id').value      = '';
+    document.getElementById('ttd-id').readOnly   = false;
+    document.getElementById('ttd-nama').value    = '';
+    document.getElementById('ttd-preview-img').style.display   = 'none';
+    document.getElementById('ttd-upload-placeholder').style.display = 'block';
+    document.getElementById('ttd-upload-box').classList.remove('has-image');
+    document.getElementById('ttd-file-name').textContent = 'Belum ada file dipilih';
+    document.getElementById('ttd-file').value = '';
+    document.getElementById('btn-ttd-tambah').style.display = 'flex';
+    document.getElementById('btn-ttd-update').style.display = 'none';
+    document.getElementById('btn-ttd-batal').style.display  = 'none';
+    document.getElementById('ttd-mode-badge').textContent   = '+ Tambah Baru';
+    document.getElementById('ttd-mode-badge').className     = 'mode-badge add';
+    document.querySelectorAll('#ttd-tbody tr').forEach(r => r.classList.remove('selected'));
+  }
+
+  // Load semua data dari Supabase
+  async function ttd_loadAll() {
+    try {
+      const rows = await dbGet('tandatangan', '?order=id.asc');
+      ttdList = Array.isArray(rows) ? rows : [];
+      ttd_renderTable();
+    } catch(err) {
+      console.error('[TTD Load]', err);
+      ttdList = [];
+      ttd_renderTable();
+    }
+  }
+
+  // Render tabel
+  function ttd_renderTable() {
+    const tbody   = document.getElementById('ttd-tbody');
+    const countEl = document.getElementById('ttd-count');
+    countEl.textContent = ttdList.length + ' data';
+
+    if (ttdList.length === 0) {
+      tbody.innerHTML = `<tr id="ttd-empty-row"><td colspan="4">
+        <div class="ttd-empty"><span class="ico">✍️</span>Belum ada tanda tangan. Tambahkan di atas.</div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = ttdList.map(t => `
+      <tr data-id="${t.id}">
+        <td class="id-cell" style="font-family:monospace;font-size:12px;color:var(--muted);">${t.id}</td>
+        <td style="font-weight:600;">${t.nama_ttd || '—'}</td>
+        <td>
+          ${t.file_ttd
+            ? `<img src="${t.file_ttd}" class="ttd-thumb" alt="TTD" onerror="this.style.display='none'">`
+            : '<span style="color:var(--muted);font-size:12px;">Tidak ada file</span>'
+          }
+        </td>
+        <td class="action-cell">
+          <button class="tbl-btn" onclick="ttd_edit('${t.id}')">✏️ Edit</button>
+          <button class="tbl-btn danger" onclick="ttd_hapus('${t.id}')">🗑️ Hapus</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Load saat tab TTD dibuka
+  const _origSwitchTab = window.switchTab;
+  window.switchTab = function(id, btn) {
+    _origSwitchTab(id, btn);
+    if (id === 'ttd') ttd_loadAll();
+  };
 
   loadLocal();
 </script>
