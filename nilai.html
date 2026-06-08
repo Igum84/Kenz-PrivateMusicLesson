@@ -285,6 +285,37 @@
     .state-icon { font-size: 42px; opacity: .35; }
     .state-text { font-family: var(--font); font-size: 14px; color: var(--muted); line-height: 1.6; }
 
+    /* ===== TOMBOL TRANSKRIP ===== */
+    .btn-transkrip {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--gold), #9A6F00);
+      color: #0A0A0A; border: none; border-radius: 8px;
+      padding: 7px 13px; font-size: 11px; font-weight: 700;
+      font-family: var(--font); cursor: pointer;
+      box-shadow: 0 2px 10px rgba(212,175,55,0.35);
+      transition: all .2s; white-space: nowrap;
+      letter-spacing: .3px;
+    }
+    .btn-transkrip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(212,175,55,0.5);
+    }
+    .btn-transkrip:active { transform: translateY(0); }
+    .btn-transkrip-icon { font-size: 13px; }
+
+    /* ===== PRINT / TRANSKRIP ===== */
+    @media print {
+      body * { visibility: hidden; }
+      #transkrip-print, #transkrip-print * { visibility: visible; }
+      #transkrip-print {
+        position: fixed; inset: 0;
+        background: #fff; color: #000;
+        padding: 0; margin: 0;
+      }
+    }
+    #transkrip-print { display: none; }
+
     /* ===== FOOTER ===== */
     footer {
       position: fixed; bottom: 0; left: 0; right: 0;
@@ -385,6 +416,10 @@
       </div>
       <div class="identitas-right">
         <div class="identitas-id">ID Siswa: <span id="id-siswa">—</span></div>
+        <button class="btn-transkrip" id="btn-download-transkrip" onclick="downloadTranskrip()">
+          <span class="btn-transkrip-icon">⬇</span>
+          <span>Transkrip Nilai</span>
+        </button>
       </div>
     </div>
   </div>
@@ -477,6 +512,9 @@
     <span>Nilai Pembelajaran &copy; <span id="footer-year">2025</span></span>
   </div>
 </footer>
+
+<!-- TRANSKRIP PRINT AREA -->
+<div id="transkrip-print"></div>
 
 <script>
   /* ===== THEME ===== */
@@ -686,6 +724,322 @@
   }
 
   init();
+
+  /* ===== DOWNLOAD TRANSKRIP ===== */
+  let identitasLes = null;
+
+  async function fetchIdentitasLes() {
+    if (identitasLes) return identitasLes;
+    try {
+      const res = await fetch(`${SUPA_URL}/rest/v1/identitas?limit=1`, { headers: HEADERS });
+      if (!res.ok) throw new Error();
+      const rows = await res.json();
+      if (rows && rows.length > 0) identitasLes = rows[0];
+    } catch(_) {
+      const raw = localStorage.getItem('kenz-identitas');
+      if (raw) { try { identitasLes = JSON.parse(raw); } catch(_){} }
+    }
+    return identitasLes;
+  }
+
+  async function downloadTranskrip() {
+    const btn = document.getElementById('btn-download-transkrip');
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳ Menyiapkan...</span>';
+
+    try {
+      const les = await fetchIdentitasLes();
+
+      // Konversi background image ke Base64
+      let bgBase64 = '';
+      try {
+        const bgRes = await fetch('bgtranskrip.jpg');
+        const bgBlob = await bgRes.blob();
+        bgBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(bgBlob);
+        });
+      } catch(_) {
+        console.warn('Background image tidak ditemukan, lanjut tanpa background.');
+      }
+
+      const bgCss = bgBase64
+        ? `url('${bgBase64}') center center / cover no-repeat`
+        : 'none';
+
+      // Ambil data siswa dari halaman
+      const nama      = document.getElementById('id-nama').textContent;
+      const level     = document.getElementById('id-level').textContent;
+      const instrumen = document.getElementById('id-instrumen').textContent;
+      const idSiswa   = document.getElementById('id-siswa').textContent;
+
+      // Ambil data lengkap siswa dari Supabase
+      let siswaDetail = {};
+      try {
+        const rs = await fetch(
+          `${SUPA_URL}/rest/v1/datasiswa?id=eq.${encodeURIComponent(idSiswa)}&select=*&limit=1`,
+          { headers: HEADERS }
+        );
+        if (rs.ok) {
+          const rd = await rs.json();
+          if (rd && rd.length > 0) siswaDetail = rd[0];
+        }
+      } catch(_) {}
+
+      // Ambil baris nilai dari tabel yang sudah dirender
+      const tbody = document.getElementById('nilai-tbody');
+      const rows  = tbody ? tbody.querySelectorAll('tr') : [];
+
+      // Hitung ringkasan
+      const rata     = document.getElementById('sum-rata').textContent;
+      const total    = document.getElementById('sum-total').textContent;
+      const predikat = document.getElementById('sum-predikat').textContent;
+
+      // Nama les & owner
+      const namaLes  = les?.nama_usaha || 'KENZ Guitar Lesson';
+      const owner    = les?.owner      || '—';
+      const alamatLes= les?.alamat     || '';
+      const tlpLes   = les?.tlp        || '';
+      const logoUrl  = les?.logo       || '';
+      const tahunLes = les?.tahun_berdiri || '';
+
+      // Tanggal cetak
+      const today = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+
+      // Tanggal lahir siswa
+      let tglLahir = '—';
+      if (siswaDetail.tanggal_lahir) {
+        tglLahir = new Date(siswaDetail.tanggal_lahir).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+      }
+
+      // Build baris tabel nilai
+      let rowsHtml = '';
+      if (rows.length > 0) {
+        rows.forEach((tr, i) => {
+          const tds = tr.querySelectorAll('td');
+          if (!tds.length) return;
+          const noEl      = tds[0];
+          const materiEl  = tds[1];
+          const nilaiEl   = tds[2];
+          const predikatEl= tds[3];
+          const deskEl    = tds[4];
+
+          const noTxt      = noEl      ? (i+1)                                           : (i+1);
+          const materiTxt  = materiEl  ? (materiEl.firstChild?.textContent?.trim() || materiEl.textContent.trim()) : '—';
+          const nilaiTxt   = nilaiEl   ? (nilaiEl.querySelector('.badge-nilai')?.textContent?.trim() || '—') : '—';
+          const predTxt    = predikatEl? (predikatEl.querySelector('.badge-predikat')?.textContent?.trim() || '—') : '—';
+          const deskTxt    = deskEl    ? (deskEl.textContent?.trim() || '—') : '—';
+
+          // warna badge nilai
+          const nilaiNum   = parseFloat(nilaiTxt);
+          let nilaiColor   = '#1A1A1A';
+          if (nilaiNum >= 90)      nilaiColor = '#2D8A5F';
+          else if (nilaiNum >= 75) nilaiColor = '#2D5FA8';
+          else if (nilaiNum >= 60) nilaiColor = '#A07A10';
+          else                     nilaiColor = '#C84040';
+
+          rowsHtml += `
+            <tr style="border-bottom:1px solid #E8E4D9;">
+              <td style="padding:5px 8px;text-align:center;font-size:12px;color:#888;font-weight:700;">${noTxt}</td>
+              <td style="padding:5px 8px;font-size:12px;font-weight:600;color:#1A1A1A;">${materiTxt}</td>
+              <td style="padding:5px 8px;text-align:center;">
+                <span style="display:inline-block;min-width:32px;padding:2px 7px;border-radius:5px;font-size:12px;font-weight:700;color:${nilaiColor};background:${nilaiColor}18;border:1px solid ${nilaiColor}44;">${nilaiTxt}</span>
+              </td>
+              <td style="padding:5px 8px;text-align:center;">
+                <span style="display:inline-block;padding:2px 7px;border-radius:99px;font-size:12px;font-weight:700;color:${nilaiColor};background:${nilaiColor}18;border:1px solid ${nilaiColor}44;">${predTxt}</span>
+              </td>
+              <td style="padding:5px 8px;font-size:12px;color:#555;font-style:italic;line-height:1.4;">${deskTxt !== '—' ? deskTxt : '<span style="color:#bbb">—</span>'}</td>
+            </tr>`;
+        });
+      } else {
+        rowsHtml = '<tr><td colspan="5" style="padding:24px;text-align:center;color:#aaa;font-size:13px;">Belum ada data nilai</td></tr>';
+      }
+
+      // Predikat warna
+      let predColor = '#D4AF37';
+      if      (predikat === 'A') predColor = '#2D8A5F';
+      else if (predikat === 'B') predColor = '#2D5FA8';
+      else if (predikat === 'C') predColor = '#A07A10';
+      else if (predikat === 'D') predColor = '#C84040';
+
+      const logoHtml = logoUrl
+        ? `<img src="${logoUrl}" style="height:48px;width:48px;object-fit:cover;border-radius:50%;border:2px solid #D4AF37;box-shadow:0 2px 8px rgba(212,175,55,0.3);" onerror="this.style.display='none'">`
+        : `<div style="height:48px;width:48px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#7A5020);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#0A0A0A;border:2px solid #D4AF37;">🎸</div>`;
+
+      const html = `
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+          <meta charset="UTF-8">
+          <title>Transkrip Nilai – ${nama}</title>
+          <style>
+            * { margin:0; padding:0; box-sizing:border-box; }
+            body {
+              font-family: 'Times New Roman', Times, Georgia, serif;
+              color:#1A1A1A; font-size:12px;
+              background: ${bgCss};
+            }
+            @page { size: A4; margin: 10mm 12mm 10mm 12mm; }
+            @media print {
+              body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background: ${bgCss} !important;
+              }
+            }
+            .wrap {
+              background: rgba(255,255,255,0.88);
+              padding: 14px 16px;
+              min-height: auto;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="wrap">
+
+            <!-- KOP -->
+            <div style="border-bottom:2.5px solid #D4AF37;padding-bottom:8px;margin-bottom:8px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                ${logoHtml}
+                <div style="flex:1;">
+                  <div style="font-size:17px;font-weight:800;color:#1A1A1A;letter-spacing:-0.5px;">${namaLes}</div>
+                  <div style="font-size:9px;color:#666;margin-top:2px;">
+                    ${alamatLes ? `📍 ${alamatLes}` : ''}
+                    ${alamatLes && tlpLes ? ' &nbsp;|&nbsp; ' : ''}
+                    ${tlpLes ? `📞 ${tlpLes}` : ''}
+                    ${tahunLes ? ` &nbsp;|&nbsp; Berdiri: ${tahunLes}` : ''}
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:8px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:1px;">Dokumen Resmi</div>
+                  <div style="font-size:8px;color:#bbb;">Diterbitkan: ${today}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JUDUL -->
+            <div style="text-align:center;margin-bottom:8px;">
+              <div style="display:inline-block;background:linear-gradient(135deg,#D4AF37,#9A6F00);color:#0A0A0A;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:5px 24px;border-radius:4px;">
+                TRANSKRIP NILAI PEMBELAJARAN
+              </div>
+            </div>
+
+            <!-- DATA SISWA -->
+            <div style="background:#FAFAF6;border:1px solid #E8E4D9;border-radius:7px;padding:8px 12px;margin-bottom:8px;">
+              <div style="font-size:12px;font-weight:800;color:#D4AF37;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+                <span style="display:inline-block;width:3px;height:11px;background:#D4AF37;border-radius:2px;"></span>
+                DATA SISWA
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;">
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">Nama Lengkap</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.nama_siswa || nama}</span>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">ID Siswa</span>
+                  <span style="font-size:12px;color:#D4AF37;font-weight:700;">: ${idSiswa}</span>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">Level</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.level || level}</span>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">Instrumen</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.instrumen || instrumen}</span>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">Tempat, Tgl Lahir</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.tempat_lahir ? siswaDetail.tempat_lahir + ', ' + tglLahir : tglLahir}</span>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">No. Telepon</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.tlp || '—'}</span>
+                </div>
+                <div style="display:flex;gap:6px;grid-column:span 2;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">Alamat</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.alamat || '—'}</span>
+                </div>
+                <div style="display:flex;gap:6px;grid-column:span 2;">
+                  <span style="font-size:12px;color:#888;font-weight:600;min-width:110px;">Orang Tua/Wali</span>
+                  <span style="font-size:12px;color:#1A1A1A;font-weight:700;">: ${siswaDetail.nama_ortu || '—'}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- TABEL NILAI -->
+            <div style="margin-bottom:8px;">
+              <div style="font-size:12px;font-weight:800;color:#D4AF37;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:6px;">
+                <span style="display:inline-block;width:3px;height:11px;background:#D4AF37;border-radius:2px;"></span>
+                RINCIAN NILAI
+              </div>
+              <table style="width:100%;border-collapse:collapse;border:1px solid #E8E4D9;overflow:hidden;">
+                <thead>
+                  <tr style="background:linear-gradient(135deg,#1A1208,#2A1E08);">
+                    <th style="padding:6px 8px;text-align:center;font-size:12px;font-weight:700;color:#D4AF37;letter-spacing:.5px;text-transform:uppercase;width:28px;">No</th>
+                    <th style="padding:6px 8px;text-align:left;font-size:12px;font-weight:700;color:#D4AF37;letter-spacing:.5px;text-transform:uppercase;">Materi / Kompetensi</th>
+                    <th style="padding:6px 8px;text-align:center;font-size:12px;font-weight:700;color:#D4AF37;letter-spacing:.5px;text-transform:uppercase;width:48px;">Nilai</th>
+                    <th style="padding:6px 8px;text-align:center;font-size:12px;font-weight:700;color:#D4AF37;letter-spacing:.5px;text-transform:uppercase;width:74px;">Predikat</th>
+                    <th style="padding:6px 8px;text-align:left;font-size:12px;font-weight:700;color:#D4AF37;letter-spacing:.5px;text-transform:uppercase;">Deskripsi Progress</th>
+                  </tr>
+                </thead>
+                <tbody>${rowsHtml}</tbody>
+              </table>
+            </div>
+
+            <!-- RINGKASAN + TANDA TANGAN (1 baris) -->
+            <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px;">
+              <!-- Ringkasan -->
+              <div style="display:flex;gap:6px;flex:1;">
+                <div style="flex:1;background:#FAFAF6;border:1px solid #E8E4D9;border-radius:6px;padding:7px 10px;text-align:center;">
+                  <div style="font-size:8px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Rata-rata</div>
+                  <div style="font-size:20px;font-weight:800;color:#D4AF37;">${rata}</div>
+                </div>
+                <div style="flex:1;background:#FAFAF6;border:1px solid #E8E4D9;border-radius:6px;padding:7px 10px;text-align:center;">
+                  <div style="font-size:8px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Total</div>
+                  <div style="font-size:20px;font-weight:800;color:#1A1A1A;">${total}</div>
+                </div>
+                <div style="flex:1;background:${predColor}0F;border:1px solid ${predColor}33;border-radius:6px;padding:7px 10px;text-align:center;">
+                  <div style="font-size:8px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Predikat</div>
+                  <div style="font-size:20px;font-weight:800;color:${predColor};">${predikat}</div>
+                </div>
+              </div>
+              <!-- Tanda Tangan -->
+              <div style="text-align:center;min-width:160px;padding-left:8px;">
+                <div style="font-size:8.5px;color:#555;margin-bottom:2px;">${namaLes}, ${today}</div>
+                <div style="font-size:8px;color:#888;margin-bottom:38px;">Instruktur / Pimpinan</div>
+                <div style="border-top:1.5px solid #1A1A1A;padding-top:4px;">
+                  <div style="font-size:11px;font-weight:800;color:#1A1A1A;">${owner}</div>
+                  <div style="font-size:8px;color:#888;margin-top:1px;">Owner – ${namaLes}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FOOTER DOKUMEN -->
+            <div style="border-top:1px solid #E8E4D9;padding-top:6px;text-align:center;margin-top:6px;">
+              <div style="font-size:8px;color:#bbb;letter-spacing:.5px;">Dokumen ini diterbitkan secara resmi oleh ${namaLes} &nbsp;·&nbsp; ${today}</div>
+            </div>
+
+          </div>
+        </body>
+        </html>`;
+
+      // Buka di window baru dan print
+      const win = window.open('', '_blank', 'width=900,height=700');
+      win.document.write(html);
+      win.document.close();
+      win.onload = () => {
+        setTimeout(() => { win.focus(); win.print(); }, 400);
+      };
+
+    } catch(err) {
+      console.error('[Transkrip]', err);
+      alert('Gagal membuat transkrip. Silakan coba lagi.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="btn-transkrip-icon">⬇</span><span>Transkrip Nilai</span>';
+    }
+  }
 </script>
 </body>
 </html>
