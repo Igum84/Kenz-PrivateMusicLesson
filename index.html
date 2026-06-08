@@ -19,7 +19,6 @@
     a { text-decoration: none; color: inherit; }
 
     /* =========================================
-       THEME TOKENS — LIGHT (default)
     ========================================= */
     :root,
     [data-theme="light"] {
@@ -178,7 +177,7 @@
        NAVBAR
     ========================================= */
     nav {
-      position: sticky; top: 0; z-index: 50;
+      position: sticky; top: 0; z-index: 160;
       background: var(--nav-bg);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
@@ -538,6 +537,36 @@
     .price-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
     .price-features li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; font-weight: 300; color: var(--muted); }
     .price-features li .chk { color: var(--gold); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Animated Border Box */
+    .payment-info-box {
+      display: inline-block;
+      padding: 16px 28px;
+      margin-top: 20px;
+      border-radius: 12px;
+      background: var(--card);
+      position: relative;
+      animation: border-color-change 3s infinite, shake 5s infinite;
+    }
+    @keyframes border-color-change {
+      0% { border: 2px solid var(--gold); box-shadow: 0 0 12px rgba(240,176,64,0.3); }
+      33% { border: 2px solid #FF6B6B; box-shadow: 0 0 12px rgba(255,107,107,0.3); }
+      66% { border: 2px solid #4ECDC4; box-shadow: 0 0 12px rgba(78,205,196,0.3); }
+      100% { border: 2px solid var(--gold); box-shadow: 0 0 12px rgba(240,176,64,0.3); }
+    }
+    @keyframes shake {
+      0%, 90%, 100% { transform: translateX(0); }
+      92% { transform: translateX(-5px) rotate(-1deg); }
+      94% { transform: translateX(5px) rotate(1deg); }
+      96% { transform: translateX(-5px) rotate(-1deg); }
+      98% { transform: translateX(5px) rotate(1deg); }
+    }
+    .payment-info-box span {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: 0.5px;
+    }
 
     /* =========================================
        TESTIMONIALS
@@ -947,12 +976,13 @@
       .about-grid { gap: 48px; }
       .pricing-grid { grid-template-columns: 1fr 1fr; }
       .footer-inner { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 768px) {
+
+      /* Tablet: sembunyikan nav-links & nav-right, tampilkan hamburger */
       .nav-links, .nav-right { display: none; }
       .hamburger { display: flex; }
       .mob-toggle-wrap { display: flex; gap: 12px; align-items: center; }
-
+    }
+    @media (max-width: 768px) {
       .hero-stats { position: static; justify-content: flex-start; margin-top: 48px; gap: 32px; }
       .hero-stat { text-align: left; }
       .hero-deco { display: none; }
@@ -1161,6 +1191,9 @@
       <span class="section-label">Paket Les</span>
       <h2 class="section-title">PILIH PAKET<br>YANG COCOK</h2>
       <p class="section-sub">Harga transparan, tidak ada biaya tersembunyi. Semua sudah termasuk materi & evaluasi bulanan.</p>
+      <div class="payment-info-box">
+        <span>PEMBAYARAN BIAYA LES FLEKSIBEL DAPAT DI LAKUKAN PER SESI, BULANAN ATAU PER PAKET.</span>
+      </div>
     </div>
     <div class="pricing-grid reveal">
       <div class="price-card">
@@ -1365,7 +1398,8 @@
       <button class="role-tab" data-role="admin">Admin</button>
     </div>
     <input type="hidden" id="role-value" value="student" />
-    <div class="form-group"><label>Email / Username</label><input type="text" id="login-username" placeholder="kamu@email.com" /></div>
+    <div class="form-group" id="username-group"><label>Email / Username</label><input type="text" id="login-username" placeholder="kamu@email.com" /></div>
+    <div class="form-group" id="student-select-group" style="display:none;"><label>Pilih Nama Siswa</label><select id="student-select" style="width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);background:var(--modal-card);color:var(--text);font-family:var(--font-body);font-size:14px;"><option value="">-- Pilih Siswa --</option></select></div>
     <div class="form-group"><label>Password</label><div style="position:relative;display:flex;align-items:center;"><input type="password" id="login-password" placeholder="••••••••" style="padding-right:42px;width:100%;" /><button type="button" id="login-pass-toggle" style="position:absolute;right:12px;background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:4px;line-height:1;transition:color .2s;" title="Lihat password">👁️</button></div></div>
     <div id="login-error" style="display:none;color:#ff6b6b;font-size:13px;margin-bottom:8px;text-align:center;"></div>
     <button class="btn-submit" id="btn-submit-login">Masuk Sekarang</button>
@@ -1719,7 +1753,15 @@
   /* ---- ADMIN LOGIN ---- */
   document.getElementById('btn-submit-login').addEventListener('click', async () => {
     const role     = document.getElementById('role-value').value;
-    const username = document.getElementById('login-username').value.trim();
+    let username = '';
+    
+    // Ambil username berdasarkan role
+    if (role === 'student') {
+      username = document.getElementById('student-select').value.trim();
+    } else {
+      username = document.getElementById('login-username').value.trim();
+    }
+    
     const password = document.getElementById('login-password').value;
     const errEl    = document.getElementById('login-error');
     const btnEl    = document.getElementById('btn-submit-login');
@@ -1741,7 +1783,7 @@
       ============================================================ */
       if (role === 'student') {
         const res = await fetch(
-          `${SUPABASE_URL}/rest/v1/datasiswa?username=eq.${encodeURIComponent(username)}&select=username,password,nama_siswa&limit=1`,
+          `${SUPABASE_URL}/rest/v1/datasiswa?nama_siswa=eq.${encodeURIComponent(username)}&select=id,nama_siswa,username,password,level,instrumen,photo&limit=1`,
           {
             headers: {
               'apikey': SUPABASE_ANON,
@@ -1752,20 +1794,32 @@
 
         const rows = await res.json();
 
-        if (!rows || rows.length === 0 || rows[0].password !== password) {
-          errEl.textContent = '❌ Username atau password salah.';
+        if (!rows || rows.length === 0) {
+          errEl.textContent = '❌ Data siswa tidak ditemukan.';
+          errEl.style.display = 'block';
+          return;
+        }
+
+        if (rows[0].password !== password) {
+          errEl.textContent = '❌ Password salah.';
           errEl.style.display = 'block';
           return;
         }
 
         // Login berhasil
-        const namaSiswa = rows[0].nama_siswa || rows[0].username || username;
+        const namaSiswa = rows[0].nama_siswa || username;
+        const actualUsername = rows[0].username || username;
         
         // Simpan data login ke localStorage
         localStorage.setItem('kenz-login', JSON.stringify({
-          username: username,
+          id: rows[0].id,
+          username: rows[0].username || username,
+          nama_siswa: namaSiswa,
           role: 'student',
-          nama: namaSiswa
+          nama: namaSiswa,
+          level: rows[0].level || '',
+          instrumen: rows[0].instrumen || '',
+          photo: rows[0].photo || '',
         }));
         
         document.getElementById('welcome-name').textContent = namaSiswa;
@@ -2520,10 +2574,56 @@
   /* ---- LOGIN MODAL ---- */
   const modal = document.getElementById('login-modal');
   [document.getElementById('open-login'), document.getElementById('open-login-mob')].forEach(btn => {
-    btn && btn.addEventListener('click', () => { modal.classList.add('open'); document.body.style.overflow = 'hidden'; });
+    btn && btn.addEventListener('click', () => { 
+      modal.classList.add('open'); 
+      document.body.style.overflow = 'hidden';
+      
+      // Load student names jika role default adalah Murid
+      const role = document.getElementById('role-value').value;
+      if (role === 'student') {
+        document.getElementById('username-group').style.display = 'none';
+        document.getElementById('student-select-group').style.display = 'block';
+        loadStudentNames();
+      }
+    });
   });
   document.getElementById('close-login').addEventListener('click', () => { modal.classList.remove('open'); document.body.style.overflow = ''; });
   modal.addEventListener('click', e => { if(e.target === modal) { modal.classList.remove('open'); document.body.style.overflow = ''; } });
+
+  /* ---- LOAD STUDENT NAMES FROM SUPABASE ---- */
+  async function loadStudentNames() {
+    const select = document.getElementById('student-select');
+    if (!select) return;
+
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/datasiswa?select=nama_siswa&order=nama_siswa.asc`,
+        {
+          headers: {
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+          }
+        }
+      );
+
+      if (!res.ok) throw new Error('Gagal fetch data siswa');
+
+      const students = await res.json();
+      
+      // Clear existing options except the first one
+      select.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+
+      // Populate select with student names
+      students.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.nama_siswa;
+        option.textContent = student.nama_siswa;
+        select.appendChild(option);
+      });
+    } catch (err) {
+      console.error('Gagal memuat data siswa:', err);
+    }
+  }
 
   /* ---- ROLE TABS ---- */
   document.querySelectorAll('.role-tab').forEach(tab => {
@@ -2531,9 +2631,23 @@
       document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('role-value').value = tab.dataset.role;
+      
       // Tampilkan hint daftar hanya untuk role Murid
       const hint = document.getElementById('register-hint');
       if (hint) hint.style.display = tab.dataset.role === 'student' ? 'block' : 'none';
+      
+      // Toggle input/select berdasarkan role
+      const usernameGroup = document.getElementById('username-group');
+      const studentSelectGroup = document.getElementById('student-select-group');
+      
+      if (tab.dataset.role === 'student') {
+        usernameGroup.style.display = 'none';
+        studentSelectGroup.style.display = 'block';
+        loadStudentNames();
+      } else {
+        usernameGroup.style.display = 'block';
+        studentSelectGroup.style.display = 'none';
+      }
     });
   });
 
