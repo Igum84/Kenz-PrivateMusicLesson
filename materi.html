@@ -676,6 +676,22 @@
       // Jika filepdf sudah berupa URL lengkap gunakan langsung
       const finalPdfUrl = (hasPdf && row.filepdf.startsWith('http')) ? row.filepdf : pdfUrl;
 
+      /*
+       * Deteksi platform:
+       * - iOS (iPhone/iPad/iPod): render PDF native langsung di iframe — Google Docs Viewer justru sering gagal di Safari
+       * - Android              : tidak bisa render PDF di iframe → wajib pakai Google Docs Viewer
+       * - Desktop              : render PDF native langsung di iframe
+       */
+      const ua       = navigator.userAgent;
+      const isIOS    = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+      const isAndroid = /Android/.test(ua);
+
+      const iframeSrc = finalPdfUrl
+        ? (isAndroid
+            ? `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(finalPdfUrl)}`
+            : finalPdfUrl)   // iOS & desktop: URL langsung
+        : null;
+
       panel.innerHTML = `
         <div class="materi-nama-label">Nama Materi</div>
         <div class="materi-nama-value">${row.materi || '—'}</div>
@@ -690,17 +706,17 @@
               </div>
             </div>
             ${finalPdfUrl
-              ? `<a class="btn-pdf-open" href="${finalPdfUrl}" target="_blank" rel="noopener">↗ Buka di Tab Baru</a>`
+              ? `<a class="btn-pdf-open" href="${finalPdfUrl}" target="_blank" rel="noopener">↗ Unduh PDF</a>`
               : ''}
           </div>
-          ${finalPdfUrl
+          ${iframeSrc
             ? `<div class="pdf-frame-wrap">
                  <div class="pdf-loading" id="pdf-loading-${i}">
                    <div class="pdf-spinner"></div>
                    <div class="pdf-loading-text">Memuat PDF…</div>
                  </div>
                  <iframe
-                   src="${finalPdfUrl}"
+                   src="${iframeSrc}"
                    title="${row.materi || 'Materi'}"
                    onload="document.getElementById('pdf-loading-${i}').style.display='none'"
                    onerror="document.getElementById('pdf-loading-${i}').innerHTML='<span style=font-size:28px>⚠️</span><span style=font-size:13px;color:var(--muted)>Gagal memuat PDF</span>'"
