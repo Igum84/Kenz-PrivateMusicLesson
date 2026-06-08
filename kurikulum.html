@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kurikulum – KENZ Guitar Lesson</title>
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --text: #1A1A1A;
+      --muted: #666;
+      --bg: #FFFFFF;
+      --surface: #F5F5F5;
+      --border: #E0E0E0;
+      --footer-bg: #1A1208;
+      --footer-text: #B8AA96;
+      --input-bg: #FFFFFF;
+      --input-border: #D0D0D0;
+      --input-focus: #D4AF37;
+      --label: #444;
+      --section-bg: #FAFAFA;
+    }
+
+    [data-theme="dark"] {
+      --text: #FFFFFF;
+      --muted: #AAAAAA;
+      --bg: #0A0A0A;
+      --surface: #1A1A1A;
+      --border: #333333;
+      --footer-bg: #0A0A0A;
+      --footer-text: #555555;
+      --input-bg: #141414;
+      --input-border: #333333;
+      --input-focus: #D4AF37;
+      --label: #CCCCCC;
+      --section-bg: #111111;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background .3s, color .3s;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .nav-brand img {
+      height: 32px;
+      width: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background .2s;
+    }
+
+    .theme-toggle:hover { background: var(--surface); }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border-radius: 8px;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+
+    .admin-details { display: flex; flex-direction: column; }
+    .admin-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .admin-role { font-size: 12px; color: var(--muted); }
+
+    .btn-dashboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(212,175,55,0.25);
+    }
+
+    .btn-dashboard:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(212,175,55,0.35);
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+      padding: 16px 32px;
+      font-size: 13px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breadcrumb a { color: var(--gold); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* ===== MAIN ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-title-wrap {}
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .page-title span { color: var(--gold); }
+
+    .page-subtitle { font-size: 14px; color: var(--muted); }
+
+    /* ===== FORM CARD ===== */
+    .form-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+
+    .form-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .form-card-title { font-size: 18px; font-weight: 700; color: var(--text); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full-width { grid-column: span 2; }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--label);
+    }
+
+    .form-label .required { color: #E85555; margin-left: 3px; }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      padding: 12px 16px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 14px;
+      color: var(--text);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    .form-textarea { resize: vertical; min-height: 100px; }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.12);
+    }
+
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--muted); }
+
+    /* File Upload */
+    .file-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: var(--input-bg);
+    }
+
+    .file-upload-zone:hover {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.03);
+    }
+
+    .file-upload-zone.dragover {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.08);
+    }
+
+    .file-upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .file-upload-text { font-size: 14px; font-weight: 600; color: var(--text); }
+    .file-upload-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .file-preview-wrap {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 12px;
+    }
+
+    .file-preview-wrap.show { display: flex; }
+
+    .file-preview-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .file-preview-info { flex: 1; text-align: left; }
+    .file-preview-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .file-preview-size { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .btn-remove-file {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #E85555;
+      padding: 6px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      color: #0A0A0A;
+      box-shadow: 0 2px 10px rgba(212,175,55,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212,175,55,0.35);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover { background: var(--border); }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== TABLE CARD ===== */
+    .table-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .table-card-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-card-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .table-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #9A7020);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .table-card-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .table-count {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--border);
+      padding: 2px 10px;
+      border-radius: 50px;
+    }
+
+    /* ===== TABLE WRAPPER ===== */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(212,175,55,0.04); }
+
+    tbody td {
+      padding: 14px 16px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .td-id {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-basic { background: rgba(99,200,99,0.15); color: #2E7D32; }
+    .badge-intermediate { background: rgba(255,165,0,0.15); color: #E65100; }
+    .badge-performer { background: rgba(212,175,55,0.15); color: #9A7020; }
+
+    /* table action buttons */
+    .tbl-actions { display: flex; gap: 6px; }
+
+    .btn-tbl {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all .15s;
+      font-family: inherit;
+    }
+
+    .btn-edit {
+      background: rgba(212,175,55,0.15);
+      color: #9A7020;
+    }
+
+    .btn-edit:hover { background: rgba(212,175,55,0.3); }
+
+    .btn-delete {
+      background: rgba(232,85,85,0.1);
+      color: #E85555;
+    }
+
+    .btn-delete:hover { background: rgba(232,85,85,0.2); }
+
+    .btn-view {
+      background: rgba(25,118,210,0.1);
+      color: #1976D2;
+    }
+
+    .btn-view:hover { background: rgba(25,118,210,0.2); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .empty-icon { font-size: 64px; margin-bottom: 16px; }
+    .empty-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-desc { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 10px;
+      background: #2E7D32;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all .3s;
+      z-index: 9999;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #E85555; }
+    .toast.info { background: #1976D2; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-text);
+      text-align: center;
+      padding: 32px 24px;
+      margin-top: 60px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-content { max-width: 1400px; margin: 0 auto; }
+    .footer-content p { margin: 4px 0; font-size: 13px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .container { padding: 24px 16px 60px; }
+      nav { padding: 12px 16px; flex-direction: column; gap: 12px; }
+      .nav-brand { font-size: 20px; }
+      .nav-right { width: 100%; justify-content: space-between; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full-width { grid-column: span 1; }
+      .form-actions { flex-direction: column; }
+      .form-actions .btn { width: 100%; justify-content: center; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tbody tr { margin: 0 0 12px; border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+      tbody td { padding: 6px 0; display: flex; align-items: flex-start; gap: 8px; border: none; }
+      tbody td::before { content: attr(data-label); font-size: 10px; font-weight: 700; color: var(--muted); min-width: 100px; flex-shrink: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a href="dashboardadmin.html" class="nav-brand">
+      <img id="nav-logo" src="logo.png" alt="Logo" style="display:none" />
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-brand-name">KENZ</span>
+    </a>
+    <div class="nav-right">
+      <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
+      <button class="theme-toggle" id="theme-toggle">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">A</div>
+        <div class="admin-details">
+          <span class="admin-name" id="nav-owner">Admin</span>
+          <span class="admin-role">Kurikulum</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="dashboardadmin.html">Dashboard</a>
+    <span>›</span>
+    <span>Kurikulum</span>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-title-wrap">
+        <h1 class="page-title">Data <span>Kurikulum</span></h1>
+        <p class="page-subtitle">Kelola materi kurikulum pembelajaran gitar</p>
+      </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-icon">📚</div>
+        <div class="form-card-title">Input Kurikulum Baru</div>
+      </div>
+
+      <form id="kurikulum-form" onsubmit="handleSubmit(event)">
+        <input type="hidden" id="edit-id" value="">
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">ID Kurikulum <span class="required">*</span></label>
+            <input type="text" class="form-input" id="input-id" placeholder="Contoh: KUR-001" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Level Class <span class="required">*</span></label>
+            <select class="form-select" id="input-level" required>
+              <option value="">-- Pilih Level --</option>
+              <option value="Basic">Basic</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Performer">Performer</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Materi <span class="required">*</span></label>
+            <input type="text" class="form-input" id="input-materi" placeholder="Nama materi pembelajaran" required />
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Deskripsi</label>
+            <textarea class="form-textarea" id="input-deskripsi" placeholder="Deskripsi materi..."></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Upload PDF</label>
+            <div class="file-upload-zone" id="file-upload-zone" onclick="document.getElementById('input-pdf').click()">
+              <div class="file-upload-icon">📄</div>
+              <div class="file-upload-text">Klik untuk upload PDF</div>
+              <div class="file-upload-hint">Maksimal 10MB</div>
+            </div>
+            <input type="file" id="input-pdf" accept=".pdf" style="display:none" onchange="handleFileSelect(event)" />
+            
+            <div class="file-preview-wrap" id="file-preview-wrap">
+              <div class="file-preview-icon">📄</div>
+              <div class="file-preview-info">
+                <div class="file-preview-name" id="file-preview-name">-</div>
+                <div class="file-preview-size" id="file-preview-size">-</div>
+              </div>
+              <button type="button" class="btn-remove-file" onclick="removeFile()">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-save">💾 Simpan Kurikulum</button>
+          <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+      <div class="table-card-header">
+        <div class="table-card-title-wrap">
+          <div class="table-card-icon">📋</div>
+          <div class="table-card-title">Daftar Kurikulum</div>
+          <span class="table-count" id="table-count">0</span>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="kurikulum-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Level Class</th>
+              <th>Materi</th>
+              <th>Deskripsi</th>
+              <th>PDF</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Data akan diisi oleh JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">📚</div>
+        <div class="empty-title">Belum ada data kurikulum</div>
+        <div class="empty-desc">Silakan tambahkan kurikulum baru melalui form di atas</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <p>🎸 KENZ Guitar Lesson</p>
+      <p>&copy; <span id="footer-year">2025</span> Kurikulum Management</p>
+    </div>
+  </footer>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">Data berhasil disimpan!</div>
+
+  <script>
+    // Supabase Config
+    const SUPABASE_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+
+    // Data storage
+    let kurikulumData = [];
+    let pdfFile = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAdminInfo();
+      loadKurikulumData();
+      initTheme();
+      initLogo();
+      document.getElementById('footer-year').textContent = new Date().getFullYear();
+    });
+
+    // Theme Toggle
+    function initTheme() {
+      const html = document.documentElement;
+      const savedTheme = localStorage.getItem('kenz-theme') || 'light';
+      html.setAttribute('data-theme', savedTheme);
+      document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+      
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('kenz-theme', next);
+        document.getElementById('theme-toggle').textContent = next === 'dark' ? '☀️' : '🌙';
+      });
+    }
+
+    // Logo
+    function initLogo() {
+      const logoImg = document.getElementById('nav-logo');
+      const logoFb = document.getElementById('nav-logo-fallback');
+      logoImg.onload = () => { logoImg.style.display = 'block'; logoFb.style.display = 'none'; };
+      logoImg.onerror = () => { logoImg.style.display = 'none'; logoFb.style.display = 'inline'; };
+    }
+
+    // Load Admin Info
+    async function loadAdminInfo() {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/identitas?select=logo,nama_usaha,owner&limit=1`,
+          {
+            headers: {
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            }
+          }
+        );
+        const rows = await res.json();
+        if (!rows?.length) return;
+        const { logo, nama_usaha, owner } = rows[0];
+        
+        if (logo) {
+          const img = document.getElementById('nav-logo');
+          img.src = logo;
+          img.style.display = 'block';
+          document.getElementById('nav-logo-fallback').style.display = 'none';
+        }
+        if (nama_usaha) document.getElementById('nav-brand-name').textContent = nama_usaha;
+        if (owner) {
+          document.getElementById('nav-owner').textContent = owner;
+          document.getElementById('nav-avatar').textContent = owner.charAt(0).toUpperCase();
+        }
+      } catch(e) {
+        console.warn('Gagal load admin info:', e.message);
+      }
+    }
+
+    // Load Kurikulum Data from Supabase
+    async function loadKurikulumData() {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/kurikulum?select=id,level,materi,deskripsi,filepdf&order=id.asc`,
+          {
+            headers: {
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            }
+          }
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error('Load Error:', errorData);
+          throw new Error(errorData.message || errorData.details || 'Gagal fetch data');
+        }
+        
+        kurikulumData = await res.json();
+        console.log('Loaded data:', kurikulumData);
+        renderTable();
+      } catch (err) {
+        console.error('Gagal memuat data:', err);
+        showToast('Gagal memuat data kurikulum', 'error');
+      }
+    }
+
+    // Render Table
+    function renderTable() {
+      const tbody = document.getElementById('table-body');
+      const emptyState = document.getElementById('empty-state');
+      const tableCount = document.getElementById('table-count');
+
+      tbody.innerHTML = '';
+      tableCount.textContent = kurikulumData.length;
+
+      if (kurikulumData.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      kurikulumData.forEach(item => {
+        const tr = document.createElement('tr');
+        
+        const levelBadge = getLevelBadge(item.level);
+        const pdfLink = item.filepdf ? `<a href="${item.filepdf}" target="_blank" class="btn-tbl btn-view">📄 Lihat</a>` : '-';
+        
+        tr.innerHTML = `
+          <td data-label="ID" class="td-id">${item.id}</td>
+          <td data-label="Level">${levelBadge}</td>
+          <td data-label="Materi" style="font-weight:600">${item.materi}</td>
+          <td data-label="Deskripsi">${item.deskripsi || '-'}</td>
+          <td data-label="PDF">${pdfLink}</td>
+          <td data-label="Aksi">
+            <div class="tbl-actions">
+              <button class="btn-tbl btn-edit" onclick="editItem('${item.id}')">✏️ Edit</button>
+              <button class="btn-tbl btn-delete" onclick="deleteItem('${item.id}')">🗑️ Hapus</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Get Level Badge
+    function getLevelBadge(level) {
+      const badges = {
+        'Basic': '<span class="badge badge-basic">Basic</span>',
+        'Intermediate': '<span class="badge badge-intermediate">Intermediate</span>',
+        'Performer': '<span class="badge badge-performer">Performer</span>'
+      };
+      return badges[level] || `<span class="badge">${level}</span>`;
+    }
+
+    // Handle File Select
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.type !== 'application/pdf') {
+        showToast('Hanya file PDF yang diperbolehkan', 'error');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('Ukuran file maksimal 10MB', 'error');
+        return;
+      }
+
+      pdfFile = file;
+      document.getElementById('file-preview-name').textContent = file.name;
+      document.getElementById('file-preview-size').textContent = formatFileSize(file.size);
+      document.getElementById('file-preview-wrap').classList.add('show');
+      document.getElementById('file-upload-zone').style.display = 'none';
+    }
+
+    // Remove File
+    function removeFile() {
+      pdfFile = null;
+      document.getElementById('input-pdf').value = '';
+      document.getElementById('file-preview-wrap').classList.remove('show');
+      document.getElementById('file-upload-zone').style.display = 'block';
+    }
+
+    // Format File Size
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Handle Submit
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const editId = document.getElementById('edit-id').value;
+      const id = document.getElementById('input-id').value.trim();
+      const level = document.getElementById('input-level').value;
+      const materi = document.getElementById('input-materi').value.trim();
+      const deskripsi = document.getElementById('input-deskripsi').value.trim();
+
+      if (!id || !level || !materi) {
+        showToast('Mohon lengkapi field yang wajib diisi', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-save');
+      btn.disabled = true;
+      btn.textContent = '⏳ Menyimpan...';
+
+      try {
+        let pdfUrl = null;
+        
+        // Upload PDF if exists
+        if (pdfFile) {
+          pdfUrl = await uploadPDF(pdfFile);
+        }
+
+        const data = {
+          id: id,
+          level: level,
+          materi: materi,
+          deskripsi: deskripsi,
+          filepdf: pdfUrl
+        };
+
+        console.log('Data to be saved:', data);
+
+        if (editId) {
+          // Update existing
+          const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/kurikulum?id=eq.${editId}`,
+            {
+              method: 'PATCH',
+              headers: {
+                'apikey': SUPABASE_ANON,
+                'Authorization': `Bearer ${SUPABASE_ANON}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data)
+            }
+          );
+          
+          if (!res.ok) throw new Error('Gagal update data');
+          showToast('Data berhasil diperbarui!');
+        } else {
+          // Insert new
+          const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/kurikulum`,
+            {
+              method: 'POST',
+              headers: {
+                'apikey': SUPABASE_ANON,
+                'Authorization': `Bearer ${SUPABASE_ANON}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+              },
+              body: JSON.stringify(data)
+            }
+          );
+          
+          if (!res.ok) {
+          const errorData = await res.json();
+          console.error('Supabase Error:', errorData);
+          throw new Error(errorData.message || errorData.details || 'Gagal simpan data');
+        }
+          showToast('Data berhasil disimpan!');
+        }
+
+        resetForm();
+        await loadKurikulumData();
+      } catch (err) {
+        console.error('Error:', err);
+        showToast('Gagal menyimpan data', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💾 Simpan Kurikulum';
+      }
+    }
+
+    // Upload PDF to Supabase Storage
+    async function uploadPDF(file) {
+      const fileName = `kurikulum/${Date.now()}_${file.name}`;
+      
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/storage/v1/object/aset/${fileName}`,
+          {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            },
+            body: formData
+          }
+        );
+
+        if (!res.ok) throw new Error('Gagal upload PDF');
+        
+        // Get public URL
+        return `${SUPABASE_URL}/storage/v1/object/public/aset/${fileName}`;
+      } catch (err) {
+        console.error('Upload error:', err);
+        throw err;
+      }
+    }
+
+    // Edit Item
+    function editItem(id) {
+      const item = kurikulumData.find(d => d.id === id);
+      if (!item) return;
+
+      document.getElementById('edit-id').value = item.id;
+      document.getElementById('input-id').value = item.id;
+      document.getElementById('input-level').value = item.level;
+      document.getElementById('input-materi').value = item.materi;
+      document.getElementById('input-deskripsi').value = item.deskripsi || '';
+
+      if (item.filepdf) {
+        document.getElementById('file-preview-name').textContent = 'PDF terupload';
+        document.getElementById('file-preview-size').textContent = 'Lihat di tabel';
+        document.getElementById('file-preview-wrap').classList.add('show');
+        document.getElementById('file-upload-zone').style.display = 'none';
+      }
+
+      document.getElementById('btn-save').textContent = '💾 Update Kurikulum';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Delete Item
+    async function deleteItem(id) {
+      if (!confirm('Yakin ingin menghapus data ini?')) return;
+
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/kurikulum?id=eq.${id}`,
+          {
+            method: 'DELETE',
+            headers: {
+              'apikey': SUPABASE_ANON,
+              'Authorization': `Bearer ${SUPABASE_ANON}`,
+            }
+          }
+        );
+
+        if (!res.ok) throw new Error('Gagal hapus data');
+        
+        showToast('Data berhasil dihapus!');
+        await loadKurikulumData();
+      } catch (err) {
+        console.error('Error:', err);
+        showToast('Gagal menghapus data', 'error');
+      }
+    }
+
+    // Reset Form
+    function resetForm() {
+      document.getElementById('kurikulum-form').reset();
+      document.getElementById('edit-id').value = '';
+      removeFile();
+      document.getElementById('btn-save').textContent = '💾 Simpan Kurikulum';
+    }
+
+    // Show Toast
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
