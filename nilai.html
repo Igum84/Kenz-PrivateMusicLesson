@@ -141,6 +141,7 @@
     .identitas-body {
       padding: 16px 20px;
       display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap;
     }
     .identitas-photo {
       width: 58px; height: 58px; border-radius: 50%;
@@ -304,6 +305,25 @@
     .btn-transkrip:active { transform: translateY(0); }
     .btn-transkrip-icon { font-size: 13px; }
 
+    /* Baris tombol di bawah identitas — hanya muncul di mobile */
+    .identitas-btn-row {
+      display: none;
+      width: 100%;
+      padding: 0 20px 14px;
+    }
+    .btn-transkrip-full {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #9A6F00);
+      color: #0A0A0A; border: none; border-radius: 10px;
+      padding: 10px 16px; font-size: 13px; font-weight: 700;
+      font-family: var(--font); cursor: pointer;
+      box-shadow: 0 2px 10px rgba(212,175,55,0.35);
+      transition: all .2s;
+    }
+    .btn-transkrip-full:hover { opacity: .9; }
+    .btn-transkrip-full:active { transform: scale(.98); }
+
     /* ===== PRINT / TRANSKRIP ===== */
     @media print {
       body * { visibility: hidden; }
@@ -336,8 +356,15 @@
       .nav-brand  { font-size: 18px; gap: 8px; }
       .nav-brand img { height: 26px; }
       .admin-info { display: none; }
-      .main-wrap  { padding: 16px 12px 72px; }
+      .main-wrap  { padding: 16px 12px 80px; }
+
+      /* Identitas: sembunyikan kolom kanan (desktop), tampilkan baris tombol */
       .identitas-right { display: none; }
+      .identitas-btn-row { display: block; }
+      .identitas-body { gap: 12px; }
+      .identitas-nama { font-size: 15px; }
+
+      /* Ringkasan */
       .summary-row { gap: 8px; }
       .summary-card { padding: 12px 8px; }
       .summary-card-value { font-size: 22px; }
@@ -357,9 +384,8 @@
       .main-wrap { padding: 24px 10px 80px; }
       /* Di desktop, sembunyikan versi inline (sudah ada kolom terpisah) */
       .td-deskripsi-inline { display: none; }
-    }
-    @media(min-width:641px){
-      .main-wrap { padding: 24px 10px 80px; }
+      /* Sembunyikan baris tombol mobile di desktop */
+      .identitas-btn-row { display: none; }
     }
   </style>
 </head>
@@ -421,6 +447,12 @@
           <span>Transkrip Nilai</span>
         </button>
       </div>
+    </div>
+    <!-- Tombol khusus mobile — tampil di bawah info siswa -->
+    <div class="identitas-btn-row">
+      <button class="btn-transkrip-full" onclick="downloadTranskrip()">
+        <span>⬇</span> Unduh Transkrip Nilai
+      </button>
     </div>
   </div>
 
@@ -804,6 +836,35 @@
       const logoUrl  = les?.logo       || '';
       const tahunLes = les?.tahun_berdiri || '';
 
+      // Ambil tanda tangan dari tabel tandatangan (ambil 1 data pertama)
+      let ttdBase64  = '';
+      let ttdNama    = owner;
+      try {
+        const ttdRes = await fetch(
+          `${SUPA_URL}/rest/v1/tandatangan?select=nama_ttd,file_ttd&limit=1`,
+          { headers: HEADERS }
+        );
+        if (ttdRes.ok) {
+          const ttdRows = await ttdRes.json();
+          if (ttdRows && ttdRows.length > 0) {
+            ttdNama = ttdRows[0].nama_ttd || owner;
+            const fileUrl = ttdRows[0].file_ttd || '';
+            if (fileUrl) {
+              // Konversi ke Base64 agar tampil di window.open
+              const imgRes = await fetch(fileUrl);
+              const imgBlob = await imgRes.blob();
+              ttdBase64 = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(imgBlob);
+              });
+            }
+          }
+        }
+      } catch(_) {
+        console.warn('[TTD] Gagal memuat tanda tangan, lanjut tanpa TTD.');
+      }
+
       // Tanggal cetak
       const today = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
 
@@ -1007,9 +1068,13 @@
               <!-- Tanda Tangan -->
               <div style="text-align:center;min-width:160px;padding-left:8px;">
                 <div style="font-size:8.5px;color:#555;margin-bottom:2px;">${namaLes}, ${today}</div>
-                <div style="font-size:8px;color:#888;margin-bottom:38px;">Instruktur / Pimpinan</div>
+                <div style="font-size:8px;color:#888;margin-bottom:4px;">Instruktur / Pimpinan</div>
+                ${ttdBase64
+                  ? `<img src="${ttdBase64}" style="height:52px;max-width:140px;object-fit:contain;display:block;margin:0 auto 4px;" alt="TTD">`
+                  : `<div style="height:52px;margin-bottom:4px;"></div>`
+                }
                 <div style="border-top:1.5px solid #1A1A1A;padding-top:4px;">
-                  <div style="font-size:11px;font-weight:800;color:#1A1A1A;">${owner}</div>
+                  <div style="font-size:11px;font-weight:800;color:#1A1A1A;">${ttdNama}</div>
                   <div style="font-size:8px;color:#888;margin-top:1px;">Owner – ${namaLes}</div>
                 </div>
               </div>
