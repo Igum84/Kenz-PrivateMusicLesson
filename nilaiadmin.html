@@ -471,6 +471,7 @@
     .grades-materi {
       font-weight: 600;
       color: var(--text);
+      font-size: 13px;
     }
 
     .grades-input {
@@ -491,7 +492,6 @@
 
     .grades-textarea {
       width: 100%;
-      min-width: 200px;
       padding: 8px 10px;
       background: var(--input-bg);
       border: 1.5px solid var(--input-border);
@@ -499,9 +499,14 @@
       font-size: 13px;
       color: var(--text);
       outline: none;
-      resize: vertical;
+      resize: none;
       min-height: 40px;
       font-family: inherit;
+      text-align: justify;
+      overflow: visible;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.5;
     }
 
     .grades-textarea:focus {
@@ -608,49 +613,11 @@
     .summary-desc.desc-luarbiasa { color: var(--gold); }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       nav {
-        padding: 12px 5px;
+        padding: 12px 16px;
         flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-      }
-
-      .nav-brand {
-        font-size: 20px;
-        gap: 10px;
-        justify-content: flex-start;
-      }
-
-      .nav-brand img { height: 28px; }
-
-      .nav-right {
-        gap: 8px;
-        width: 100%;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .admin-info {
-        padding: 6px 8px;
-        gap: 8px;
-        flex: 1;
-      }
-
-      .admin-name { font-size: 13px; }
-      .admin-role { font-size: 11px; }
-
-      .btn-dashboard {
-        padding: 7px 12px;
-        font-size: 12px;
-        gap: 4px;
-        flex-shrink: 0;
-      }
-
-      .theme-toggle {
-        padding: 6px;
-        font-size: 18px;
-        flex-shrink: 0;
+        gap: 12px;
       }
 
       .container {
@@ -661,18 +628,18 @@
       .page-subtitle { font-size: 12px; }
 
       .tab-header {
-        flex-direction: column;
+        flex-direction: row;
       }
 
       .tab-btn {
         padding: 14px 16px;
-        border-bottom: 1px solid var(--border);
-        border-left: 3px solid transparent;
+        border-bottom: 3px solid transparent;
       }
 
       .tab-btn.active {
-        border-bottom-color: var(--border);
-        border-left-color: var(--gold);
+        border-bottom-color: var(--gold);
+        background: var(--gold);
+        color: #0A0A0A;
       }
 
       .tab-content {
@@ -718,6 +685,7 @@
       <span id="nav-brand-name">KENZ</span>
     </a>
     <div class="nav-right">
+      <a href="dashboardadmin.html" class="btn-dashboard">🏠 Dashboard</a>
       <button class="theme-toggle" id="theme-toggle">☀️</button>
       <div class="admin-info">
         <div class="admin-avatar" id="nav-avatar">A</div>
@@ -1061,13 +1029,37 @@
     const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
     const HEADERS = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
 
-    /* ===== LOAD ADMIN DATA ===== */
+    /* ===== LOAD ADMIN DATA FROM SUPABASE ===== */
     async function loadAdminData() {
-      const loginData = JSON.parse(localStorage.getItem('kenz-admin-login') || 'null');
-      if (loginData && loginData.username) {
-        document.getElementById('nav-owner').textContent = loginData.nama || loginData.username || 'Admin';
-        const initial = (loginData.nama || loginData.username || 'A').charAt(0).toUpperCase();
-        document.getElementById('nav-avatar').textContent = initial;
+      try {
+        const res = await fetch(
+          `${SUPA_URL}/rest/v1/identitas?select=logo,nama_usaha,owner&limit=1`,
+          { headers: HEADERS }
+        );
+        const rows = await res.json();
+        if (!rows?.length) return;
+        const { logo, nama_usaha, owner } = rows[0];
+        
+        // Load logo
+        if (logo) {
+          const img = document.getElementById('nav-logo');
+          img.src = logo;
+          img.style.display = 'block';
+          document.getElementById('nav-logo-fallback').style.display = 'none';
+        }
+        
+        // Load business name
+        if (nama_usaha) {
+          document.getElementById('nav-brand-name').textContent = nama_usaha;
+        }
+        
+        // Load owner name
+        if (owner) {
+          document.getElementById('nav-owner').textContent = owner;
+          document.getElementById('nav-avatar').textContent = owner.charAt(0).toUpperCase();
+        }
+      } catch(e) {
+        console.warn('Gagal load admin info dari Supabase:', e.message);
       }
     }
 
