@@ -1269,9 +1269,12 @@
             <label class="form-label">Level Class <span class="required">*</span></label>
             <select class="form-select" id="f-level">
               <option value="">-- Pilih Level --</option>
-              <option value="Basic">Basic</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Performer">Performer</option>
+              <option value="Basic Dasar">Basic Dasar</option>
+              <option value="Basic Lanjutan">Basic Lanjutan</option>
+              <option value="Intermediate Dasar">Intermediate Dasar</option>
+              <option value="Intermediate Lanjutan">Intermediate Lanjutan</option>
+              <option value="Performer Dasar">Performer Dasar</option>
+              <option value="Performer Lanjutan">Performer Lanjutan</option>
             </select>
           </div>
 
@@ -1469,9 +1472,9 @@
     /* ===== STATS ===== */
     function updateStats() {
       document.getElementById('stat-total').textContent        = students.length;
-      document.getElementById('stat-beginner').textContent     = students.filter(s => s.level === 'Basic').length;
-      document.getElementById('stat-intermediate').textContent = students.filter(s => s.level === 'Intermediate').length;
-      document.getElementById('stat-advanced').textContent     = students.filter(s => s.level === 'Performer').length;
+      document.getElementById('stat-beginner').textContent     = students.filter(s => (s.level || '').startsWith('Basic')).length;
+      document.getElementById('stat-intermediate').textContent = students.filter(s => (s.level || '').startsWith('Intermediate')).length;
+      document.getElementById('stat-advanced').textContent     = students.filter(s => (s.level || '').startsWith('Performer')).length;
     }
 
     /* ===== RENDER TABLE ===== */
@@ -1495,11 +1498,13 @@
 
       data.forEach((s, i) => {
         const globalIdx = students.indexOf(s);
-        const levelBadge = {
-          Basic:        'badge-level-beginner',
-          Intermediate: 'badge-level-intermediate',
-          Performer:    'badge-level-advanced',
-        }[s.level] || '';
+        const levelBadge = (s.level || '').startsWith('Basic')
+          ? 'badge-level-beginner'
+          : (s.level || '').startsWith('Intermediate')
+            ? 'badge-level-intermediate'
+            : (s.level || '').startsWith('Performer')
+              ? 'badge-level-advanced'
+              : '';
 
         const photoCell = s.photo
           ? `<img class="student-avatar" src="${s.photo}" alt="${s.nama_siswa}" />`
