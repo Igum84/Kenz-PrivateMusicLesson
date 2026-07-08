@@ -568,8 +568,6 @@
     @media (max-width: 768px) {
       .container { padding: 24px 16px 60px; }
       nav { padding: 12px 16px; flex-direction: column; gap: 12px; }
-      .nav-brand { font-size: 20px; }
-      .nav-right { width: 100%; justify-content: space-between; }
       .form-grid { grid-template-columns: 1fr; }
       .form-group.full-width { grid-column: span 1; }
       .form-actions { flex-direction: column; }
@@ -604,13 +602,6 @@
     </div>
   </nav>
 
-  <!-- BREADCRUMB -->
-  <div class="breadcrumb">
-    <a href="dashboardadmin.html">Dashboard</a>
-    <span>›</span>
-    <span>Kurikulum</span>
-  </div>
-
   <!-- MAIN CONTENT -->
   <div class="container">
 
@@ -642,9 +633,12 @@
             <label class="form-label">Level Class <span class="required">*</span></label>
             <select class="form-select" id="input-level" required>
               <option value="">-- Pilih Level --</option>
-              <option value="Basic">Basic</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Performer">Performer</option>
+              <option value="Basic Dasar">Basic Dasar</option>
+              <option value="Basic Lanjutan">Basic Lanjutan</option>
+              <option value="Intermediate Dasar">Intermediate Dasar</option>
+              <option value="Intermediate Lanjutan">Intermediate Lanjutan</option>
+              <option value="Performer Dasar">Performer Dasar</option>
+              <option value="Performer Lanjutan">Performer Lanjutan</option>
             </select>
           </div>
 
@@ -875,12 +869,13 @@
 
     // Get Level Badge
     function getLevelBadge(level) {
-      const badges = {
-        'Basic': '<span class="badge badge-basic">Basic</span>',
-        'Intermediate': '<span class="badge badge-intermediate">Intermediate</span>',
-        'Performer': '<span class="badge badge-performer">Performer</span>'
-      };
-      return badges[level] || `<span class="badge">${level}</span>`;
+      let cls = '';
+      if ((level || '').startsWith('Basic')) cls = 'badge-basic';
+      else if ((level || '').startsWith('Intermediate')) cls = 'badge-intermediate';
+      else if ((level || '').startsWith('Performer')) cls = 'badge-performer';
+      return cls
+        ? `<span class="badge ${cls}">${level}</span>`
+        : `<span class="badge">${level}</span>`;
     }
 
     // Handle File Select
