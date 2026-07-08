@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Pembayaran Les – KENZ Guitar Lesson</title>
+  <style>
+    /* ===== TOKENS ===== */
+    :root {
+      --gold: #D4AF37;
+      --gold2: #F0C84A;
+      --gold-dim: rgba(212,175,55,0.12);
+      --gold-border: rgba(212,175,55,0.3);
+      --text: #0F0D08;
+      --muted: #6B6459;
+      --bg: #F7F4EE;
+      --surface: #FFFFFF;
+      --surface2: #F0EDE5;
+      --border: #E2DDD4;
+      --nav-bg: rgba(247,244,238,0.92);
+      --footer-bg: #0F0D08;
+      --footer-text: #5A5249;
+      --green: #2D8A5F;
+      --green-dim: rgba(45,138,95,0.12);
+      --blue: #2D5FA8;
+      --blue-dim: rgba(45,95,168,0.12);
+      --purple: #7A3EA6;
+      --purple-dim: rgba(122,62,166,0.12);
+      --red: #C84040;
+      --red-dim: rgba(200,64,64,0.12);
+      --radius: 16px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+      --font: 'Times New Roman', Times, Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --text: #F0EDE5;
+      --muted: #9A9080;
+      --bg: #0C0A06;
+      --surface: #181510;
+      --surface2: #201C14;
+      --border: #2A2518;
+      --nav-bg: rgba(12,10,6,0.92);
+      --footer-bg: #080604;
+      --footer-text: #3A3228;
+      --gold-dim: rgba(212,175,55,0.10);
+      --shadow: 0 2px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      transition: background .35s, color .35s;
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR — selalu gelap (sama seperti adminsiswa.html) ===== */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: #0F0D08;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,175,55,0.18);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.45);
+    }
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-family: var(--font); font-size: 22px; font-weight: 700;
+      color: var(--gold);
+    }
+    .nav-brand img { height: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .theme-toggle {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px; padding: 8px 10px;
+      font-size: 17px; cursor: pointer;
+      transition: background .2s, border-color .2s; line-height: 1;
+    }
+    .theme-toggle:hover { border-color: var(--gold); background: rgba(212,175,55,0.12); }
+    .admin-info {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 14px 7px 7px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 50px;
+    }
+    .admin-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #7A5020);
+      display: flex; align-items: center; justify-content: center;
+      color: #0A0A0A; font-weight: 700; font-size: 14px; flex-shrink: 0;
+      font-family: var(--font);
+    }
+    .admin-name { font-size: 13px; font-weight: 600; color: #F0EDE5; font-family: var(--font); }
+    .admin-role { font-size: 11px; color: #9A9080; font-family: var(--font); }
+
+    /* ===== MAIN ===== */
+    .main-wrap {
+      max-width: 900px; margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+    @media(min-width:641px){
+      .main-wrap{ max-width: 100%; margin: 0; padding: 24px 10px 80px; }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in { animation: fadeIn .5s ease both; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+    .fi-1{animation-delay:.05s} .fi-2{animation-delay:.10s}
+
+    /* ===== PAGE HEADER ===== */
+    .page-header { margin-bottom: 20px; }
+    .page-header-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .back-link {
+      font-family: var(--font); font-size: 12.5px; font-weight: 700;
+      color: var(--muted); text-decoration: none; display:inline-flex; align-items:center; gap:5px;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--gold); }
+    .page-header h1 {
+      font-family: var(--font); font-size: clamp(22px, 4.5vw, 30px);
+      font-weight: 700; line-height: 1.15; color: var(--text);
+    }
+    .page-header h1 span { color: var(--gold); }
+    .page-header p {
+      font-family: var(--font); font-size: 13.5px; font-style: italic;
+      color: var(--muted); margin-top: 5px;
+    }
+
+    /* ===== INFO SISWA CARD ===== */
+    .info-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 18px 20px; margin-bottom: 20px;
+      transition: background .35s, border-color .35s;
+    }
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media(max-width:640px){ .info-grid{ grid-template-columns: 1fr; } }
+    .info-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 13px 16px;
+      transition: background .35s, border-color .35s;
+    }
+    .info-item-label {
+      font-size: 10.5px; color: var(--muted); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px;
+      font-family: var(--font);
+    }
+    .info-item-value {
+      font-size: 15.5px; font-weight: 700; color: var(--text); font-family: var(--font);
+    }
+
+    /* ===== SECTION CARD (tabel pembayaran) ===== */
+    .section-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      overflow: hidden; transition: background .35s, border-color .35s;
+    }
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+      padding: 18px 22px; border-bottom: 1px solid var(--border);
+    }
+    .section-head h2 { font-family: var(--font); font-size: 16px; font-weight: 700; color: var(--text); }
+    .section-head .badge {
+      font-size: 11px; padding: 3px 10px;
+      background: var(--gold-dim); color: var(--gold);
+      border-radius: 50px; font-weight: 700; border: 1px solid var(--gold-border);
+      font-family: var(--font);
+    }
+
+    .table-wrap { overflow-x: auto; }
+    table.riwayat-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 480px; }
+    table.riwayat-table thead th {
+      text-align: left; font-family: var(--font); font-size: 11.5px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+      color: var(--muted); background: var(--surface2);
+      padding: 12px 18px; border-bottom: 1px solid var(--border); white-space: nowrap;
+    }
+    table.riwayat-table tbody td {
+      padding: 13px 18px; border-bottom: 1px solid var(--border);
+      color: var(--text); vertical-align: middle; font-family: var(--font);
+    }
+    table.riwayat-table tbody tr:last-child td { border-bottom: none; }
+    table.riwayat-table tbody tr:hover { background: var(--surface2); }
+    .amount-cell { font-weight: 700; color: var(--green); white-space: nowrap; }
+    .status-pill {
+      font-size: 10.5px; font-weight: 700; padding: 4px 11px;
+      border-radius: 99px; display: inline-block; white-space: nowrap;
+      font-family: var(--font);
+    }
+    .status-pill.lunas { background: var(--green-dim); color: var(--green); }
+    .status-pill.pending { background: rgba(212,175,55,0.15); color: #B08C1A; }
+    .empty-state, .loading-state {
+      padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13px; font-family: var(--font);
+    }
+
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ===== FOOTER ===== */
+    footer { background: var(--footer-bg); border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 24px; }
+    .footer-inner {
+      max-width: 1400px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--footer-text); font-size: 12px; font-family: var(--font);
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ===== RESPONSIVE (smartphone, samakan gaya adminsiswa.html) ===== */
+    @media(max-width:640px){
+      .nav-inner{ padding:0 14px; height:56px; }
+      .nav-brand{ font-size:18px; gap:8px; }
+      .nav-brand img{ height:26px; }
+      .admin-info{ display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <div class="nav-inner">
+    <a href="adminsiswa.html" class="nav-brand">
+      <img id="nav-logo" src="logo.png" alt="KENZ" style="display:none">
+      <span id="nav-logo-fallback">🎸</span>
+      <span id="nav-nama-usaha">KENZ.</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+      <div class="admin-info">
+        <div class="admin-avatar" id="nav-avatar">S</div>
+        <div>
+          <div class="admin-name" id="nav-siswa-nama">Nama Siswa</div>
+          <div class="admin-role">Siswa Aktif</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="main-wrap">
+
+  <!-- Skeleton loading -->
+  <div id="loading-skeleton" class="fade-in">
+    <div class="info-card" style="margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+        <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+        <div class="skeleton" style="height:56px;border-radius:12px;"></div>
+      </div>
+    </div>
+    <div class="skeleton" style="height:240px;border-radius:16px;"></div>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted);font-family:var(--font);">Memuat data pembayaran…</p>
+  </div>
+
+  <!-- Konten (diisi setelah data berhasil dimuat) -->
+  <div id="page-content" style="display:none;">
+
+    <!-- HEADER -->
+    <div class="page-header fade-in">
+      <div class="page-header-top">
+        <div>
+          <h1>Riwayat <span>Pembayaran</span></h1>
+          <p>Pantau status pembayaran SPP les kamu di sini</p>
+        </div>
+        <a class="back-link" href="adminsiswa.html">← Kembali ke Portal Siswa</a>
+      </div>
+    </div>
+
+    <!-- INFO SISWA -->
+    <div class="info-card fade-in fi-1">
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-item-label">ID Siswa</div>
+          <div class="info-item-value" id="info-id">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-label">Nama Siswa</div>
+          <div class="info-item-value" id="info-nama">—</div>
+        </div>
+        <div class="info-item">
+          <div class="info-item-label">Level Class</div>
+          <div class="info-item-value" id="info-level">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABEL RIWAYAT PEMBAYARAN -->
+    <div class="section-card fade-in fi-2">
+      <div class="section-head">
+        <h2>Riwayat Pembayaran SPP</h2>
+        <span class="badge" id="badge-pembayaran">— data</span>
+      </div>
+      <div class="table-wrap">
+        <table class="riwayat-table">
+          <thead id="thead-pembayaran"></thead>
+          <tbody id="tbody-pembayaran">
+            <tr><td class="loading-state">Memuat data pembayaran…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+</div><!-- /main-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span>🎸 KENZ Guitar Lesson</span>
+    <span>Portal Siswa &copy; <span id="footer-year">2025</span></span>
+  </div>
+</footer>
+
+<script>
+  /* ===== THEME ===== */
+  const html = document.documentElement;
+  const themeBtn = document.getElementById('theme-toggle');
+  const savedTheme = localStorage.getItem('kenz-theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+  themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  themeBtn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('kenz-theme', next);
+    themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+
+  /* ===== LOGO ===== */
+  const logoImg = document.getElementById('nav-logo');
+  const logoFb  = document.getElementById('nav-logo-fallback');
+  logoImg.onload  = () => { logoImg.style.display = 'block'; logoFb.style.display = 'none'; };
+  logoImg.onerror = () => { logoImg.style.display = 'none';  logoFb.style.display = 'inline'; };
+
+  /* ===== FOOTER YEAR ===== */
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  /* ===== SUPABASE CONFIG ===== */
+  const SUPA_URL = 'https://pedhdhvybqfnxucvrkzj.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZGhkaHZ5YnFmbnh1Y3Zya3pqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjU1MzIsImV4cCI6MjA5NTk0MTUzMn0.oPu3fkqNMWlb_7cTq738vHmKc6d4WiYiCBo9sMv3K7k';
+  const headers = { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` };
+
+  /* Daftar tipe SPP & pemetaan ke tabel Supabase per-sesi (sinkron dengan sppsiswa.html) */
+  const SPP_TYPES = [
+    { jenis: 'Basic Dasar',           label: 'SPP Basic Dasar',           detailed: true },
+    { jenis: 'Basic Lanjutan',        label: 'SPP Basic Lanjutan',        detailed: true },
+    { jenis: 'Intermediate Dasar',    label: 'SPP Intermediate Dasar',    detailed: true },
+    { jenis: 'Intermediate Lanjutan', label: 'SPP Intermediate Lanjutan', detailed: true },
+    { jenis: 'Performer Dasar',       label: 'SPP Performer Dasar',       detailed: false },
+    { jenis: 'Performer Lanjutan',    label: 'SPP Performer Lanjutan',    detailed: false }
+  ];
+  const LEVEL_TABLE_MAP = {
+    'Basic Dasar': 'sppbasicdasar',
+    'Basic Lanjutan': 'sppbasicdasarlanjutan',
+    'Intermediate Dasar': 'sppintermediatedasar',
+    'Intermediate Lanjutan': 'sppintermediatelanjutan'
+  };
+  const JUMLAH_SESI_KOLOM = 8; /* jumlah sesi default jika data belum ada sama sekali */
+
+  function fmtTgl(v) {
+    return v ? new Date(v).toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'}) : '-';
+  }
+  function fmtRp(v) {
+    return (v || v === 0) ? `Rp ${parseFloat(v).toLocaleString('id-ID')}` : '-';
+  }
+
+  function setLoading(on) {
+    document.getElementById('loading-skeleton').style.display = on ? 'block' : 'none';
+    document.getElementById('page-content').style.display     = on ? 'none'  : 'block';
+  }
+
+  /* ===== INIT: cek sesi login lalu muat data siswa + riwayat pembayaran ===== */
+  async function init() {
+    const loginData = JSON.parse(localStorage.getItem('kenz-login') || 'null');
+    if (!loginData || !loginData.username) {
+      alert('Sesi habis atau belum login. Silakan login kembali.');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${SUPA_URL}/rest/v1/datasiswa?username=eq.${encodeURIComponent(loginData.username)}&select=*`,
+        { headers }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = await res.json();
+      if (!rows || rows.length === 0) {
+        alert('Data siswa tidak ditemukan. Hubungi admin.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const row = rows[0];
+      const siswa = {
+        id:    row.id_siswa   || row.id        || '—',
+        nama:  row.nama_siswa || row.nama       || '—',
+        level: row.level      || 'Basic Dasar'
+      };
+
+      renderInfoSiswa(siswa);
+      await loadRiwayatPembayaran(siswa);
+    } catch (err) {
+      console.error('Gagal memuat data pembayaran:', err);
+      alert('Gagal mengambil data dari server. Periksa koneksi internet.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function renderInfoSiswa(siswa) {
+    document.getElementById('info-id').textContent    = siswa.id;
+    document.getElementById('info-nama').textContent   = siswa.nama;
+    document.getElementById('info-level').textContent  = siswa.level;
+    document.getElementById('nav-siswa-nama').textContent = siswa.nama;
+    document.getElementById('nav-avatar').textContent      = (siswa.nama || 'S').charAt(0).toUpperCase();
+  }
+
+  /* ===== RIWAYAT PEMBAYARAN =====
+     - Level "detailed" (Basic/Intermediate): tampilkan SELURUH sesi (1..N),
+       termasuk sesi yang belum dibayar, dari tabel per-level (sppbasicdasar, dll).
+     - Level "Performer" (non-detailed): tampilkan daftar transaksi dari tabel pembayaran umum. */
+  async function loadRiwayatPembayaran(siswa) {
+    const type   = SPP_TYPES.find(t => t.jenis === siswa.level);
+    const thead  = document.getElementById('thead-pembayaran');
+    const tbody  = document.getElementById('tbody-pembayaran');
+    const badge  = document.getElementById('badge-pembayaran');
+
+    if (type && type.detailed) {
+      thead.innerHTML = `<tr><th>Sesi</th><th>Tanggal Bayar</th><th>Jumlah Bayar</th><th>Status</th></tr>`;
+      const tableName = LEVEL_TABLE_MAP[type.jenis];
+
+      try {
+        const url = `${SUPA_URL}/rest/v1/${tableName}?id_siswa=eq.${encodeURIComponent(siswa.id)}&select=*&limit=1`;
+        const r = await fetch(url, { headers });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        const record = (Array.isArray(data) && data[0]) || null;
+        const jumlahSesi = record ? (record.jumlah_sesi || JUMLAH_SESI_KOLOM) : JUMLAH_SESI_KOLOM;
+
+        let rowsHtml = '';
+        let sesiTerbayar = 0;
+        for (let s = 1; s <= jumlahSesi; s++) {
+          const tgl   = record ? record[`tgl_bayar_s${s}`] : null;
+          const bayar = record ? record[`bayar_s${s}`] : null;
+          const sudah = !!tgl;
+          if (sudah) sesiTerbayar++;
+          rowsHtml += `
+            <tr>
+              <td>${s}</td>
+              <td>${sudah ? fmtTgl(tgl) : '-'}</td>
+              <td class="amount-cell">${sudah ? fmtRp(bayar) : '-'}</td>
+              <td><span class="status-pill ${sudah ? 'lunas' : 'pending'}">${sudah ? 'Sudah Dibayar' : 'Belum Dibayar'}</span></td>
+            </tr>`;
+        }
+        tbody.innerHTML = rowsHtml;
+        badge.textContent = `${sesiTerbayar}/${jumlahSesi} sesi terbayar`;
+      } catch (e) {
+        console.warn('Riwayat pembayaran (detailed):', e.message);
+        tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Gagal memuat data pembayaran.</td></tr>`;
+        badge.textContent = '—';
+      }
+    } else {
+      thead.innerHTML = `<tr><th>No</th><th>Tanggal Bayar</th><th>Jumlah</th><th>Metode</th><th>Status</th></tr>`;
+      try {
+        const jenis = type ? type.jenis : siswa.level;
+        const url = `${SUPA_URL}/rest/v1/pembayaran?select=id,tanggal,jumlah,metode,status&nama_siswa=eq.${encodeURIComponent(siswa.nama)}&jenis_spp=eq.${encodeURIComponent(jenis)}&order=tanggal.desc`;
+        const r = await fetch(url, { headers });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const rowsData = await r.json();
+
+        if (!rowsData || rowsData.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Belum ada riwayat pembayaran.</td></tr>`;
+          badge.textContent = '0 data';
+          return;
+        }
+
+        tbody.innerHTML = rowsData.map((p, i) => {
+          const statusClass = (p.status || '').toLowerCase().includes('lunas') ? 'lunas' : 'pending';
+          const statusLabel = statusClass === 'lunas' ? 'Lunas' : 'Pending';
+          return `<tr>
+            <td>${i + 1}</td>
+            <td>${fmtTgl(p.tanggal)}</td>
+            <td class="amount-cell">${fmtRp(p.jumlah)}</td>
+            <td>${p.metode || '-'}</td>
+            <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+          </tr>`;
+        }).join('');
+        badge.textContent = `${rowsData.length} data`;
+      } catch (e) {
+        console.warn('Riwayat pembayaran (simple):', e.message);
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Gagal memuat data pembayaran.</td></tr>`;
+        badge.textContent = '—';
+      }
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
