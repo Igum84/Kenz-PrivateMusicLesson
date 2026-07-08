@@ -370,7 +370,38 @@
       .nav-inner { padding: 0 14px; height: 56px; }
       .nav-brand { font-size: 18px; gap: 8px; }
       .nav-brand img { height: 26px; }
-      .admin-info { display: none; }
+      .admin-info {
+        padding: 0;
+        background: none;
+        border: none;
+        position: relative;
+      }
+      .admin-info .admin-name,
+      .admin-info .admin-role { display: none; }
+      .admin-info .admin-avatar {
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        position: relative;
+      }
+      /* Tooltip nama admin saat hover */
+      .admin-info .admin-tooltip {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        z-index: 300;
+      }
+      .admin-info:hover .admin-tooltip { display: block; }
 
       .main-wrap { padding: 16px 12px 60px; }
       .page-header { margin-bottom: 18px; }
@@ -434,6 +465,7 @@
           <div class="admin-name" id="nav-owner">Admin Kenz</div>
           <div class="admin-role">Administrator</div>
         </div>
+        <div class="admin-tooltip" id="nav-tooltip">Admin Kenz</div>
       </div>
     </div>
   </div>
@@ -488,7 +520,7 @@
             <a class="acc-item" href="pendaftarbaru.html">
               <span class="acc-item-icon">📋</span>Pendaftar Baru
             </a>
-            <a class="acc-item" href="PembayaranSPP.html">
+            <a class="acc-item" href="sppsiswa.html">
               <span class="acc-item-icon">💰</span>Pembayaran Les
             </a>
             <button class="acc-item" onclick="showMenu('backup')">
@@ -650,6 +682,7 @@
       if (owner) {
         document.getElementById('nav-owner').textContent = owner;
         document.getElementById('nav-avatar').textContent = owner.charAt(0).toUpperCase();
+        document.getElementById('nav-tooltip').textContent = owner;
       }
     } catch(e) { console.warn('Navbar:', e.message); }
   }
@@ -671,7 +704,7 @@
   /* ===== LOAD STUDENTS ===== */
   async function loadStudents() {
     try {
-      const r = await fetch(`${SUPABASE_URL}/rest/v1/siswa?select=level,status&limit=1000`, { headers });
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/datasiswa?select=level,status&limit=1000`, { headers });
       const rows = await r.json();
       if (!Array.isArray(rows)) throw new Error('Data siswa tidak valid');
 
@@ -788,9 +821,9 @@
     const borderColor = isDark ? '#2A2518' : '#E2DDD4';
 
     ctx.clearRect(0, 0, W, H);
-
+1
     // grid lines
-    for (let i = 0; i <= 4; i++) {
+    for (let i = 0; i <= 4; i++) {1
       const y = padT + (cH / 4) * i;
       ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + cW, y);
       ctx.strokeStyle = borderColor; ctx.lineWidth = 1; ctx.stroke();
