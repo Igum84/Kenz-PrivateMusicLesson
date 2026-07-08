@@ -346,6 +346,26 @@
       cursor: pointer;
     }
     .btn-save:disabled { opacity: .6; cursor: not-allowed; }
+    .modal-box.modal-wide { max-width: 640px; }
+    .form-group input[readonly] { background: var(--surface2); opacity: .75; cursor: not-allowed; }
+    .sesi-table-wrap .riwayat-table { min-width: 460px; font-size: 12.5px; }
+    .sesi-table-wrap .table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .btn-bayar-sesi {
+      padding: 8px 22px; border-radius: 99px; font-weight: 700; font-size: 12.5px;
+      background: var(--green); border: none; color: #fff; cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-bayar-sesi:hover { background: #256e4c; }
+    .btn-bayar-sesi:disabled { opacity: .6; cursor: not-allowed; }
+    .sesi-status-cell { display: flex; align-items: center; gap: 6px; }
+    .btn-undo-sesi {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid var(--red-dim); background: var(--red-dim); color: var(--red);
+      font-size: 12px; font-weight: 700; cursor: pointer; line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background .2s, border-color .2s;
+    }
+    .btn-undo-sesi:hover { background: rgba(200,64,64,0.22); border-color: var(--red); }
 
     /* ============ FOOTER ============ */
     footer {
@@ -440,7 +460,7 @@
 
 <!-- MODAL TAMBAH PEMBAYARAN -->
 <div class="modal-overlay" id="payment-modal">
-  <div class="modal-box">
+  <div class="modal-box" id="payment-modal-box">
     <div class="modal-head">
       <h3 id="modal-title">+ Pembayaran SPP</h3>
       <button class="modal-close" onclick="closePaymentModal()">✕</button>
@@ -448,17 +468,43 @@
     <div class="modal-body">
       <div class="form-group">
         <label>Nama Siswa</label>
-        <input type="text" id="input-nama" placeholder="Contoh: Rian Satria">
+        <select id="input-nama" onchange="handleNamaSiswaChange()">
+          <option value="">-- Pilih Nama Siswa --</option>
+        </select>
       </div>
-      <div class="form-group">
+
+      <!-- Muncul otomatis setelah nama siswa dipilih (khusus tab per-sesi) -->
+      <div class="form-group" id="group-id-siswa" style="display:none;">
+        <label>ID Siswa</label>
+        <input type="text" id="input-id-siswa" readonly>
+      </div>
+
+      <div id="sesi-table-wrap" class="sesi-table-wrap" style="display:none;">
+        <div class="table-wrap">
+          <table class="riwayat-table">
+            <thead>
+              <tr>
+                <th>Sesi</th>
+                <th>Tanggal Bayar</th>
+                <th>Jumlah Bayar</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="sesi-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Field untuk tab non-detailed (mis. Performer) -->
+      <div class="form-group simple-field">
         <label>Tanggal Bayar</label>
         <input type="date" id="input-tanggal">
       </div>
-      <div class="form-group">
+      <div class="form-group simple-field">
         <label>Jumlah (Rp)</label>
         <input type="number" id="input-jumlah" placeholder="250000">
       </div>
-      <div class="form-group">
+      <div class="form-group simple-field">
         <label>Metode Bayar</label>
         <select id="input-metode">
           <option value="Tunai">Tunai</option>
@@ -466,7 +512,7 @@
           <option value="QRIS">QRIS</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group simple-field">
         <label>Status</label>
         <select id="input-status">
           <option value="lunas">Lunas</option>
@@ -476,6 +522,7 @@
     </div>
     <div class="modal-foot">
       <button class="btn-cancel" onclick="closePaymentModal()">Batal</button>
+      <button class="btn-save" id="btn-konfirmasi-sesi" onclick="konfirmasiPembayaranSesi()" style="display:none;">Konfirmasi</button>
       <button class="btn-save" id="btn-simpan" onclick="simpanPembayaran()">Simpan</button>
     </div>
   </div>
@@ -859,17 +906,196 @@
 
   /* ===== MODAL TAMBAH PEMBAYARAN ===== */
   let modalTabKey = null;
+  let sesiEditState = null; // salinan lokal data sesi siswa terpilih, belum disimpan ke Supabase
 
-  function openPaymentModal(key) {
+  async function openPaymentModal(key) {
     modalTabKey = key || activeTabKey;
     const type = SPP_TYPES.find(t => t.key === modalTabKey);
+    const isDetailed = !!(type && type.detailed);
     document.getElementById('modal-title').textContent = `+ Pembayaran ${type ? type.label : 'SPP'}`;
-    document.getElementById('input-nama').value = '';
+
+    // Toggle tampilan sesuai jenis tab
+    document.getElementById('payment-modal-box').classList.toggle('modal-wide', isDetailed);
+    document.querySelectorAll('.simple-field').forEach(el => el.style.display = isDetailed ? 'none' : '');
+    document.getElementById('btn-simpan').style.display = isDetailed ? 'none' : '';
+    document.getElementById('btn-konfirmasi-sesi').style.display = isDetailed ? '' : 'none';
+    document.getElementById('group-id-siswa').style.display = 'none';
+    document.getElementById('sesi-table-wrap').style.display = 'none';
+    document.getElementById('input-id-siswa').value = '';
+    document.getElementById('sesi-table-body').innerHTML = '';
+    sesiEditState = null;
+
     document.getElementById('input-tanggal').value = new Date().toISOString().slice(0,10);
     document.getElementById('input-jumlah').value = '';
     document.getElementById('input-metode').value = 'Tunai';
     document.getElementById('input-status').value = 'lunas';
+
+    const sel = document.getElementById('input-nama');
+    sel.innerHTML = '<option value="">Memuat data siswa…</option>';
     document.getElementById('payment-modal').classList.add('open');
+
+    if (!loadedTabs[modalTabKey]) {
+      await loadRiwayat(modalTabKey);
+    }
+    populatePaymentNamaOptions(modalTabKey);
+  }
+
+  /* Isi dropdown Nama Siswa hanya dengan siswa yang ada di tabel tab yang aktif.
+     Untuk tab detailed (per-sesi), value = id_siswa agar bisa dicocokkan ke record lengkapnya. */
+  function populatePaymentNamaOptions(key) {
+    const sel = document.getElementById('input-nama');
+    const type = SPP_TYPES.find(t => t.key === key);
+    const rows = riwayatDataMap[key] || [];
+
+    if (rows.length === 0) {
+      sel.innerHTML = '<option value="">-- Belum ada siswa di tab ini --</option>';
+      return;
+    }
+
+    if (type && type.detailed) {
+      const sorted = [...rows].sort((a, b) => (a.nama_siswa || '').localeCompare(b.nama_siswa || ''));
+      sel.innerHTML = '<option value="">-- Pilih Nama Siswa --</option>' +
+        sorted.map(r => `<option value="${r.id_siswa}">${r.nama_siswa}</option>`).join('');
+    } else {
+      const names = [...new Set(rows.map(r => r.nama_siswa).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+      sel.innerHTML = '<option value="">-- Pilih Nama Siswa --</option>' +
+        names.map(n => `<option value="${n}">${n}</option>`).join('');
+    }
+  }
+
+  /* Saat nama siswa dipilih (khusus tab detailed): isi ID Siswa otomatis + tampilkan tabel sesi */
+  function handleNamaSiswaChange() {
+    const type = SPP_TYPES.find(t => t.key === modalTabKey);
+    if (!type || !type.detailed) return;
+
+    const idSiswa = document.getElementById('input-nama').value;
+    const groupId = document.getElementById('group-id-siswa');
+    const tableWrap = document.getElementById('sesi-table-wrap');
+
+    if (!idSiswa) {
+      groupId.style.display = 'none';
+      tableWrap.style.display = 'none';
+      document.getElementById('input-id-siswa').value = '';
+      document.getElementById('sesi-table-body').innerHTML = '';
+      sesiEditState = null;
+      return;
+    }
+
+    const rows = riwayatDataMap[modalTabKey] || [];
+    const siswa = rows.find(r => String(r.id_siswa) === String(idSiswa));
+    if (!siswa) return;
+
+    // Salinan lokal (belum disimpan ke Supabase) supaya klik Bayar/Undo bisa dibatalkan sebelum Konfirmasi
+    sesiEditState = { ...siswa };
+
+    document.getElementById('input-id-siswa').value = siswa.id_siswa;
+    groupId.style.display = '';
+    tableWrap.style.display = '';
+    renderSesiTable(sesiEditState);
+  }
+
+  /* Render tabel Sesi | Tanggal Bayar | Jumlah Bayar | Aksi untuk siswa terpilih */
+  function renderSesiTable(state) {
+    const tbody = document.getElementById('sesi-table-body');
+    let rowsHtml = '';
+    for (let s = 1; s <= JUMLAH_SESI_KOLOM; s++) {
+      const tgl = state[`tgl_bayar_s${s}`];
+      const bayar = state[`bayar_s${s}`];
+      const sudahBayar = !!tgl;
+      rowsHtml += `
+        <tr data-sesi="${s}">
+          <td>${s}</td>
+          <td class="sesi-tgl-${s}">${sudahBayar ? fmtTgl(tgl) : '-'}</td>
+          <td class="sesi-jumlah-${s} amount-cell">${sudahBayar ? fmtRp(bayar) : '-'}</td>
+          <td>
+            ${sudahBayar
+              ? `<div class="sesi-status-cell">
+                   <span class="status-pill lunas">Sudah Bayar</span>
+                   <button class="btn-undo-sesi" onclick="undoSesi(${s})" title="Batalkan pembayaran sesi ini">✕</button>
+                 </div>`
+              : `<button class="btn-bayar-sesi" onclick="bayarSesi(${s})">Bayar</button>`}
+          </td>
+        </tr>`;
+    }
+    tbody.innerHTML = rowsHtml;
+  }
+
+  /* Klik "Bayar": tandai sesi lunas SECARA LOKAL saja (belum masuk Supabase, menunggu tombol Konfirmasi) */
+  function bayarSesi(sesi) {
+    if (!sesiEditState) return;
+    const nominal = sesiEditState.nominal_persesi || 0;
+    sesiEditState[`tgl_bayar_s${sesi}`] = new Date().toISOString().slice(0,10);
+    sesiEditState[`bayar_s${sesi}`] = nominal;
+    renderSesiTable(sesiEditState);
+  }
+
+  /* Klik "✕": batalkan tanda lunas sesi ini (masih lokal, untuk perbaiki salah klik) */
+  function undoSesi(sesi) {
+    if (!sesiEditState) return;
+    sesiEditState[`tgl_bayar_s${sesi}`] = null;
+    sesiEditState[`bayar_s${sesi}`] = null;
+    renderSesiTable(sesiEditState);
+  }
+
+  /* Klik "Konfirmasi": baru di sini seluruh perubahan sesi dikirim ke Supabase */
+  async function konfirmasiPembayaranSesi() {
+    const type = SPP_TYPES.find(t => t.key === modalTabKey);
+    if (!type) return;
+
+    if (!sesiEditState) {
+      alert('Mohon pilih nama siswa terlebih dahulu.');
+      return;
+    }
+
+    const tableName = LEVEL_TABLE_MAP[type.jenis];
+    if (!tableName) {
+      alert(`Tabel Supabase untuk level "${type.label}" belum dikonfigurasi.`);
+      return;
+    }
+
+    const idSiswa = sesiEditState.id_siswa;
+    const nominalPersesi = sesiEditState.nominal_persesi || 0;
+    const jumlahSesi = sesiEditState.jumlah_sesi || JUMLAH_SESI_KOLOM;
+
+    const btn = document.getElementById('btn-konfirmasi-sesi');
+    btn.disabled = true; btn.textContent = 'Menyimpan…';
+
+    try {
+      let totalTerbayar = 0;
+      const payload = {};
+      for (let s = 1; s <= JUMLAH_SESI_KOLOM; s++) {
+        const tgl = sesiEditState[`tgl_bayar_s${s}`] || null;
+        const bayar = tgl ? (sesiEditState[`bayar_s${s}`] || 0) : null;
+        payload[`tgl_bayar_s${s}`] = tgl;
+        payload[`bayar_s${s}`] = bayar;
+        if (bayar) totalTerbayar += bayar;
+      }
+      const sisaIuran = Math.max((nominalPersesi * jumlahSesi) - totalTerbayar, 0);
+      payload.total_terbayar = totalTerbayar;
+      payload.sisa_iuran = sisaIuran;
+      payload.status = sisaIuran <= 0 ? 'lunas' : 'pending';
+
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/${tableName}?id_siswa=eq.${idSiswa}`, {
+        method: 'PATCH',
+        headers: headersWrite,
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) throw new Error(`Gagal menyimpan pembayaran ke tabel ${tableName}`);
+
+      // Perbarui cache lokal tab & tabel riwayat
+      const rows = riwayatDataMap[modalTabKey] || [];
+      const siswa = rows.find(row => String(row.id_siswa) === String(idSiswa));
+      if (siswa) Object.assign(siswa, payload);
+
+      closePaymentModal();
+      loadedTabs[modalTabKey] = false;
+      loadRiwayat(modalTabKey);
+    } catch(e) {
+      console.warn('Konfirmasi pembayaran sesi:', e.message);
+      alert('Gagal menyimpan pembayaran. Periksa koneksi atau struktur tabel Supabase.');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Konfirmasi';
+    }
   }
   function closePaymentModal() {
     document.getElementById('payment-modal').classList.remove('open');
@@ -966,7 +1192,7 @@
      bukan lagi satu tabel spp_siswa dengan kolom jenis_spp. */
   const LEVEL_TABLE_MAP = {
     'Basic Dasar': 'sppbasicdasar',
-    'Basic Lanjutan': 'sppbasiclanjutan',
+    'Basic Lanjutan': 'sppbasicdasarlanjutan',
     'Intermediate Dasar': 'sppintermediatedasar',
     'Intermediate Lanjutan': 'sppintermediatelanjutan'
   };
