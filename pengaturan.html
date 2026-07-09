@@ -504,7 +504,201 @@
     .btn-save:hover { background: var(--gold2); transform: translateY(-1px); }
     .btn-save:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
-    /* ── TANDA TANGAN ── */
+    /* ── BOOKING JADWAL LES: tombol + jadwal & tabel booking ── */
+    .jl-section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+    }
+    .jl-section-head .jl-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+    }
+    .jl-section-head .jl-desc { font-size: 13px; color: var(--muted); }
+    .btn-add-jadwal {
+      display: flex; align-items: center; gap: 8px;
+      padding: 11px 22px;
+      background: var(--gold);
+      border: none; border-radius: 12px;
+      color: #0A0A0A; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+    .btn-add-jadwal:hover { background: var(--gold2); transform: translateY(-1px); }
+
+    .sesi-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 11px;
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-border);
+      border-radius: 50px;
+      font-size: 11px; font-weight: 700; color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── MODAL OVERLAY ── */
+    .jl-modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,8,4,0.55);
+      z-index: 500;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+      overflow-y: auto;
+    }
+    .jl-modal-overlay.show { display: flex; }
+    .jl-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 480px;
+      overflow: hidden;
+      animation: jlPopIn .25s ease both;
+    }
+    @keyframes jlPopIn { from { opacity:0; transform:translateY(14px) scale(.98);} to { opacity:1; transform:none; } }
+    .jl-modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 26px; border-bottom: 1px solid var(--border);
+    }
+    .jl-modal-head h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px; letter-spacing: .5px; color: var(--text);
+    }
+    .jl-modal-close {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border); background: none;
+      color: var(--muted); font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .jl-modal-close:hover { border-color: var(--gold); color: var(--gold); }
+    .jl-modal-body { padding: 24px 26px; max-height: 72vh; overflow-y: auto; }
+    .autocomplete-wrap { position: relative; }
+    .autocomplete-list {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,.25));
+      max-height: 190px; overflow-y: auto; z-index: 50;
+      display: none;
+    }
+    .autocomplete-list.open { display: block; }
+    .autocomplete-item {
+      padding: 9px 12px; font-size: 13px; cursor: pointer;
+      border-bottom: 1px solid var(--border);
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover, .autocomplete-item.active { background: var(--surface); color: var(--gold); }
+    .autocomplete-item .ac-id { font-size: 11px; color: var(--muted); margin-left: 6px; }
+    .autocomplete-empty { padding: 9px 12px; font-size: 12.5px; color: var(--muted); }
+    .jl-modal-foot {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 12px; padding: 18px 26px; border-top: 1px solid var(--border);
+    }
+
+    /* ── KALENDER ── */
+    .jl-calendar-wrap { position: relative; margin-top: 8px; }
+    .jl-cal-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .jl-cal-nav-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--input-bg);
+      color: var(--text); cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .jl-cal-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .jl-cal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: .5px; color: var(--text);
+    }
+    .jl-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .jl-cal-dow {
+      text-align: center; font-size: 11px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      padding-bottom: 6px;
+    }
+    .jl-cal-day {
+      aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: var(--input-bg);
+      font-size: 13px; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all .15s;
+      position: relative;
+    }
+    .jl-cal-day:hover:not(.disabled):not(.blank) { border-color: var(--gold); color: var(--gold); }
+    .jl-cal-day.blank { background: none; cursor: default; }
+    .jl-cal-day.disabled { color: var(--border); cursor: not-allowed; background: none; }
+    .jl-cal-day.today { border-color: var(--gold-border); background: var(--gold-bg); color: var(--gold); }
+    .jl-cal-day.active { background: var(--gold); color: #0A0A0A; border-color: var(--gold); }
+    .jl-cal-day.has-sesi::after {
+      content: '';
+      position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--gold);
+    }
+    .jl-cal-day.active.has-sesi::after { background: #0A0A0A; }
+
+    /* ── POPOVER PILIH SESI ── */
+    .jl-popover {
+      display: none;
+      position: absolute; z-index: 50;
+      width: 232px;
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      padding: 14px;
+    }
+    .jl-popover.show { display: block; }
+    .jl-popover-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .jl-popover-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .jl-sesi-btn {
+      padding: 8px 4px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 12px; font-weight: 700; color: var(--text);
+      cursor: pointer; transition: all .15s;
+    }
+    .jl-sesi-btn:hover { background: var(--gold); border-color: var(--gold); color: #0A0A0A; }
+
+    /* ── TABEL BOOKING DI DALAM MODAL ── */
+    .jl-booking-table {
+      width: 100%; border-collapse: collapse; margin-top: 18px;
+    }
+    .jl-booking-table th {
+      text-align: left; padding: 8px 10px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .jl-booking-table td {
+      padding: 9px 10px; border-bottom: 1px solid var(--border);
+      font-size: 13px; vertical-align: middle;
+    }
+    .jl-booking-table tr:last-child td { border-bottom: none; }
+    .jl-booking-empty {
+      text-align: center; padding: 20px 10px;
+      color: var(--muted); font-size: 12px;
+    }
     .ttd-upload-box {
       border: 2px dashed var(--gold-border);
       border-radius: 16px;
@@ -809,61 +1003,34 @@
         </div>
       </div>
 
-      <!-- Info umum jadwal -->
-      <div class="form-row">
-        <div class="form-group">
-          <label>Durasi Per Sesi</label>
-          <select id="jdwl-durasi">
-            <option value="45">45 menit</option>
-            <option value="60" selected>60 menit</option>
-            <option value="90">90 menit</option>
-            <option value="120">120 menit</option>
-          </select>
+      <!-- ═══ BOOKING SESI LES SISWA ═══ -->
+      <div class="jl-section-head">
+        <div>
+          <p class="jl-label">Booking Sesi Les Siswa</p>
+          <p class="jl-desc">Jadwalkan sesi les untuk siswa pada tanggal & sesi tertentu</p>
         </div>
-        <div class="form-group">
-          <label>Jeda Antar Sesi</label>
-          <select id="jdwl-jeda">
-            <option value="0">Tidak ada jeda</option>
-            <option value="15" selected>15 menit</option>
-            <option value="30">30 menit</option>
-          </select>
-        </div>
+        <button type="button" class="btn-add-jadwal" onclick="jl_bukaModal()">➕ Jadwal</button>
       </div>
 
-      <div class="form-row full" style="margin-bottom:28px;">
-        <div class="form-group">
-          <label>Catatan Jadwal (opsional)</label>
-          <textarea id="jdwl-catatan" placeholder="Contoh: Jadwal bisa disesuaikan via WhatsApp. Hari libur nasional libur." rows="2"></textarea>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-      <p style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Jadwal Per Hari</p>
-
-      <!-- Table jadwal -->
-      <table class="jadwal-table" id="jadwal-table">
+      <table class="jadwal-table" id="jl-booking-table">
         <thead>
           <tr>
-            <th>Hari</th>
-            <th>Jam Mulai</th>
-            <th>Jam Selesai</th>
-            <th>Keterangan</th>
+            <th>ID Jadwal</th>
+            <th>ID Siswa</th>
+            <th>Nama Siswa</th>
+            <th>Sesi</th>
+            <th>Tanggal Les</th>
             <th style="width:40px;"></th>
           </tr>
         </thead>
-        <tbody id="jadwal-tbody">
-          <!-- Rows inserted by JS -->
+        <tbody id="jl-booking-tbody">
+          <tr id="jl-booking-empty-row">
+            <td colspan="6">
+              <div class="payment-empty"><span class="ico">🗓️</span>Belum ada jadwal les. Klik + Jadwal untuk menambah.</div>
+            </td>
+          </tr>
         </tbody>
       </table>
-
-      <button class="add-jadwal-btn" onclick="addJadwalRow()">+ Tambah Jadwal</button>
-
-      <div class="action-bar">
-        <button class="btn-reset" onclick="resetTab('jadwal')">Reset</button>
-        <button class="btn-save" id="save-jadwal" onclick="saveTab('jadwal')">
-          💾 Simpan Jadwal
-        </button>
-      </div>
     </div>
 
     <!-- ═══════════════════════════════════════
@@ -951,6 +1118,76 @@
     </div>
 
   </div><!-- /tabs-wrap -->
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL: TAMBAH JADWAL LES
+═══════════════════════════════════════ -->
+<div id="jl-modal-overlay" class="jl-modal-overlay">
+  <div class="jl-modal">
+    <div class="jl-modal-head">
+      <h3>🗓️ Tambah Jadwal Les</h3>
+      <button type="button" class="jl-modal-close" onclick="jl_tutupModal()">✕</button>
+    </div>
+
+    <div class="jl-modal-body">
+      <div class="form-row full">
+        <div class="form-group">
+          <label>ID Siswa <span class="required">*</span></label>
+          <input type="text" id="jl-id-siswa" placeholder="Otomatis terisi setelah pilih nama" readonly>
+        </div>
+      </div>
+      <div class="form-row full" style="margin-bottom:20px;">
+        <div class="form-group autocomplete-wrap">
+          <label>Nama Siswa <span class="required">*</span></label>
+          <input type="text" id="jl-nama-siswa" placeholder="Ketik nama siswa..." autocomplete="off">
+          <div class="autocomplete-list" id="jl-nama-suggestions"></div>
+        </div>
+      </div>
+
+      <div class="divider" style="margin:20px 0;"></div>
+      <p class="jl-label" style="margin-bottom:2px;">Pilih Tanggal & Sesi</p>
+      <p class="jl-desc" style="margin-bottom:10px;">Klik tanggal pada kalender, lalu pilih sesi les yang muncul</p>
+
+      <div class="jl-calendar-wrap" id="jl-calendar-wrap">
+        <div class="jl-cal-nav">
+          <button type="button" class="jl-cal-nav-btn" onclick="jl_gantiBulan(-1)">‹</button>
+          <div class="jl-cal-title" id="jl-cal-title">—</div>
+          <button type="button" class="jl-cal-nav-btn" onclick="jl_gantiBulan(1)">›</button>
+        </div>
+        <div class="jl-cal-grid" id="jl-cal-grid"><!-- diisi JS --></div>
+
+        <!-- Popover pilihan sesi -->
+        <div class="jl-popover" id="jl-popover">
+          <p class="jl-popover-title" id="jl-popover-title">Pilih Sesi</p>
+          <div class="jl-popover-grid" id="jl-popover-grid"><!-- diisi JS --></div>
+        </div>
+      </div>
+
+      <table class="jl-booking-table">
+        <thead>
+          <tr>
+            <th>ID Jadwal</th>
+            <th>ID Siswa</th>
+            <th>Nama Siswa</th>
+            <th>Sesi</th>
+            <th>Tanggal Les</th>
+            <th style="width:30px;"></th>
+          </tr>
+        </thead>
+        <tbody id="jl-modal-tbody">
+          <tr id="jl-modal-empty-row">
+            <td colspan="6"><div class="jl-booking-empty">Belum ada sesi dipilih</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="jl-modal-foot">
+      <button type="button" class="btn-reset" onclick="jl_tutupModal()">Batal</button>
+      <button type="button" class="btn-save" onclick="jl_konfirmasi()">✅ Konfirmasi</button>
+    </div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -1358,60 +1595,6 @@
   };
 
   /* ══════════════════════════
-     JADWAL ROWS
-  ══════════════════════════ */
-  const HARI = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
-
-  function addJadwalRow(data = {}) {
-    const tbody = document.getElementById('jadwal-tbody');
-    const idx = tbody.rows.length;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>
-        <select class="time-input" name="hari" style="width:120px;">
-          ${HARI.map(h => `<option value="${h}" ${data.hari === h ? 'selected' : ''}>${h}</option>`).join('')}
-        </select>
-      </td>
-      <td><input type="time" class="time-input" name="jam_mulai" value="${data.jam_mulai || '09:00'}" /></td>
-      <td><input type="time" class="time-input" name="jam_selesai" value="${data.jam_selesai || '21:00'}" /></td>
-      <td>
-        <input type="text" class="time-input" name="keterangan"
-          style="width:100%;" placeholder="Semua Level"
-          value="${data.keterangan || ''}" />
-      </td>
-      <td>
-        <button class="delete-row-btn" onclick="this.closest('tr').remove()" title="Hapus baris">✕</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  }
-
-  // Default rows
-  const defaultJadwal = [
-    { hari:'Senin',  jam_mulai:'09:00', jam_selesai:'21:00', keterangan:'Semua Level' },
-    { hari:'Selasa', jam_mulai:'09:00', jam_selesai:'21:00', keterangan:'Semua Level' },
-    { hari:'Rabu',   jam_mulai:'09:00', jam_selesai:'21:00', keterangan:'Semua Level' },
-    { hari:'Kamis',  jam_mulai:'09:00', jam_selesai:'21:00', keterangan:'Semua Level' },
-    { hari:'Jumat',  jam_mulai:'09:00', jam_selesai:'21:00', keterangan:'Semua Level' },
-    { hari:'Sabtu',  jam_mulai:'08:00', jam_selesai:'20:00', keterangan:'Semua Level' },
-    { hari:'Minggu', jam_mulai:'08:00', jam_selesai:'18:00', keterangan:'Semua Level' },
-  ];
-  defaultJadwal.forEach(addJadwalRow);
-
-  /* ══════════════════════════
-     COLLECT JADWAL DATA
-  ══════════════════════════ */
-  function collectJadwal() {
-    const rows = document.querySelectorAll('#jadwal-tbody tr');
-    return Array.from(rows).map(tr => ({
-      hari:        tr.querySelector('[name=hari]').value,
-      jam_mulai:   tr.querySelector('[name=jam_mulai]').value,
-      jam_selesai: tr.querySelector('[name=jam_selesai]').value,
-      keterangan:  tr.querySelector('[name=keterangan]').value,
-    }));
-  }
-
-  /* ══════════════════════════
      SAVE TABS
   ══════════════════════════ */
   async function saveTab(tab) {
@@ -1465,14 +1648,6 @@
         btn.textContent = '💾 Simpan ke Database';
         return;
 
-      } else if (tab === 'jadwal') {
-        payload = {
-          ...payload,
-          jdwl_durasi:  document.getElementById('jdwl-durasi').value,
-          jdwl_jeda:    document.getElementById('jdwl-jeda').value,
-          jdwl_catatan: document.getElementById('jdwl-catatan').value,
-          jdwl_rows:    JSON.stringify(collectJadwal()),
-        };
       }
 
       const ok = await dbUpsert('pengaturan', payload);
@@ -1510,10 +1685,6 @@
       resetLokasiForm();
       document.getElementById('lok-status-bar').style.display = 'none';
       document.getElementById('lok-form-label').textContent = '📍 Lokasi Studio';
-    } else if (tab === 'jadwal') {
-      document.getElementById('jadwal-tbody').innerHTML = '';
-      defaultJadwal.forEach(addJadwalRow);
-      document.getElementById('jdwl-catatan').value = '';
     }
     showToast('Tab direset', 'success');
   }
@@ -1534,15 +1705,6 @@
           akun_renderTable();
         } else if (tab === 'lokasi') {
           // Lokasi dimuat dari Supabase saat tab dibuka, bukan dari localStorage
-        } else if (tab === 'jadwal') {
-          if (d.jdwl_durasi)  document.getElementById('jdwl-durasi').value  = d.jdwl_durasi;
-          if (d.jdwl_jeda)    document.getElementById('jdwl-jeda').value    = d.jdwl_jeda;
-          if (d.jdwl_catatan) document.getElementById('jdwl-catatan').value = d.jdwl_catatan;
-          if (d.jdwl_rows) {
-            const rows = JSON.parse(d.jdwl_rows);
-            document.getElementById('jadwal-tbody').innerHTML = '';
-            rows.forEach(r => addJadwalRow(r));
-          }
         }
       } catch(_) {}
     });
@@ -1837,6 +1999,458 @@
     _origSwitchTab(id, btn);
     if (id === 'ttd') ttd_loadAll();
   };
+
+  /* ══════════════════════════
+     BOOKING JADWAL LES (Tampilan Saja — belum ke backend)
+  ══════════════════════════ */
+  let jlEntriesSementara = [];   // entri yang sedang dipilih di dalam modal (belum dikonfirmasi)
+  let jlBookingList      = [];   // entri yang sudah dikonfirmasi (ditampilkan di tabel utama)
+  let jlCalDate          = new Date();       // bulan/tahun kalender yang sedang ditampilkan
+  let jlTanggalDipilih   = null;             // tanggal yang sedang aktif popovernya (YYYY-MM-DD)
+
+  const JL_NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const JL_NAMA_HARI  = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+  function jl_bukaModal() {
+    document.getElementById('jl-id-siswa').value = '';
+    document.getElementById('jl-nama-siswa').value = '';
+    jl_closeNamaSuggestions();
+    jlEntriesSementara = [];
+    jlTanggalDipilih = null;
+    jlCalDate = new Date();
+    jl_renderModalTable();
+    jl_renderKalender();
+    jl_tutupPopover();
+    document.getElementById('jl-modal-overlay').classList.add('show');
+  }
+
+  function jl_tutupModal() {
+    document.getElementById('jl-modal-overlay').classList.remove('show');
+    jl_tutupPopover();
+    jl_closeNamaSuggestions();
+  }
+
+  /* ══════════════════════════
+     AUTOCOMPLETE NAMA SISWA (tabel: datasiswa)
+  ══════════════════════════ */
+  const jlNamaInput    = document.getElementById('jl-nama-siswa');
+  const jlIdInput      = document.getElementById('jl-id-siswa');
+  const jlSuggestBox   = document.getElementById('jl-nama-suggestions');
+  let jlSuggestTimer       = null;
+  let jlSuggestActiveIndex = -1;
+  let jlSuggestItems       = [];
+
+  function jl_closeNamaSuggestions() {
+    jlSuggestBox.classList.remove('open');
+    jlSuggestBox.innerHTML = '';
+    jlSuggestActiveIndex = -1;
+    jlSuggestItems = [];
+  }
+
+  function jl_renderNamaSuggestions(rows) {
+    if (!rows || rows.length === 0) {
+      jlSuggestBox.innerHTML = '<div class="autocomplete-empty">Nama tidak ditemukan</div>';
+      jlSuggestBox.classList.add('open');
+      jlSuggestItems = [];
+      return;
+    }
+    jlSuggestItems = rows;
+    jlSuggestBox.innerHTML = rows.map((row, i) => `
+      <div class="autocomplete-item" data-index="${i}">
+        ${row.nama_siswa}<span class="ac-id">ID: ${row.id}</span>
+      </div>
+    `).join('');
+    jlSuggestBox.classList.add('open');
+    jlSuggestBox.querySelectorAll('.autocomplete-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.dataset.index, 10);
+        jl_pickNamaSuggestion(jlSuggestItems[idx]);
+      });
+    });
+  }
+
+  function jl_pickNamaSuggestion(row) {
+    jlNamaInput.value = row.nama_siswa;
+    jlIdInput.value = row.id;
+    jl_closeNamaSuggestions();
+  }
+
+  async function jl_searchDataSiswa(keyword) {
+    try {
+      const filter = keyword
+        ? `&nama_siswa=ilike.*${encodeURIComponent(keyword)}*`
+        : '';
+      const url = `${SUPABASE_URL}/rest/v1/datasiswa?select=id,nama_siswa${filter}&order=nama_siswa.asc&limit=10`;
+      const r = await fetch(url, {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+      });
+      if (!r.ok) throw new Error('Gagal mengambil data siswa');
+      return await r.json();
+    } catch (e) {
+      console.warn('jl_searchDataSiswa:', e.message);
+      return [];
+    }
+  }
+
+  function jl_triggerNamaSuggestions() {
+    const keyword = jlNamaInput.value.trim();
+    clearTimeout(jlSuggestTimer);
+    jlSuggestTimer = setTimeout(async () => {
+      const rows = await jl_searchDataSiswa(keyword);
+      jl_renderNamaSuggestions(rows);
+    }, 250);
+  }
+
+  jlNamaInput.addEventListener('input', () => {
+    jlIdInput.value = ''; // reset id selama nama masih diketik/berubah manual
+    jl_triggerNamaSuggestions();
+  });
+
+  jlNamaInput.addEventListener('focus', jl_triggerNamaSuggestions);
+  jlNamaInput.addEventListener('click', jl_triggerNamaSuggestions);
+
+  jlNamaInput.addEventListener('keydown', (e) => {
+    const items = jlSuggestBox.querySelectorAll('.autocomplete-item');
+    if (!items.length || !jlSuggestBox.classList.contains('open')) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      jlSuggestActiveIndex = Math.min(jlSuggestActiveIndex + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      jlSuggestActiveIndex = Math.max(jlSuggestActiveIndex - 1, 0);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (jlSuggestActiveIndex >= 0 && jlSuggestItems[jlSuggestActiveIndex]) {
+        jl_pickNamaSuggestion(jlSuggestItems[jlSuggestActiveIndex]);
+      }
+      return;
+    } else if (e.key === 'Escape') {
+      jl_closeNamaSuggestions();
+      return;
+    } else {
+      return;
+    }
+    items.forEach((el, i) => el.classList.toggle('active', i === jlSuggestActiveIndex));
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target !== jlNamaInput && !jlSuggestBox.contains(e.target)) {
+      jl_closeNamaSuggestions();
+    }
+  });
+
+  // Tutup modal jika klik di area gelap luar modal
+  document.getElementById('jl-modal-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'jl-modal-overlay') jl_tutupModal();
+  });
+
+  function jl_gantiBulan(delta) {
+    jlCalDate.setMonth(jlCalDate.getMonth() + delta);
+    jl_tutupPopover();
+    jl_renderKalender();
+  }
+
+  function jl_formatTanggalKey(y, m, d) {
+    return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  function jl_formatTanggalTampil(key) {
+    const [y, m, d] = key.split('-').map(Number);
+    return `${String(d).padStart(2,'0')} ${JL_NAMA_BULAN[m-1]} ${y}`;
+  }
+
+  function jl_renderKalender() {
+    const y = jlCalDate.getFullYear();
+    const m = jlCalDate.getMonth();
+    document.getElementById('jl-cal-title').textContent = `${JL_NAMA_BULAN[m]} ${y}`;
+
+    const grid = document.getElementById('jl-cal-grid');
+    grid.innerHTML = '';
+
+    // Header hari
+    JL_NAMA_HARI.forEach(h => {
+      const el = document.createElement('div');
+      el.className = 'jl-cal-dow';
+      el.textContent = h;
+      grid.appendChild(el);
+    });
+
+    const firstDow    = new Date(y, m, 1).getDay();     // 0 = Minggu
+    const jumlahHari  = new Date(y, m + 1, 0).getDate();
+    const todayKey    = jl_formatTanggalKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    const todayReal   = new Date(); todayReal.setHours(0,0,0,0);
+
+    // Sel kosong sebelum tanggal 1
+    for (let i = 0; i < firstDow; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'jl-cal-day blank';
+      grid.appendChild(blank);
+    }
+
+    for (let d = 1; d <= jumlahHari; d++) {
+      const key = jl_formatTanggalKey(y, m, d);
+      const cellDate = new Date(y, m, d);
+      const isPast = cellDate < todayReal;
+
+      const cell = document.createElement('div');
+      cell.className = 'jl-cal-day';
+      cell.textContent = d;
+      cell.dataset.tanggal = key;
+
+      if (key === todayKey) cell.classList.add('today');
+      if (jlTanggalDipilih === key) cell.classList.add('active');
+      if (jlEntriesSementara.some(e => e.tanggal === key)) cell.classList.add('has-sesi');
+
+      if (isPast) {
+        cell.classList.add('disabled');
+      } else {
+        cell.addEventListener('click', () => jl_bukaPopover(cell, key));
+      }
+
+      grid.appendChild(cell);
+    }
+  }
+
+  function jl_bukaPopover(cellEl, tanggalKey) {
+    const idSiswa   = document.getElementById('jl-id-siswa').value.trim();
+    const namaSiswa = document.getElementById('jl-nama-siswa').value.trim();
+
+    if (!idSiswa || !namaSiswa) {
+      showToast('Isi ID Siswa & Nama Siswa terlebih dahulu!', 'error');
+      return;
+    }
+
+    jlTanggalDipilih = tanggalKey;
+    jl_renderKalender(); // refresh supaya class 'active' pindah ke sel yang baru diklik
+
+    const wrap    = document.getElementById('jl-calendar-wrap');
+    const popover = document.getElementById('jl-popover');
+    document.getElementById('jl-popover-title').textContent = 'Pilih Sesi — ' + jl_formatTanggalTampil(tanggalKey);
+
+    // Isi grid sesi 1–12
+    const sesiGrid = document.getElementById('jl-popover-grid');
+    sesiGrid.innerHTML = '';
+    for (let s = 1; s <= 12; s++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'jl-sesi-btn';
+      btn.textContent = 'Sesi ' + s;
+      btn.addEventListener('click', () => jl_pilihSesi(tanggalKey, 'Sesi ' + s));
+      sesiGrid.appendChild(btn);
+    }
+
+    // Posisikan popover tepat di bawah sel tanggal yang diklik
+    const cellEl2 = document.querySelector(`.jl-cal-day[data-tanggal="${tanggalKey}"]`);
+    const targetCell = cellEl2 || cellEl;
+    const wrapRect = wrap.getBoundingClientRect();
+    const cellRect = targetCell.getBoundingClientRect();
+
+    let left = cellRect.left - wrapRect.left;
+    const maxLeft = wrap.clientWidth - 232; // lebar popover
+    if (left > maxLeft) left = Math.max(maxLeft, 0);
+    if (left < 0) left = 0;
+
+    popover.style.left = left + 'px';
+    popover.style.top  = (cellRect.bottom - wrapRect.top + 8) + 'px';
+    popover.classList.add('show');
+  }
+
+  function jl_tutupPopover() {
+    const popover = document.getElementById('jl-popover');
+    if (popover) popover.classList.remove('show');
+  }
+
+  function jl_generateIdJadwal(idSiswa) {
+    // Nomor urut dihitung dari jumlah jadwal siswa ini yang sudah ada di tabel utama
+    // ditambah yang sedang disiapkan (belum dikonfirmasi) di modal, supaya tetap unik.
+    const existingCount   = jlBookingList.filter(e => e.idSiswa === idSiswa).length;
+    const sementaraCount  = jlEntriesSementara.filter(e => e.idSiswa === idSiswa).length;
+    const urutan = existingCount + sementaraCount + 1;
+    return `${idSiswa}-${urutan}`;
+  }
+
+  function jl_pilihSesi(tanggalKey, sesiLabel) {
+    const idSiswa   = document.getElementById('jl-id-siswa').value.trim();
+    const namaSiswa = document.getElementById('jl-nama-siswa').value.trim();
+
+    // Cegah duplikasi sesi + tanggal yang sama
+    const sudahAda = jlEntriesSementara.some(e => e.tanggal === tanggalKey && e.sesi === sesiLabel);
+    if (sudahAda) {
+      showToast(`${sesiLabel} tanggal ini sudah dipilih`, 'error');
+      return;
+    }
+
+    jlEntriesSementara.push({
+      idJadwal: jl_generateIdJadwal(idSiswa),
+      idSiswa,
+      namaSiswa,
+      sesi: sesiLabel,
+      tanggal: tanggalKey
+    });
+
+    jl_renderModalTable();
+    jl_renderKalender();
+    jl_tutupPopover();
+    showToast(`${sesiLabel} · ${jl_formatTanggalTampil(tanggalKey)} ditambahkan`, 'success');
+  }
+
+  function jl_hapusEntriSementara(index) {
+    jlEntriesSementara.splice(index, 1);
+    jl_renderModalTable();
+    jl_renderKalender();
+  }
+
+  function jl_renderModalTable() {
+    const tbody = document.getElementById('jl-modal-tbody');
+    if (jlEntriesSementara.length === 0) {
+      tbody.innerHTML = `<tr id="jl-modal-empty-row"><td colspan="6"><div class="jl-booking-empty">Belum ada sesi dipilih</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = jlEntriesSementara.map((e, i) => `
+      <tr>
+        <td style="font-family:monospace;">${e.idJadwal}</td>
+        <td style="font-family:monospace;">${e.idSiswa}</td>
+        <td style="font-weight:600;">${e.namaSiswa}</td>
+        <td><span class="sesi-chip">${e.sesi}</span></td>
+        <td>${jl_formatTanggalTampil(e.tanggal)}</td>
+        <td>
+          <button type="button" class="delete-row-btn" onclick="jl_hapusEntriSementara(${i})" title="Hapus">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function jl_renderBookingTable() {
+    const tbody = document.getElementById('jl-booking-tbody');
+    if (jlBookingList.length === 0) {
+      tbody.innerHTML = `<tr id="jl-booking-empty-row"><td colspan="6">
+        <div class="payment-empty"><span class="ico">🗓️</span>Belum ada jadwal les. Klik + Jadwal untuk menambah.</div>
+      </td></tr>`;
+      return;
+    }
+    tbody.innerHTML = jlBookingList.map((e, i) => `
+      <tr>
+        <td style="font-family:monospace;">${e.idJadwal}</td>
+        <td style="font-family:monospace;">${e.idSiswa}</td>
+        <td style="font-weight:600;">${e.namaSiswa}</td>
+        <td><span class="sesi-chip">${e.sesi}</span></td>
+        <td>${jl_formatTanggalTampil(e.tanggal)}</td>
+        <td>
+          <button type="button" class="delete-row-btn" onclick="jl_hapusBooking(${i})" title="Hapus">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function jl_hapusBooking(index) {
+    const entri = jlBookingList[index];
+    if (!entri) return;
+    if (!confirm(`Hapus jadwal ${entri.namaSiswa} · ${entri.sesi} · ${jl_formatTanggalTampil(entri.tanggal)}?`)) return;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/jadwalles?id=eq.${encodeURIComponent(entri.idJadwal)}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey':        SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Prefer':        'return=minimal',
+        },
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Supabase delete error:', errText);
+        showToast('Gagal menghapus dari database. Cek konsol.', 'error');
+        return;
+      }
+      jlBookingList.splice(index, 1);
+      jl_renderBookingTable();
+      showToast('Jadwal berhasil dihapus', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Terjadi kesalahan koneksi. Cek konsol.', 'error');
+    }
+  }
+
+  async function jl_konfirmasi() {
+    if (jlEntriesSementara.length === 0) {
+      showToast('Pilih minimal 1 tanggal & sesi terlebih dahulu!', 'error');
+      return;
+    }
+
+    const btn = document.querySelector('.jl-modal-foot .btn-save');
+    const entriBaru = jlEntriesSementara;
+    btn.disabled = true;
+    btn.textContent = '⏳ Menyimpan…';
+    showToast('Menyimpan jadwal…', 'loading');
+
+    try {
+      const rows = entriBaru.map(e => ({
+        id:         e.idJadwal,
+        id_siswa:   e.idSiswa,
+        nama_siswa: e.namaSiswa,
+        sesi:       e.sesi,
+        tanggal:    e.tanggal,
+      }));
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/jadwalles`, {
+        method: 'POST',
+        headers: {
+          'apikey':        SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type':  'application/json',
+          'Prefer':        'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify(rows),
+      });
+
+      if (res.ok) {
+        jlBookingList = jlBookingList.concat(entriBaru);
+        jl_renderBookingTable();
+        showToast(`${entriBaru.length} jadwal berhasil disimpan ke database!`, 'success');
+        jlEntriesSementara = [];
+        jl_tutupModal();
+      } else {
+        const errText = await res.text();
+        console.error('Supabase error:', errText);
+        showToast('Gagal simpan ke database. Cek konsol.', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Terjadi kesalahan koneksi. Cek konsol.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '✅ Konfirmasi';
+    }
+  }
+
+  // Klik di luar popover (tapi masih di dalam modal) akan menutup popover
+  document.getElementById('jl-calendar-wrap').addEventListener('click', (e) => {
+    const popover = document.getElementById('jl-popover');
+    if (!popover.contains(e.target) && !e.target.classList.contains('jl-cal-day')) {
+      jl_tutupPopover();
+    }
+  });
+
+  async function jl_loadBookingDariDB() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/jadwalles?select=id,id_siswa,nama_siswa,sesi,tanggal&order=tanggal.asc`, {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+      });
+      if (!res.ok) throw new Error('Gagal mengambil data jadwal les');
+      const rows = await res.json();
+      jlBookingList = rows.map(r => ({
+        idJadwal:  r.id,
+        idSiswa:   r.id_siswa,
+        namaSiswa: r.nama_siswa,
+        sesi:      r.sesi,
+        tanggal:   r.tanggal,
+      }));
+      jl_renderBookingTable();
+    } catch (e) {
+      console.warn('jl_loadBookingDariDB:', e.message);
+    }
+  }
+  jl_loadBookingDariDB();
 
   loadLocal();
 </script>
